@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+:root {
+  --background: #07070c;
+  --foreground: #f4f4ff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.35), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(236, 72, 153, 0.12), transparent);
+  background-attachment: fixed;
+}
+
+/* Comfortable thumb targets on phone */
+button,
+input,
+textarea {
+  touch-action: manipulation;
+}
