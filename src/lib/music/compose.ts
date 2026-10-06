@@ -4,7 +4,7 @@
  * instruments / rhythm / production changes / role). Deterministic for the same inputs.
  */
 import { KIT_LABELS, BASS_LABELS, HARMONY_LABELS, LEAD_LABELS, type GenreId, type DrumKit, type BassTimbre, type BassStyle, type HarmonyInst, type HarmonyRhythm, type LeadInst, type MelodyStyle, type TextureId, type DrumPattern, type Form } from "./genres";
-import { MODES, MODE_INFO, parseRoman, voiceChord, colorChord, type Chord, type ModeId } from "./theory";
+import { MODES, MODE_INFO, conformToMode, parseRoman, voiceChord, colorChord, type Chord, type ModeId } from "./theory";
 import { makeRng } from "./rng";
 import type { Plan } from "./parse";
 import { PROGRESSIONS, POLYMETER_CYCLES, type StyleSpec, type TrickId } from "./spec";
@@ -314,6 +314,13 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
     chorusProg = others.length && progRng.chance(0.65) ? progRng.pick(others) : verseProg;
     bridgeProg = others.length > 1 ? others.find((p) => p !== chorusProg) ?? [...chorusProg.slice(1), chorusProg[0]] : [...chorusProg.slice(1), chorusProg[0]];
     bpc = primary.barsPerChord;
+    // style progressions are written for major/minor; re-spell them diatonically for colored modes
+    if (!blues12 && mode !== "ionian" && mode !== "aeolian") {
+      const fit = (p: string[]) => p.map((c) => conformToMode(c, mode));
+      verseProg = fit(verseProg);
+      chorusProg = fit(chorusProg);
+      bridgeProg = fit(bridgeProg);
+    }
   }
   const color = (prog: string[]) => prog.map((s, i) => colorChord(s, H.chordColor, i, prog.length));
   const borrowedChord = family === "major" ? progRng.pick(["iv", "bVI", "bVII"]) : progRng.pick(["IV", "V", "bII"]);
@@ -488,7 +495,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   const leadScaleKind = src.lead.lead.scale;
   const modeSteps = MODES[mode].steps;
   const scale =
-    leadScaleKind === "blues" && (family === "minor" || mode === "mixolydian")
+    leadScaleKind === "blues" && (mode === "aeolian" || mode === "mixolydian")
       ? [0, 3, 5, 6, 7, 10]
       : leadScaleKind === "pentatonic" && !modeIsColored
         ? family === "major"
@@ -955,7 +962,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
           if (sp.glitch && b % 2 === 1 && drumRng.chance(R.glitch || 0.3)) {
             const startT = t0 + barBeats - 0.5;
             const reps = drumRng.pick([4, 6, 8]);
-            const what = drumRng.pick(["snare", "hatC", "kick"]);
+            const what = drumRng.pick(avoid.has("trapHats") ? ["snare", "kick"] : ["snare", "hatC", "kick"]);
             for (let j = 0; j < reps; j++) push({ stem: "drums", inst: what, kit: inst.kit, t: startT + (j * 0.5) / reps, dur: 0.06, midi: 0, vel: (0.35 + 0.5 * (j / reps)) * Math.max(0.5, dl) });
           }
         }

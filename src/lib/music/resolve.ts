@@ -214,6 +214,9 @@ export function applyAvoid(inst: Instruments, avoid: AvoidId[], vocal: StyleSpec
   if (a.has("orchestralSwells")) {
     if (out.harmonyInst === "strings" || out.harmonyInst === "brass") out.harmonyInst = "pad";
     if (out.harmonyRhythm === "swells") out.harmonyRhythm = "sustain";
+    if (!hasLeadLock && out.leadInst === "strings") out.leadInst = "flute";
+    if (!hasLeadLock && out.leadInst === "brass") out.leadInst = "fmLead";
+    if (out.responseInst === "strings" || out.responseInst === "brass") out.responseInst = "pluck";
   }
   if (a.has("808s")) {
     if (out.kit === "808") out.kit = "electronic";

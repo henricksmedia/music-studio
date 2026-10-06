@@ -198,6 +198,26 @@ export function diatonicRoman(mode: ModeId, degree: number): string {
   return n;
 }
 
+/** Re-spell a roman-numeral chord so its quality is diatonic to `mode` (keeps 7ths/9ths); roots outside the mode are kept. */
+export function conformToMode(sym: string, mode: ModeId): string {
+  const m = sym.match(/^([b#]?)([ivIV]+)(.*)$/);
+  if (!m) return sym;
+  const root = parseRoman(sym).root;
+  const idx = MODES[mode].steps.indexOf(root);
+  if (idx < 0) return sym;
+  const dia = diatonicRoman(mode, idx + 1);
+  if (/dim|\+/.test(dia)) return dia;
+  let ext = m[3].replace(/^(dim|\+|°|m(?!aj))/, "");
+  const minor = dia.replace(/^[b#]/, "")[0] === dia.replace(/^[b#]/, "")[0].toLowerCase();
+  // diatonic seventh: major 7th → "maj7", minor 7th → "7"
+  const st = MODES[mode].steps;
+  const sev = (st[(idx + 6) % 7] - root + 12) % 12;
+  const ext7 = ext.match(/^(maj)?(7|9)(.*)$/);
+  if (ext7) ext = (sev === 11 && !minor ? "maj" : "") + ext7[2] + ext7[3];
+  if (minor && ext.startsWith("maj")) ext = ext.slice(3);
+  return dia + ext;
+}
+
 export type ChordColorId = "auto" | "plain" | "sus" | "sevenths" | "rich" | "power" | "diminished" | "augmented";
 
 /** Re-color a roman-numeral chord. `pos`/`len` let colors like diminished/augmented target the turnaround chord. */
