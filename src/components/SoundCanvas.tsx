@@ -16,7 +16,7 @@ import { CardRows, OptionSheet, PromptModal, chipCls } from "./ui";
 import { identityCard, breakdownCard, stylePrompt, timelinePrompt, type CardItem, type ChipOption } from "@/lib/music/describe";
 import { goWild, mergeEdits, unlockEdits } from "@/lib/music/wild";
 import { parseStyle } from "@/lib/music/parseStyle";
-import { AVOIDS, AVOID_IDS } from "@/lib/music/spec";
+import { AVOIDS, AVOID_IDS, EDM } from "@/lib/music/spec";
 
 const DIMENSION_META: { key: keyof Dimensions; label: string; hint: string }[] = [
   { key: "space", label: "Space", hint: "Dry & close → huge room, echoes" },
@@ -192,7 +192,7 @@ export function SoundCanvas() {
     setWild(true);
     setVariation((v) => v + 1);
     setDimensions(suggestDimensions(resolvePlan(p, we), p, DEFAULT_DIMENSIONS));
-    setStatus(`Go wild: ${GENRES[baseId].label} × ${edm.replace(/([A-Z])/g, " $1").toLowerCase()} — tap any line to change or lock it.`);
+    setStatus(`Go wild: ${GENRES[baseId].label} × ${EDM[edm].label} — tap any line to change or lock it.`);
   };
 
   const pickOption = (o: ChipOption, kind: "identity" | "breakdown") => {
@@ -233,7 +233,7 @@ export function SoundCanvas() {
   };
 
   const idCard = useMemo(() => (song && plan ? identityCard(song, plan, edits) : []), [song, plan, edits]);
-  const bdCard = useMemo(() => (song && plan && wild ? breakdownCard(song, plan, locks) : []), [song, plan, edits, locks, wild]);
+  const bdCard = useMemo(() => (song && plan && wild ? breakdownCard(song, plan, locks) : []), [song, plan, locks, wild]);
 
   const exportAudio = async (withStems: boolean) => {
     if (!song) return;

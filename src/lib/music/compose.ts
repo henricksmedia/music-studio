@@ -302,9 +302,12 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   let bpc: number;
   const blues12 = primary.form === "blues" && !named;
   if (named) {
-    verseProg = named.roman;
-    chorusProg = named.roman;
-    bridgeProg = [...named.roman.slice(2), ...named.roman.slice(0, 2)];
+    // a named progression keeps its degrees but takes chord qualities from the song's mode when it is not native to it
+    const native = named.mode ?? (named.family === "major" ? "ionian" : "aeolian");
+    const roman = native === mode ? named.roman : named.roman.map((c) => conformToMode(c, mode));
+    verseProg = roman;
+    chorusProg = roman;
+    bridgeProg = [...roman.slice(2), ...roman.slice(0, 2)];
     bpc = bpm >= 118 && form === "edm" ? 2 : 1;
   } else {
     const progs = primary.progressions[family].length ? primary.progressions[family] : primary.progressions.minor;
