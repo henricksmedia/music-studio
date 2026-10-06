@@ -294,7 +294,7 @@ export const EDM: Record<EdmId, EdmProfile> = {
   darksynth: { label: "Darksynth", genre: "synthwave", bpm: [100, 118], bass: ["saw", "reese"], modes: ["aeolian", "phrygian"], gear: ["Sequential Prophet-5", "LinnDrum LM-2"] },
   halftime: { label: "Halftime Bass", genre: "dnb", bpm: [160, 174], tricks: ["halftime"], bass: ["reese"], gear: ["Elektron Analog Rytm", "Moog Sub 37"] },
   ukg: { label: "UK Garage (2-step)", genre: "house", bpm: [130, 136], feel: "swing", swing: 0.6, tricks: ["brokenTime", "syncopation"], bass: ["sub", "fm"], harmony: ["organ", "epiano"], gear: ["Akai MPC3000", "Korg Triton"] },
-  psybient: { label: "Psybient", genre: "ambient", bpm: [90, 105], tricks: ["polyrhythm", "layering"], reverb: "shimmer", gear: ["Roland Space Echo RE-201", "Moog Matriarch"] },
+  psybient: { label: "Psybient", genre: "ambient", bpm: [90, 105], tricks: ["polyrhythm", "layering"], kit: "electronic", bass: ["sub", "fm"], harmony: ["pad", "pluckArp"], reverb: "shimmer", gear: ["Roland Space Echo RE-201", "Moog Matriarch"] },
   futureBass: { label: "Future Bass", genre: "trap", bpm: [140, 160], harmony: ["supersaw"], pump: true, gear: ["Roland JP-8000", "Roland TR-808"] },
   electro: { label: "Electro", genre: "techno", bpm: [125, 132], kit: "808", bass: ["square"], gear: ["Roland TR-808", "Korg MS-20"] },
   cyberTrance: { label: "Cyber-Trance", genre: "trance", bpm: [136, 142], harmony: ["supersaw", "pluckArp"], pump: true, gear: ["Roland JP-8000", "Clavia Nord Lead 2"] },

@@ -480,7 +480,8 @@ export function resolveSpec(plan: Plan, src: Sources, inst: Instruments, rng: Rn
   else baseSub = rng.pick(SUBSTYLES[g]);
   let substyle = ov.substyle ?? baseSub;
   if (!ov.substyle) {
-    if (edm) substyle = `${baseSub} × ${edm.label}`;
+    if (edm && !wild) substyle = `${plan.moods.includes("dark") && !/dark/i.test(edm.label) ? "Dark " : ""}${edm.label}`;
+    else if (edm) substyle = `${baseSub} × ${edm.label}`;
     else if (plan.genres[1]) substyle = `${baseSub} × ${GENRES[plan.genres[1].id].label}`;
   }
 

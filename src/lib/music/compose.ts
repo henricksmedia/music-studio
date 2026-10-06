@@ -1,26 +1,17 @@
 /**
  * Composer: Plan + dimensions + variation → a fully arranged Song (pure data, no audio).
- * Deterministic: same inputs → same song. Used by realtime playback and offline export alike.
+ * Song = an IDENTITY (style spec, true throughout) + a TIMELINE (sections, each with
+ * instruments / rhythm / production changes / role). Deterministic for the same inputs.
  */
-import {
-  GENRES,
-  type GenreId,
-  type GenreProfile,
-  type DrumKit,
-  type BassTimbre,
-  type BassStyle,
-  type HarmonyInst,
-  type HarmonyRhythm,
-  type LeadInst,
-  type MelodyStyle,
-  type TextureId,
-  type DrumPattern,
-  type Form,
-} from "./genres";
-import { MODES, parseRoman, voiceChord, snapToSet, chordPitchClasses, type Chord, type ModeId } from "./theory";
-import { makeRng, type Rng } from "./rng";
+import { KIT_LABELS, BASS_LABELS, HARMONY_LABELS, LEAD_LABELS, type GenreId, type DrumKit, type BassTimbre, type BassStyle, type HarmonyInst, type HarmonyRhythm, type LeadInst, type MelodyStyle, type TextureId, type DrumPattern, type Form } from "./genres";
+import { MODES, MODE_INFO, parseRoman, voiceChord, colorChord, type Chord, type ModeId } from "./theory";
+import { makeRng } from "./rng";
 import type { Plan } from "./parse";
-import type { Dimensions } from "../types";
+import { PROGRESSIONS, POLYMETER_CYCLES, type StyleSpec, type TrickId } from "./spec";
+import { pickSources, pickInstruments, applyAvoid, resolveSpec, pickGear, type ComposeDims } from "./resolve";
+import { barInfo, flavorOf, generatePattern, BROKEN_44, applyGroupingToKick, claveHits, evenHits, swingBeat, type BarInfo } from "./groove";
+import { bassBar, harmonyBar, harmonyCenter, type BassMode, type Figure, type HarmonyOpts } from "./parts";
+import { makeMelodyKit, type PhraseBar, type SectionKind } from "./melody";
 
 export type StemId = "drums" | "bass" | "harmony" | "lead" | "texture";
 export const STEM_IDS: StemId[] = ["drums", "bass", "harmony", "lead", "texture"];
@@ -28,19 +19,31 @@ export const STEM_IDS: StemId[] = ["drums", "bass", "harmony", "lead", "texture"
 export type NoteEvent = {
   stem: StemId;
   inst: string;
-  t: number; // beats from song start
-  dur: number; // beats
+  t: number;
+  dur: number;
   midi: number;
-  vel: number; // 0..1
+  vel: number;
   kit?: DrumKit;
-  glide?: number; // semitones to bend toward by note end
-  variant?: number; // instrument-specific (strum direction, muted, vowel...)
-  notes?: number[]; // chord voicings (strums)
+  glide?: number;
+  variant?: number;
+  notes?: number[];
 };
 
-export type SectionType = "intro" | "verse" | "build" | "chorus" | "drop" | "breakdown" | "bridge" | "solo" | "outro";
-
-export type Section = { type: SectionType; label: string; startBar: number; bars: number; intensity: number };
+export type SectionType = "intro" | "verse" | "build" | "chorus" | "drop" | "dropout" | "breakdown" | "bridge" | "solo" | "outro";
+export type SectionDesc = { instruments: string[]; rhythm: string; changes: string[]; role: string };
+export type Section = {
+  type: SectionType;
+  label: string;
+  startBar: number;
+  bars: number;
+  startBeat: number;
+  beats: number;
+  intensity: number;
+  part?: "A" | "B";
+  final?: boolean;
+  desc: SectionDesc;
+};
+export type AutoPoint = { beat: number; filter: number; res: number; width: number; sat: number; delay: number; drumFilter: number };
 
 export type Arrangement = {
   drumsFrom: GenreId;
@@ -53,6 +56,9 @@ export type Arrangement = {
   harmonyInst: HarmonyInst;
   harmonyRhythm: HarmonyRhythm;
   leadInst: LeadInst;
+  responseInst: LeadInst;
+  hookInst: LeadInst;
+  polyInst: string;
   melodyStyle: MelodyStyle;
   textures: TextureId[];
   form: Form;
@@ -65,890 +71,1219 @@ export type Song = {
   durationSec: number;
   sections: Section[];
   barChords: string[];
+  barStarts: number[];
+  barSteps: number[];
   events: NoteEvent[];
   keyRoot: number;
   mode: ModeId;
   arrangement: Arrangement;
   variation: number;
+  spec: StyleSpec;
+  automation: AutoPoint[];
+  meterLabel: string;
+  progressionLabel: string;
+  tonicTail: number;
 };
 
-type ComposeDims = Pick<Dimensions, "drumFeel" | "pulse" | "genrePull" | "vocalCharacter">;
-
-/* ---------------- helpers ---------------- */
-
-const SECTION_INTENSITY: Record<SectionType, number> = {
-  intro: 0.35,
-  verse: 0.6,
-  build: 0.7,
-  chorus: 0.95,
-  drop: 1,
-  breakdown: 0.3,
-  bridge: 0.55,
-  solo: 0.9,
-  outro: 0.35,
-};
-
+const SECTION_INTENSITY: Record<SectionType, number> = { intro: 0.35, verse: 0.6, build: 0.7, chorus: 0.95, drop: 1, dropout: 0.15, breakdown: 0.3, bridge: 0.45, solo: 0.9, outro: 0.35 };
 type LayerLevels = { drums: number; bass: number; harmony: number; lead: number; texture: number };
 const LAYERS: Record<SectionType, LayerLevels> = {
-  intro: { drums: 0.3, bass: 0, harmony: 0.8, lead: 0, texture: 1 },
+  intro: { drums: 0.6, bass: 0.7, harmony: 0.8, lead: 0.55, texture: 1 },
   verse: { drums: 0.75, bass: 0.85, harmony: 0.7, lead: 0.75, texture: 0.5 },
-  build: { drums: 0.8, bass: 0.6, harmony: 0.8, lead: 0.4, texture: 1 },
+  build: { drums: 0.8, bass: 0.7, harmony: 0.8, lead: 0.4, texture: 1 },
   chorus: { drums: 1, bass: 1, harmony: 1, lead: 1, texture: 0.7 },
   drop: { drums: 1, bass: 1, harmony: 1, lead: 1, texture: 0.7 },
-  breakdown: { drums: 0, bass: 0.45, harmony: 1, lead: 0.6, texture: 1 },
-  bridge: { drums: 0.55, bass: 0.75, harmony: 0.85, lead: 0.65, texture: 0.6 },
+  dropout: { drums: 0.5, bass: 0.8, harmony: 0.6, lead: 0.7, texture: 1 },
+  breakdown: { drums: 0.4, bass: 0.45, harmony: 1, lead: 0.6, texture: 1 },
+  bridge: { drums: 0.45, bass: 0.7, harmony: 0.75, lead: 0.65, texture: 0.8 },
   solo: { drums: 0.9, bass: 0.9, harmony: 0.75, lead: 1, texture: 0.5 },
-  outro: { drums: 0.35, bass: 0.5, harmony: 0.75, lead: 0.3, texture: 1 },
+  outro: { drums: 0.55, bass: 0.65, harmony: 0.75, lead: 0.5, texture: 1 },
 };
 
-const TEMPLATES: Record<Exclude<Form, "blues">, [SectionType, number, number][]> = {
-  // [type, bars, dropPriority (higher drops first, 0 = keep)]
-  edm: [["intro", 4, 0], ["build", 4, 3], ["drop", 8, 0], ["breakdown", 8, 2], ["build", 4, 4], ["drop", 8, 0], ["outro", 4, 1]],
-  song: [["intro", 4, 0], ["verse", 8, 0], ["chorus", 8, 0], ["verse", 8, 4], ["chorus", 8, 4], ["bridge", 4, 2], ["chorus", 8, 0], ["outro", 4, 1]],
-  ambient: [["intro", 4, 0], ["verse", 8, 0], ["chorus", 8, 4], ["breakdown", 8, 2], ["chorus", 8, 0], ["outro", 4, 1]],
-  cinematic: [["intro", 4, 0], ["verse", 8, 0], ["build", 4, 2], ["chorus", 8, 4], ["breakdown", 4, 4], ["chorus", 8, 0], ["outro", 4, 1]],
+type T = { type: SectionType; bars: number; min: number; pr: number; part?: "A" | "B"; final?: boolean; cold?: boolean };
+const sec = (type: SectionType, bars: number, min: number, pr: number, extra: Partial<T> = {}): T => ({ type, bars, min, pr, ...extra });
+const TEMPLATES: Record<Exclude<Form, "blues">, T[]> = {
+  song: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("build", 4, 2, 1), sec("chorus", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 8, 4, 3, { part: "B" }), sec("bridge", 4, 2, 2), sec("chorus", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
+  edm: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("build", 4, 2, 1), sec("drop", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 8, 4, 3, { part: "B" }), sec("breakdown", 8, 2, 2), sec("build", 4, 2, 4), sec("drop", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
+  ambient: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("chorus", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 8, 4, 3, { part: "B" }), sec("bridge", 4, 2, 2), sec("chorus", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
+  cinematic: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("build", 4, 2, 1), sec("chorus", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 4, 4, 3, { part: "B" }), sec("bridge", 4, 2, 2), sec("chorus", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
 };
 
-const LABELS: Record<SectionType, string> = {
-  intro: "Intro",
-  verse: "Verse",
-  build: "Build",
-  chorus: "Chorus",
-  drop: "Drop",
-  breakdown: "Breakdown",
-  bridge: "Bridge",
-  solo: "Solo",
-  outro: "Outro",
+const TEXTURE_LABELS: Record<TextureId, string> = { vinyl: "vinyl crackle", rain: "rain bed", wind: "wind noise", riser: "noise riser", impact: "impact hits", shimmer: "shimmer bells", drone: "tonic drone", tape: "tape hiss" };
+const BASS_STYLE_PLAIN: Record<string, string> = {
+  root8: "driving 8th-note roots",
+  rootFifth: "root–fifth bounce",
+  offbeat: "off-beat bass",
+  rolling: "rolling 16th bass",
+  walking: "walking quarter notes",
+  slide808: "808 slides following the kick",
+  sustain: "long held bass notes",
+  syncopated: "syncopated bass pushes",
+  pulse16: "pulsing bass",
+  riff: "riffing bass",
+  sparse: "sparse bass hits",
+  ostinato: "fixed bass ostinato",
+  isorhythm: "isorhythmic bass loop (rhythm and notes cycle at different lengths)",
+  cycle12: "3-beat bass cell looping over the bar",
+  hook: "the hook bassline",
+  tail: "one long bass tail",
+  stop: "stop-time bass hits",
 };
-
-function swingBeat(step: number, swing: number, grid: 8 | 16): number {
-  const beat = Math.floor(step / 4);
-  const pos = ((step % 4) + 4) % 4;
-  if (grid === 16) return step * 0.25 + (step % 2 === 1 ? swing / 12 : 0);
-  const map = [0, 0.25 + swing / 12, 0.5 + swing / 6, 0.75 + swing / 12];
-  return beat + map[pos];
-}
-
-const ORGANIC_SUB: Partial<Record<HarmonyInst, HarmonyInst>> = { supersaw: "strings", pad: "organ", pluckArp: "cleanGuitar", epiano: "piano" };
-const ELECTRO_SUB: Partial<Record<HarmonyInst, HarmonyInst>> = { strumGuitar: "pluckArp", cleanGuitar: "pluckArp", piano: "epiano", organ: "pad", strings: "pad", distGuitar: "supersaw" };
-const ORGANIC_LEAD: Partial<Record<LeadInst, LeadInst>> = { sawLead: "guitar", squareLead: "harmonica", acidLead: "distGuitar", fmLead: "flute", pluck: "guitar", epiano: "piano" };
-const ELECTRO_LEAD: Partial<Record<LeadInst, LeadInst>> = { banjo: "pluck", guitar: "sawLead", harmonica: "squareLead", flute: "fmLead", whistle: "bell", piano: "epiano", strings: "sawLead", brass: "sawLead" };
-const ORGANIC_BASS: Partial<Record<BassTimbre, BassTimbre>> = { saw: "pluck", reese: "upright", acid: "pluck", fm: "upright", "808": "upright", square: "pluck", sub: "upright" };
-const ELECTRO_BASS: Partial<Record<BassTimbre, BassTimbre>> = { upright: "sub", pluck: "saw" };
-const ORGANIC_KIT: Partial<Record<DrumKit, DrumKit>> = { electronic: "acoustic", "808": "acoustic", gated: "acoustic" };
-const ELECTRO_KIT: Partial<Record<DrumKit, DrumKit>> = { acoustic: "electronic", brush: "electronic", lofi: "808" };
-
-const DEFAULT_RHYTHM: Record<HarmonyInst, HarmonyRhythm> = {
-  pad: "sustain",
-  supersaw: "pulse8",
-  piano: "sustain",
-  epiano: "comp",
-  organ: "sustain",
-  strumGuitar: "strum",
-  cleanGuitar: "pick",
-  distGuitar: "power",
-  pluckArp: "arp",
-  strings: "swells",
-  brass: "swells",
-  choir: "swells",
+const HARM_PLAIN: Record<string, string> = {
+  sustain: "held chords",
+  swells: "swelling chords",
+  stabs: "off-beat chord stabs",
+  strum: "strummed chords",
+  pick: "picked arpeggios",
+  power: "power-chord 8ths",
+  pulse8: "pulsing 8th chords",
+  comp: "comping",
+  arp: "16th arpeggio",
+  ostinato: "fixed arpeggio ostinato",
+  hemiola: "chords accent every 3 eighths (hemiola)",
+  cross: "3 chords per bar against the 4 (cross-rhythm)",
+  hookFigure: "the hook chord figure",
+  stop: "stop-time stabs",
+  gate: "gated, chopped chords",
+  reduced: "root + fifth only",
 };
-
-const LEAD_CENTER: Record<LeadInst, number> = {
-  sawLead: 72,
-  squareLead: 72,
-  acidLead: 52,
-  pluck: 74,
-  banjo: 74,
-  guitar: 66,
-  distGuitar: 66,
-  bell: 81,
-  flute: 77,
-  whistle: 81,
-  voice: 67,
-  piano: 72,
-  epiano: 70,
-  strings: 72,
-  brass: 65,
-  harmonica: 69,
-  fmLead: 72,
-};
-
-/* ---------------- main ---------------- */
 
 export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   const rng = makeRng(plan.seed ^ Math.imul(variation + 1, 0x9e3779b1));
-  const primary = GENRES[plan.genres[0].id];
+  const src = pickSources(plan, rng.fork("sources"));
+  let inst = pickInstruments(plan, src, dims, rng.fork("inst"));
+  const spec = resolveSpec(plan, src, inst, rng.fork("spec"));
+  inst = applyAvoid(inst, spec.production.avoid, spec.production.vocal, !!plan.instruments.lead);
+  if (spec.harmony.drone && !inst.textures.includes("drone")) inst.textures.push("drone");
+  spec.production.gear = pickGear(inst, spec, rng.fork("gear"));
+  const R = spec.rhythm;
+  const H = spec.harmony;
+  const P = spec.production;
+  const tricks = new Set(R.tricks);
+  const has = (t: TrickId) => tricks.has(t);
+  const avoid = new Set(P.avoid);
+  const dev = new Set(P.development);
+  const primary = src.primary;
   const keyRoot = plan.root;
   const mode = plan.mode;
   const family = MODES[mode].family;
   const bpm = plan.bpm;
   const beatSec = 60 / bpm;
-  const barSec = beatSec * 4;
-
-  /* --- who provides what (genre blending) --- */
-  const pickSource = (role: "drums" | "bass" | "harmony" | "lead", r: Rng): GenreProfile => {
-    const forced = plan.roles[role];
-    if (forced) return GENRES[forced];
-    return GENRES[r.weighted(plan.genres.map((g, i) => [g.id, Math.pow(g.weight, 1.4) * (i === 0 ? 1.6 : 1)] as const))];
+  const swingGrid: 8 | 16 = R.feel === "shuffle" ? 8 : src.drums.swingGrid;
+  const sb = (s: number) => swingBeat(s, R.swing, swingGrid);
+  const cycle = R.cycle;
+  const infoCache = new Map<number, BarInfo>();
+  const infoFor = (steps: number) => {
+    if (!infoCache.has(steps)) infoCache.set(steps, barInfo(steps, R.meter === "mixed" ? null : R.grouping));
+    return infoCache.get(steps)!;
   };
-  const srcRng = rng.fork("sources");
-  let drumsSrc = pickSource("drums", srcRng);
-  let bassSrc = plan.roles.bass ? GENRES[plan.roles.bass] : plan.roles.drums ? drumsSrc : pickSource("bass", srcRng);
-  let harmonySrc = pickSource("harmony", srcRng);
-  let leadSrc = pickSource("lead", srcRng);
-  // make sure a meaningful secondary genre is audible somewhere
-  const second = plan.genres[1];
-  if (second && second.weight >= 0.2) {
-    const used = [drumsSrc, bassSrc, harmonySrc, leadSrc].map((g) => g.id);
-    if (!used.includes(second.id)) {
-      const slot = srcRng.pick(["drums", "lead", "harmony"] as const);
-      const g = GENRES[second.id];
-      if (slot === "drums") {
-        drumsSrc = g;
-        bassSrc = g;
-      } else if (slot === "lead") leadSrc = g;
-      else harmonySrc = g;
-    }
-  }
-  if (!plan.roles.harmony && harmonySrc.id !== primary.id && rng.chance(0.5)) harmonySrc = primary;
+  const noDrums = avoid.has("drums");
+  const tup = has("septuplets") ? 7 : has("quintuplets") ? 5 : has("triplets") ? 3 : 0;
+  const electronicKit = ["electronic", "808", "gated"].includes(inst.kit);
+  const organicKit = !electronicKit && inst.kit !== "cinematic";
 
-  const gp = dims.genrePull;
-  const organic = gp < 20;
-  const electro = gp > 85;
-
-  let kit: DrumKit = drumsSrc.drums.kit;
-  if (organic) kit = ORGANIC_KIT[kit] ?? kit;
-  if (electro) kit = ELECTRO_KIT[kit] ?? kit;
-  if (plan.instruments.kit) kit = plan.instruments.kit;
-
-  const instRng = rng.fork("inst");
-  let bassTimbre = instRng.weighted(bassSrc.bass.timbres);
-  if (organic) bassTimbre = ORGANIC_BASS[bassTimbre] ?? bassTimbre;
-  if (electro) bassTimbre = ELECTRO_BASS[bassTimbre] ?? bassTimbre;
-  if (plan.instruments.bass) bassTimbre = plan.instruments.bass;
-  let bassStyle = instRng.weighted(bassSrc.bass.styles);
-  if (dims.pulse > 72) bassStyle = ({ offbeat: "rolling", root8: "pulse16", sparse: "syncopated", sustain: "root8", rootFifth: "root8" } as Partial<Record<BassStyle, BassStyle>>)[bassStyle] ?? bassStyle;
-  if (dims.pulse < 28) bassStyle = ({ rolling: "offbeat", pulse16: "root8", root8: "rootFifth", syncopated: "sparse", walking: "rootFifth" } as Partial<Record<BassStyle, BassStyle>>)[bassStyle] ?? bassStyle;
-  if (bassTimbre === "808") bassStyle = "slide808";
-
-  let harmonyInst = instRng.weighted(harmonySrc.harmony.insts);
-  if (organic) harmonyInst = ORGANIC_SUB[harmonyInst] ?? harmonyInst;
-  if (electro) harmonyInst = ELECTRO_SUB[harmonyInst] ?? harmonyInst;
-  if (plan.instruments.harmony) harmonyInst = plan.instruments.harmony;
-  const harmonyRhythm: HarmonyRhythm =
-    (harmonySrc.harmony.rhythms[harmonyInst] as HarmonyRhythm | undefined) ?? DEFAULT_RHYTHM[harmonyInst];
-
-  let leadInst = instRng.weighted(leadSrc.lead.insts);
-  if (organic) leadInst = ORGANIC_LEAD[leadInst] ?? leadInst;
-  if (electro) leadInst = ELECTRO_LEAD[leadInst] ?? leadInst;
-  if (!plan.instruments.lead) {
-    if (dims.vocalCharacter > 75) leadInst = "voice";
-    else if (dims.vocalCharacter < 20) leadInst = gp > 60 ? "whistle" : "flute";
-  }
-  if (plan.instruments.lead) leadInst = plan.instruments.lead;
-  const melodyStyle = leadSrc.lead.style;
-
-  const swing = drumsSrc.swing;
-  const swingGrid = drumsSrc.swingGrid;
-  const sb = (step: number) => swingBeat(step, swing, swingGrid);
-
-  const textures = Array.from(new Set([...primary.textures, ...(plan.genres[1] ? GENRES[plan.genres[1].id].textures.slice(0, 1) : []), ...plan.textures]));
-
-  /* --- form --- */
+  /* --- timeline --- */
   const form = primary.form;
   const formRng = rng.fork("form");
-  const targetSec = formRng.range(62, 84);
-  let sections: Section[] = [];
+  const target = formRng.range(64, 86);
+  const secBeats = (bars: number) => {
+    let s = 0;
+    for (let b = 0; b < bars; b++) s += cycle[b % cycle.length] * 0.25;
+    return s;
+  };
+  let tpl: T[];
   if (form === "blues") {
-    // always at least a verse chorus + a solo chorus; slow blues gets a shorter intro so it stays near 90s
-    const n = Math.max(2, Math.min(3, Math.round((targetSec - 6 * barSec) / (12 * barSec))));
-    const list: [SectionType, number][] = [["intro", 24 * barSec > 70 ? 2 : 4]];
-    for (let i = 0; i < n; i++) list.push([i % 2 === 1 ? "solo" : "verse", 12]);
-    list.push(["outro", 2]);
-    let bar = 0;
-    sections = list.map(([type, bars]) => {
-      const s = { type, label: LABELS[type], startBar: bar, bars, intensity: SECTION_INTENSITY[type] };
-      bar += bars;
-      return s;
-    });
+    const barS = secBeats(1) * beatSec;
+    const n = Math.max(2, Math.min(3, Math.round((target - 6 * barS) / (12 * barS))));
+    tpl = [sec("intro", 24 * barS > 70 ? 2 : 4, 2, 0), sec("verse", 12, 12, 0, { part: "A" }), sec("solo", 12, 12, 0, { part: "B" })];
+    if (n >= 3) tpl.push(sec("verse", 12, 12, 0, { final: true }));
+    tpl.push(sec("outro", 2, 2, 0));
   } else {
-    let tpl = TEMPLATES[form].map(([type, bars, pr]) => ({ type, bars, pr }));
-    const dur = () => tpl.reduce((s, x) => s + x.bars, 0) * barSec;
-    // 1) drop optional pairs (2nd verse+chorus) 2) shrink long sections 3) drop bridge/outro as last resort
-    const dropTier = (minPr: number) => {
-      while (dur() > targetSec + 8) {
-        const cands = tpl.filter((x) => x.pr >= minPr);
-        if (!cands.length) return;
-        const top = Math.max(...cands.map((x) => x.pr));
-        tpl = tpl.filter((x) => x.pr !== top);
+    tpl = TEMPLATES[form].map((x) => ({ ...x }));
+    if (P.form === "slowBurn") {
+      const firstHook = tpl.findIndex((x) => (x.type === "chorus" || x.type === "drop") && !x.final);
+      if (firstHook >= 0) {
+        tpl.splice(firstHook, tpl[firstHook + 1]?.type === "dropout" ? 2 : 1);
+        const b = tpl.findIndex((x) => x.type === "build");
+        if (b >= 0 && b < firstHook) tpl.splice(b, 1);
       }
-    };
-    dropTier(4);
-    while (dur() > targetSec + 8) {
-      const longest = tpl.reduce((a, b) => (b.bars > a.bars ? b : a));
-      if (longest.bars <= 4) break;
-      longest.bars -= 4;
+      tpl[0].bars = 8;
+      tpl[0].min = 4;
+      const fi = tpl.findIndex((x) => x.final);
+      if (fi > 0 && tpl[fi - 1].type !== "build") tpl.splice(fi, 0, sec("build", 4, 2, 0));
+    } else if (P.form === "hookFirst") {
+      tpl[0] = sec(form === "edm" ? "drop" : "chorus", 4, 2, 0, { cold: true });
     }
-    dropTier(1);
+    const dur = () => tpl.reduce((s, x) => s + secBeats(x.bars), 0) * beatSec;
+    const order = (x: T) =>
+      x.type === "verse" && x.part === "B" ? 0 : x.type === "breakdown" ? 1 : x.type === "verse" ? 2 : (x.type === "chorus" || x.type === "drop") && !x.final ? 3 : x.type === "bridge" ? 4 : x.type === "intro" ? 5 : x.type === "outro" ? 6 : x.type === "build" ? 7 : x.final ? 8 : 9;
     let guard = 0;
-    while (dur() < targetSec - 10 && guard++ < 12) {
-      const grow = tpl.filter((x) => ["chorus", "drop", "verse", "breakdown"].includes(x.type) && x.bars < 16);
-      if (!grow.length) break;
-      grow[guard % grow.length].bars += 4;
+    while (dur() > target + 5 && guard++ < 80) {
+      const c = tpl.filter((x) => x.bars - (x.type === "dropout" ? 1 : 2) >= x.min).sort((a, b) => order(a) - order(b))[0];
+      if (!c) break;
+      c.bars -= c.type === "dropout" ? 1 : 2;
     }
+    while (dur() > target + 5) {
+      const pr = Math.max(...tpl.map((x) => x.pr));
+      if (pr <= 0) break;
+      tpl = tpl.filter((x) => x.pr !== pr);
+    }
+    guard = 0;
+    while (dur() < target - 8 && guard++ < 16) {
+      const g = tpl.filter((x) => ["chorus", "drop", "verse", "breakdown"].includes(x.type) && x.bars < 16);
+      if (!g.length) break;
+      g[guard % g.length].bars += 2;
+    }
+  }
+
+  const labelFor = (x: T): string => {
+    const verseWord = form === "edm" ? "Groove" : form === "cinematic" ? "Theme" : "Verse";
+    switch (x.type) {
+      case "verse":
+        return x.final ? "Final Verse" : `${verseWord} ${x.part ?? "A"}`;
+      case "solo":
+        return "Verse B (solo)";
+      case "chorus": {
+        const base = form === "cinematic" ? "Climax" : form === "ambient" ? "Hook" : "Chorus";
+        return x.cold ? "Cold Open (Hook)" : x.final ? `Final ${base}` : base;
+      }
+      case "drop":
+        return x.cold ? "Cold Open (Drop)" : x.final ? "Final Drop" : "Drop";
+      default:
+        return ({ intro: "Intro", build: "Build", dropout: "Dropout", breakdown: "Breakdown", bridge: "Bridge", outro: "Outro" } as Record<string, string>)[x.type] ?? x.type;
+    }
+  };
+
+  const sections: Section[] = [];
+  const barSteps: number[] = [];
+  const barStarts: number[] = [];
+  {
+    let beat = 0;
     let bar = 0;
-    sections = tpl.map(({ type, bars }) => {
-      const s = { type, label: LABELS[type], startBar: bar, bars, intensity: SECTION_INTENSITY[type] };
-      bar += bars;
-      return s;
-    });
+    const seen: Record<string, number> = {};
+    for (const x of tpl) {
+      const startBar = bar;
+      const startBeat = beat;
+      for (let b = 0; b < x.bars; b++) {
+        const s = cycle[b % cycle.length];
+        barSteps.push(s);
+        barStarts.push(beat);
+        beat += s * 0.25;
+        bar++;
+      }
+      let label = labelFor(x);
+      seen[label] = (seen[label] ?? 0) + 1;
+      if (seen[label] > 1) label = `${label} ${seen[label]}`;
+      sections.push({
+        type: x.type,
+        label,
+        startBar,
+        bars: x.bars,
+        startBeat,
+        beats: beat - startBeat,
+        intensity: Math.min(1, SECTION_INTENSITY[x.type] + (x.final ? 0.05 : 0) + (x.part === "B" ? 0.05 : 0)),
+        part: x.part,
+        final: x.final,
+        desc: { instruments: [], rhythm: "", changes: [], role: "" },
+      });
+    }
+    barStarts.push(beat);
   }
-  // number repeated labels
-  const counts: Partial<Record<SectionType, number>> = {};
-  for (const s of sections) {
-    counts[s.type] = (counts[s.type] ?? 0) + 1;
-    const total = sections.filter((x) => x.type === s.type).length;
-    if (total > 1) s.label = `${LABELS[s.type]} ${counts[s.type]}`;
-  }
-  const totalBars = sections.reduce((s, x) => s + x.bars, 0);
+  const totalBars = barSteps.length;
+  const barBeatsOf = (bar: number) => barSteps[Math.max(0, Math.min(totalBars - 1, bar))] * 0.25;
 
   /* --- harmony plan --- */
   const progRng = rng.fork("prog");
-  const progs = primary.progressions[family].length ? primary.progressions[family] : primary.progressions.minor;
-  const verseProg = progRng.pick(progs);
-  const otherProgs = progs.filter((p) => p !== verseProg);
-  const chorusProg = otherProgs.length && progRng.chance(0.65) ? progRng.pick(otherProgs) : verseProg;
-  const bridgeProg = otherProgs.length > 1 ? otherProgs.find((p) => p !== chorusProg) ?? [...chorusProg.slice(1), chorusProg[0]] : [...chorusProg.slice(1), chorusProg[0]];
-  const bpc = primary.barsPerChord;
-
+  let named = H.progression !== "genre" ? PROGRESSIONS[H.progression] : null;
+  if (!named && mode === "locrian") named = PROGRESSIONS.locrianUnrest;
+  let verseProg: string[];
+  let chorusProg: string[];
+  let bridgeProg: string[];
+  let bpc: number;
+  const blues12 = form === "blues" && !named;
+  if (named) {
+    verseProg = named.roman;
+    chorusProg = named.roman;
+    bridgeProg = [...named.roman.slice(2), ...named.roman.slice(0, 2)];
+    bpc = bpm >= 118 && form === "edm" ? 2 : 1;
+  } else {
+    const progs = primary.progressions[family].length ? primary.progressions[family] : primary.progressions.minor;
+    verseProg = progRng.pick(progs);
+    const others = progs.filter((p) => p !== verseProg);
+    chorusProg = others.length && progRng.chance(0.65) ? progRng.pick(others) : verseProg;
+    bridgeProg = others.length > 1 ? others.find((p) => p !== chorusProg) ?? [...chorusProg.slice(1), chorusProg[0]] : [...chorusProg.slice(1), chorusProg[0]];
+    bpc = primary.barsPerChord;
+  }
+  const color = (prog: string[]) => prog.map((s, i) => colorChord(s, H.chordColor, i, prog.length));
+  const borrowedChord = family === "major" ? progRng.pick(["iv", "bVI", "bVII"]) : progRng.pick(["IV", "V", "bII"]);
+  const withBorrowed = (prog: string[]) => {
+    const p = [...prog];
+    p[p.length >= 3 ? 2 : p.length - 1] = borrowedChord;
+    return p;
+  };
+  const withChromatic = (prog: string[]) => {
+    const p = [...prog];
+    if (parseRoman(p[0]).root === 0) p[p.length - 1] = "bII7";
+    return p;
+  };
+  const progFor = (s: Section): string[] => {
+    if (blues12) {
+      if (s.type === "intro") return verseProg.slice(8, 12);
+      if (s.type === "outro") return [verseProg[0]];
+      return verseProg;
+    }
+    let p: string[];
+    switch (s.type) {
+      case "chorus":
+      case "drop":
+        p = color(chorusProg);
+        if (s.final && H.borrowed) p = withBorrowed(p);
+        if (s.final && H.chromatic) p = withChromatic(p);
+        return p;
+      case "bridge":
+      case "breakdown":
+        p = color(bridgeProg);
+        return H.borrowed ? withBorrowed(p) : p;
+      case "dropout":
+        return [color(chorusProg)[0]];
+      default:
+        return color(verseProg);
+    }
+  };
   const barChords: string[] = [];
   for (const s of sections) {
-    let prog = verseProg;
-    if (s.type === "chorus" || s.type === "drop" || s.type === "solo") prog = chorusProg;
-    if (s.type === "bridge" || s.type === "breakdown") prog = bridgeProg;
-    if (form === "blues") {
-      prog = verseProg;
-      if (s.type === "intro") prog = verseProg.slice(8, 12);
-      if (s.type === "outro") prog = [verseProg[0]];
-    }
-    const per = form === "blues" ? 1 : bpc;
+    const prog = progFor(s);
+    const per = blues12 ? 1 : bpc;
     for (let b = 0; b < s.bars; b++) barChords.push(prog[Math.floor(b / per) % prog.length]);
   }
-  const chordAt = (bar: number): Chord => parseRoman(barChords[Math.max(0, Math.min(barChords.length - 1, bar))]);
+  if (barChords.length) {
+    const tonic = parseRoman(verseProg[0]).root === 0 ? color(verseProg)[0] : family === "major" ? "I" : "i";
+    barChords[barChords.length - 1] = tonic;
+  }
+  const chordCache = new Map<string, Chord>();
+  const chordAt = (bar: number): Chord => {
+    const sym = barChords[Math.max(0, Math.min(barChords.length - 1, bar))];
+    if (!chordCache.has(sym)) chordCache.set(sym, parseRoman(sym));
+    return chordCache.get(sym)!;
+  };
+  const progressionLabel = named ? named.label : `${src.primary.label} style`;
 
+  /* --- events + humanize --- */
   const events: NoteEvent[] = [];
+  const humRng = rng.fork("human");
+  const jitterSec = R.humanize * (has("jitter") ? 0.045 : 0.018);
   const push = (e: NoteEvent) => {
-    if (e.vel > 0.01 && e.dur > 0) events.push(e);
+    if (e.vel <= 0.01 || e.dur <= 0) return;
+    if (e.stem !== "texture" && jitterSec > 0.001) {
+      e.t = Math.max(0, e.t + ((humRng() * 2 - 1) * jitterSec) / beatSec);
+      e.vel *= 1 - R.humanize * 0.18 * humRng();
+    }
+    events.push(e);
   };
 
-  /* --- drums --- */
+  /* --- drums setup --- */
   const drumRng = rng.fork("drums");
-  const pats = drumsSrc.drums.patterns;
+  const pats = src.drums.drums.patterns;
   const patA = pats[drumRng.int(0, pats.length - 1)];
   const patB = pats.length > 1 ? pats.find((p) => p !== patA) ?? patA : patA;
+  const flavor = flavorOf(patA, src.drums.halfTime);
   const df = dims.drumFeel;
-  const kitLevel = drumsSrc.drums.level;
-  const organicKit = ["acoustic", "brush", "lofi"].includes(kit);
-
-  const shapePattern = (p: DrumPattern): DrumPattern => {
+  const defaultGrouping = R.grouping.join() === "2,2,2,2";
+  const brokenIdx = drumRng.int(0, BROKEN_44.length - 1);
+  const patCache = new Map<string, DrumPattern>();
+  const shape = (p: DrumPattern, n: number): DrumPattern => {
     const out: DrumPattern = {};
+    const st = infoFor(n).starts;
     for (const [k, v] of Object.entries(p) as [keyof DrumPattern, string][]) {
-      let s = v;
+      if (!v) continue;
+      let s = v.slice(0, n).padEnd(n, ".");
       if (df < 30) s = s.replace(/g/g, ".").replace(/r/g, "x");
-      if (df < 15 && (k === "hat" || k === "shaker" || k === "ride")) s = s.split("").map((c, i) => (i % 4 === 0 ? c : ".")).join("");
-      if (df > 80 && k === "hat") s = s.split("").map((c) => (c === "." ? "g" : c)).join("");
+      if (df < 15 && (k === "hat" || k === "shaker" || k === "ride")) s = s.split("").map((c, i) => (st.includes(i) ? c : ".")).join("");
+      if (df > 80 && k === "hat") s = s.split("").map((c, i) => (c === "." && i % 2 === 1 ? "g" : c)).join("");
+      if (avoid.has("trapHats")) s = s.replace(/r/g, "x");
       out[k] = s;
     }
     if (df > 65) {
-      const sn = (out.snare ?? out.clap ?? "................").split("");
-      for (let i = 0; i < 16; i++) if (sn[i] === "." && i % 2 === 1 && drumRng.chance((df - 65) / 140)) sn[i] = "g";
-      if (out.snare) out.snare = sn.join("");
-      const kk = (out.kick ?? "................").split("");
-      if (kk[14] === "." && drumRng.chance((df - 65) / 80)) kk[14] = "g";
+      const key = out.snare ? "snare" : out.clap ? "clap" : null;
+      if (key) {
+        const sn = out[key]!.split("");
+        for (let i = 0; i < n; i++) if (sn[i] === "." && i % 2 === 1 && drumRng.chance((df - 65) / 140)) sn[i] = "g";
+        out[key] = sn.join("");
+      }
+      const kk = (out.kick ?? ".".repeat(n)).split("");
+      if (kk[n - 2] === "." && drumRng.chance((df - 65) / 80)) kk[n - 2] = "g";
       out.kick = kk.join("");
     }
     return out;
   };
-  const shapedA = shapePattern(patA);
-  const shapedB = shapePattern(patB);
+  const pattern = (kind: "A" | "B" | "broken", n: number): DrumPattern => {
+    const key = kind + n;
+    if (patCache.has(key)) return patCache.get(key)!;
+    const info = infoFor(n);
+    let p: DrumPattern;
+    if (n === 16 && (defaultGrouping || R.meter === "mixed")) p = kind === "broken" ? BROKEN_44[brokenIdx] : kind === "A" ? patA : patB;
+    else if (n === 16) p = kind === "broken" ? BROKEN_44[brokenIdx] : applyGroupingToKick(kind === "A" ? patA : patB, info, false);
+    else
+      p = generatePattern(info, kind === "B" ? { ...flavor, hatStep: flavor.hatStep === 2 ? 1 : flavor.hatStep, openOff: !flavor.openOff } : flavor, {
+        broken: kind === "broken",
+        halftime: has("halftime") || flavor.halftime,
+        backbeat: has("backbeat"),
+      });
+    if (n === 16 && kind !== "broken") {
+      const sk: "snare" | "clap" = p.snare ? "snare" : "clap";
+      if (has("halftime")) {
+        const s = (p[sk] ?? ".".repeat(16)).split("").map((c, i) => (i === 8 ? "X" : i === 4 || i === 12 ? "." : c));
+        p = { ...p, [sk]: s.join("") };
+        if (sk === "snare" && p.clap) p = { ...p, clap: p.clap.split("").map((c, i) => (i === 4 || i === 12 ? "." : c)).join("") };
+      } else if (has("backbeat")) {
+        const s = (p[sk] ?? ".".repeat(16)).split("").map((c, i) => (i === 4 || i === 12 ? "X" : c));
+        p = { ...p, [sk]: s.join("") };
+      }
+    }
+    const out = shape(p, n);
+    patCache.set(key, out);
+    return out;
+  };
   const VEL: Record<string, number> = { X: 1, x: 0.8, g: 0.35, r: 0.6 };
+  const hitInst: Record<keyof DrumPattern, string> = { kick: "kick", snare: "snare", clap: "clap", hat: "hatC", open: "hatO", ride: "ride", shaker: "shaker", rim: "rim", perc: "perc", tom: "tom" };
+  const kitLevel = src.drums.drums.level;
+  const breakHits = drumRng.pick([[0, 3, 6], [0, 6, 10], [0, 3, 10], [0, 6, 12]]);
 
-  const hitInst: Record<keyof DrumPattern, string> = {
-    kick: "kick",
-    snare: "snare",
-    clap: "clap",
-    hat: "hatC",
-    open: "hatO",
-    ride: "ride",
-    shaker: "shaker",
-    rim: "rim",
-    perc: "perc",
-    tom: "tom",
+  /* --- figures (ostinato / hooks / iso) --- */
+  const figRng = rng.fork("figures");
+  const F = (a: [number, number, number][]): Figure => a.map(([step, deg, len]) => ({ step, deg, len }));
+  const bassHookFig: Figure = figRng.pick([
+    F([[0, 0, 3], [3, 0, 2], [6, 12, 2], [8, 10, 2], [11, 7, 2], [14, 0, 2]]),
+    F([[0, 0, 2], [2, 0, 1], [4, 7, 2], [7, 10, 3], [10, 0, 2], [12, 3, 2], [14, 5, 2]]),
+    F([[0, 0, 4], [6, 0, 2], [8, 12, 1], [10, 7, 2], [13, 5, 3]]),
+  ]);
+  const ostFig: Figure = figRng.pick([[0, 2, 1, 3, 0, 2, 1, 4], [0, 1, 2, 4, 2, 1, 0, 3], [0, 3, 2, 3, 1, 3, 2, 3]]).map((d, i) => ({ step: i * 2, deg: d, len: 2 }));
+  const chordHookFig: Figure = figRng.pick([F([[0, 0, 3], [3, 0, 3], [6, 0, 4], [10, 0, 2], [12, 0, 4]]), F([[0, 0, 2], [3, 0, 1], [6, 0, 2], [11, 0, 5]])]);
+  const stabFig: Figure = figRng.pick([[2, 6, 7, 11, 14], [3, 6, 10, 13]]).map((s) => ({ step: s, deg: 0, len: 1 }));
+  const rhythmHook = figRng.pick([[0, 3, 6, 10, 12, 14], [0, 2, 5, 8, 11, 13]]);
+  const talea = figRng.pick([[3, 3, 4, 2, 4], [3, 3, 2], [2, 3, 3, 2, 2, 4], [4, 3, 3, 2]]);
+  const iso = { talea, color: figRng.pick([[0, 7, 10], [0, 12, 7, 3], [0, 5, 7, 10, 12]].filter((c) => c.length !== talea.length)) };
+  const polyC = has("layering") ? 5 : R.polymeterCycle || POLYMETER_CYCLES[0];
+  const polyGroups = ({ 7: [2, 2, 3], 5: [3, 2], 3: [3], 9: [2, 2, 2, 3] } as Record<number, number[]>)[polyC] ?? [2, 2, 3];
+  const polyAccents = new Set<number>();
+  {
+    let a = 0;
+    for (const g of polyGroups) {
+      polyAccents.add(a);
+      a += g;
+    }
+  }
+  const polySeq = Array.from({ length: polyC }, (_, i) => [0, 2, 1, 3, 2, 4, 1, 3, 0][i % 9]);
+  const polyInstName: string = ["pluckArp", "epiano", "cleanGuitar", "organ"].includes(inst.harmonyInst) ? inst.harmonyInst : organicKit ? "cleanGuitar" : "pluckArp";
+  const polyLabel = polyInstName === "cleanGuitar" ? "clean guitar" : polyInstName === "pluckArp" ? "pluck synth" : polyInstName === "epiano" ? "electric piano" : polyInstName;
+  const hookInst: LeadInst = P.hook === "texture" ? (P.vocal === "synthVoice" ? "voice" : "bell") : inst.leadInst;
+  const arpDir = rng.fork("arp").int(0, 2);
+
+  /* --- melody --- */
+  const sigPc = MODE_INFO[mode].signature;
+  const modeIsColored = !["ionian", "aeolian"].includes(mode);
+  const leadScaleKind = src.lead.lead.scale;
+  const modeSteps = MODES[mode].steps;
+  const scale =
+    leadScaleKind === "blues" && (family === "minor" || mode === "mixolydian")
+      ? [0, 3, 5, 6, 7, 10]
+      : leadScaleKind === "pentatonic" && !modeIsColored
+        ? family === "major"
+          ? [0, 2, 4, 7, 9]
+          : [0, 3, 5, 7, 10]
+        : modeSteps;
+  const LEAD_CENTER: Record<LeadInst, number> = { sawLead: 72, squareLead: 72, acidLead: 52, pluck: 74, banjo: 74, guitar: 66, distGuitar: 66, bell: 81, flute: 77, whistle: 81, voice: 67, piano: 72, epiano: 70, strings: 72, brass: 65, harmonica: 69, fmLead: 72 };
+  const leadCenter = LEAD_CENTER[inst.leadInst] - (inst.melodyStyle === "riff" && inst.leadInst !== "acidLead" ? 7 : 0);
+  const mel = makeMelodyKit(rng.fork("melody"), {
+    scale,
+    style: inst.melodyStyle,
+    signature: modeIsColored && sigPc !== null && scale.includes(sigPc) ? sigPc : null,
+    chromatic: H.chromatic,
+    dotted: has("dotted"),
+    syncopation: R.syncopation,
+    bluesBends: leadScaleKind === "blues",
+  });
+
+  /* --- section plans --- */
+  type HarmMode = HarmonyRhythm | "ostinato" | "hemiola" | "cross" | "hookFigure" | "gate" | "none" | "reduced" | "main";
+  type SecPlan = {
+    drums: "full" | "thin" | "none" | "noKick" | "outro" | "build";
+    pat: "A" | "B" | "broken";
+    extraPerc: boolean;
+    bigPerc: boolean;
+    syncKick: boolean;
+    deconstruct: boolean;
+    fills: boolean;
+    dropLastBar: boolean;
+    thinFirstHalf: boolean;
+    bass: BassMode | "none" | "main";
+    bassShort: boolean;
+    harm: HarmMode;
+    harmLate: boolean;
+    lead: SectionKind | "none";
+    leadInst: LeadInst;
+    leadShift: number;
+    double: boolean;
+    response: boolean;
+    clave: boolean;
+    poly: boolean;
+    polymeter: boolean;
+    rhythmHook: boolean;
+    breakLast: boolean;
+    stopBars: number;
+    displace: number;
+    glitch: boolean;
+    drone: number;
+    bed: boolean;
+    pedal: boolean;
+    auto: { filter: [number, number]; res: [number, number]; width: [number, number]; sat: [number, number]; delay: number; drumFilter: [number, number] };
+    changes: string[];
+    role: string;
+  };
+  const hasFilter = dev.has("filter");
+  const widthBase = P.mix.pads === "wide" ? 1 : 0.45;
+  const narrowV = P.mix.contrast ? 0.3 : 0.7;
+  const altBass: Partial<Record<BassMode, BassMode>> = { root8: "syncopated", offbeat: "rolling", rolling: "offbeat", walking: "rootFifth", rootFifth: "walking", sustain: "sparse", syncopated: "root8", pulse16: "syncopated", riff: "syncopated", sparse: "rootFifth", slide808: "syncopated" };
+  const mainBass: BassMode = P.hook === "bassline" ? "hook" : has("ostinato") && P.hook !== "chords" ? "ostinato" : inst.bassStyle;
+  const groovesBass = (b: BassMode): BassMode => (b === "hook" ? b : has("isorhythm") ? "isorhythm" : has("layering") ? "cycle12" : b);
+  const mainHarm: HarmMode = has("ostinato") && inst.harmonyRhythm === "arp" ? "ostinato" : "main";
+  const hookHarm: HarmMode = P.hook === "chords" || P.hook === "stab" ? "hookFigure" : mainHarm;
+  const counterLead = ["bassline", "chords", "stab", "rhythm"].includes(P.hook);
+  const satBase = 0.1;
+  const fHz = (x: number) => Math.round(180 * Math.pow(110, x));
+  const pct = (x: number) => `${Math.round(x * 100)}%`;
+  const otherInst = (li: LeadInst) => (li === inst.responseInst ? inst.leadInst : inst.responseInst);
+
+  const planSection = (s: Section, si: number): SecPlan => {
+    const next = sections[si + 1];
+    const w0 = narrowV * widthBase;
+    const p: SecPlan = {
+      drums: "full",
+      pat: "A",
+      extraPerc: false,
+      bigPerc: false,
+      syncKick: false,
+      deconstruct: false,
+      fills: !!next,
+      dropLastBar: false,
+      thinFirstHalf: false,
+      bass: "main",
+      bassShort: false,
+      harm: "main",
+      harmLate: false,
+      lead: "verse",
+      leadInst: inst.leadInst,
+      leadShift: 0,
+      double: false,
+      response: has("callResponse"),
+      clave: has("clave"),
+      poly: false,
+      polymeter: has("polymeter") || has("layering"),
+      rhythmHook: false,
+      breakLast: false,
+      stopBars: 0,
+      displace: 0,
+      glitch: R.glitch > 0.2 || dev.has("edits"),
+      drone: H.drone ? 0.35 : 0,
+      bed: false,
+      pedal: false,
+      auto: { filter: [hasFilter ? 0.85 : 1, hasFilter ? 0.85 : 1], res: [0.7, 0.7], width: [w0, w0], sat: [satBase, satBase], delay: 1, drumFilter: [1, 1] },
+      changes: [],
+      role: "",
+    };
+    const C = p.changes;
+    switch (s.type) {
+      case "intro": {
+        p.role = "Sets the scene without revealing the hook.";
+        p.lead = "none";
+        p.fills = false;
+        p.clave = false;
+        p.polymeter = false;
+        p.glitch = false;
+        p.auto.width = [0.5 * widthBase, 0.6 * widthBase];
+        p.pedal = H.pedal;
+        switch (P.opening) {
+          case "filteredPads":
+            p.drums = "none";
+            p.bass = "none";
+            p.harm = "sustain";
+            p.auto.filter = [0.25, hasFilter ? 0.55 : 0.4];
+            C.push(`chords alone behind a low-pass at ${fHz(0.25)} Hz, opening to ${fHz(p.auto.filter[1])} Hz`);
+            break;
+          case "soloBass":
+            p.drums = "none";
+            p.harm = "none";
+            p.bass = mainBass === "hook" ? "hook" : inst.bassStyle;
+            C.push("bass alone, dry and centered; nothing else yet");
+            break;
+          case "distantDrone":
+            p.drums = "none";
+            p.bass = "none";
+            p.harm = "none";
+            p.drone = 0.8;
+            p.auto.filter = [0.35, 0.5];
+            p.auto.delay = 1.6;
+            C.push(`tonic drone low-passed at ${fHz(0.35)} Hz in long reverb; no drums or bass`);
+            break;
+          case "hookFragment":
+            p.drums = "none";
+            p.bass = "none";
+            p.harm = s.bars > 2 ? "sustain" : "none";
+            p.lead = "fragment";
+            p.auto.filter = [0.4, 0.6];
+            C.push("first notes of the hook, filtered and distant, over a held chord");
+            break;
+          case "drumsAlone":
+            p.drums = "full";
+            p.bass = "none";
+            p.harm = "none";
+            p.thinFirstHalf = true;
+            p.auto.drumFilter = [hasFilter ? 0.5 : 1, 1];
+            C.push(hasFilter ? `drums alone, drum low-pass opening from ${fHz(0.5)} Hz` : "drums alone: hats first, then kick and snare");
+            break;
+          default:
+            p.drums = "none";
+            p.bass = "none";
+            p.harm = "sustain";
+            p.bed = true;
+            p.auto.filter = [0.5, 0.65];
+            C.push("noise bed (crackle/tape) with one held chord on top");
+            break;
+        }
+        if (noDrums && P.opening === "drumsAlone") {
+          p.harm = "sustain";
+          C.push("(drums avoided: held chord instead)");
+        }
+        break;
+      }
+      case "verse": {
+        if (s.part === "B" || s.final) {
+          p.role = s.final ? "Last full verse: extra weight before the ending." : "Same song, new angle: groove, register and instrument shift.";
+          p.pat = has("brokenTime") ? "broken" : "B";
+          p.bass = groovesBass(altBass[inst.bassStyle] ?? "syncopated");
+          p.extraPerc = true;
+          p.leadShift = leadCenter > 64 ? -12 : 12;
+          p.leadInst = inst.responseInst;
+          p.displace = has("displacement") ? 0.5 : 0;
+          p.poly = has("polyrhythm");
+          const w = Math.min(1, (narrowV + 0.3) * widthBase);
+          p.auto.width = [w, w];
+          p.auto.filter = [hasFilter ? 0.92 : 1, hasFilter ? 0.92 : 1];
+          p.breakLast = has("breaks") && !blues12;
+          C.push(p.pat === "broken" ? "kick moves to a broken-time pattern" : "different kick placement (pattern B)");
+          C.push(`bass rhythm changes to ${BASS_STYLE_PLAIN[p.bass] ?? p.bass}`);
+          C.push("rim/shaker added on the off-16ths (higher percussion density)");
+          C.push(`motif moves ${p.leadShift > 0 ? "up" : "down"} an octave, played on ${LEAD_LABELS[p.leadInst]}`);
+          if (p.displace) C.push("chords and melody shifted an 8th late (metric displacement)");
+          C.push(`stereo width opens to ${pct(w)}`);
+        } else {
+          p.role = "Establishes the groove and the main idea.";
+          p.bass = groovesBass(mainBass === "hook" ? inst.bassStyle : mainBass);
+          p.pedal = H.pedal;
+          p.harm = mainHarm;
+          p.stopBars = blues12 && has("breaks") ? 4 : 0;
+          p.breakLast = has("breaks") && !blues12;
+          C.push(`narrow image (${pct(w0)} width)${hasFilter ? `, low-pass slightly closed at ${fHz(0.85)} Hz` : ""}`);
+          if (p.pedal) C.push("bass holds a tonic pedal under the changes");
+          if (p.stopBars) C.push("stop-time: the band hits beat 1 for 4 bars while the lead answers");
+        }
+        if (p.breakLast) C.push("last bar: syncopated band hits, then silence (break)");
+        if (p.polymeter) C.push(`${polyC}-step ${polyLabel} line against the bar, realigning every 4 bars (polymeter)`);
+        break;
+      }
+      case "solo":
+        p.role = "Same song, new angle: an instrumental solo chorus.";
+        p.pat = "B";
+        p.lead = "solo";
+        p.bass = altBass[inst.bassStyle] ?? "rootFifth";
+        p.extraPerc = true;
+        p.response = false;
+        p.auto.width = [Math.min(1, (narrowV + 0.3) * widthBase), Math.min(1, (narrowV + 0.3) * widthBase)];
+        C.push("lead improvises across the whole chorus", "drums switch to pattern B, rim on the off-16ths", `bass changes to ${BASS_STYLE_PLAIN[p.bass] ?? p.bass}`);
+        break;
+      case "build": {
+        p.role = "Raises tension with concrete changes into the hook.";
+        p.drums = "build";
+        p.extraPerc = true;
+        p.syncKick = true;
+        p.bass = "root8";
+        p.bassShort = true;
+        p.lead = "none";
+        p.response = false;
+        p.pedal = H.pedal;
+        p.harm = inst.harmonyRhythm === "sustain" || inst.harmonyRhythm === "swells" ? "pulse8" : "main";
+        p.auto.filter = [hasFilter ? 0.55 : 1, 1];
+        p.auto.res = [hasFilter ? 0.8 : 0.7, hasFilter ? 4.5 : 1.2];
+        p.auto.sat = [satBase, dev.has("saturation") ? 0.45 : 0.22];
+        p.auto.width = [0.4 * widthBase, 0.8 * widthBase];
+        p.dropLastBar = dev.has("dropouts");
+        C.push("hats move to 16ths; a shaker enters and rises");
+        if (hasFilter) C.push(`low-pass opens ${fHz(0.55)} Hz → fully open while resonance rises`);
+        C.push("bass shortened to staccato 8th roots", "16th kick pickups add syncopation");
+        C.push(dev.has("saturation") ? "bus saturation pushed harder" : "light bus saturation added");
+        if (form === "edm" && !avoid.has("festivalBuilds")) C.push("snare roll speeds up 4ths → 8ths → 16ths");
+        if (p.dropLastBar) C.push("last bar: drums cut for a breath before the hook");
+        break;
+      }
+      case "chorus":
+      case "drop": {
+        p.pat = "B";
+        p.lead = counterLead ? "counter" : "hook";
+        p.leadInst = hookInst;
+        p.bass = groovesBass(mainBass);
+        p.harm = hookHarm;
+        p.harmLate = has("hemiola") || has("crossRhythm");
+        p.poly = has("polyrhythm");
+        p.rhythmHook = P.hook === "rhythm";
+        p.auto.width = [widthBase, widthBase];
+        p.auto.filter = [1, 1];
+        p.auto.sat = [0.25, 0.25];
+        if (s.final) {
+          p.role = "The biggest version: doubled, wider, more saturated, not just louder.";
+          p.double = true;
+          p.bigPerc = true;
+          p.syncKick = true;
+          p.displace = has("displacement") ? 0.25 : 0;
+          const sat = dev.has("saturation") ? 0.5 : 0.35;
+          p.auto.sat = [sat, sat];
+          const w = Math.min(1.2, widthBase * 1.2);
+          p.auto.width = [w, w];
+          C.push("hook doubled an octave up", "extra percussion: 16th shaker + open hat/ride on the off-beats", "kick gains syncopated pickups");
+          if (H.borrowed) C.push(`harmonic variation: borrowed ${borrowedChord} chord`);
+          if (H.chromatic) C.push("chromatic bII7 before home");
+          if (p.displace) C.push("hook shifted a 16th (altered rhythm)");
+          C.push(`widest image (${pct(w)}), saturation up to ${pct(sat)}`);
+        } else {
+          p.role = s.label.startsWith("Cold Open") ? "Opens straight on the hook." : "The strongest statement of the hook.";
+          C.push(`full band, filter fully open, wide image (${pct(widthBase)})`);
+        }
+        if (P.hook === "bassline") C.push("the hook bassline carries the section; lead plays a sparse counter-line");
+        if (P.hook === "chords" || P.hook === "stab") C.push(`the hook ${P.hook === "stab" ? "stab" : "chord"} rhythm repeats every bar`);
+        if (P.hook === "rhythm") C.push("the hook rhythm is doubled on toms");
+        if (P.hook === "texture") C.push(`hook played as a chopped ${hookInst === "voice" ? "synthetic-voice" : "bell"} texture`);
+        if (p.harmLate) C.push(has("crossRhythm") ? "second half: chords hit 3 against the 4 (cross-rhythm)" : "second half: chord accents regroup in 3s (hemiola)");
+        if (p.poly) C.push(`${R.polyRatio[0]}:${R.polyRatio[1]} polyrhythm on pitched percussion`);
+        break;
+      }
+      case "dropout":
+        p.role = "Contrast: pulls the floor out so the next part lands.";
+        p.drums = noDrums ? "none" : "thin";
+        p.deconstruct = true;
+        p.bass = "tail";
+        p.harm = "none";
+        p.lead = "echo";
+        p.response = false;
+        p.fills = false;
+        p.clave = false;
+        p.polymeter = false;
+        p.glitch = false;
+        p.drone = 0;
+        p.auto.filter = [0.3, 0.3];
+        p.auto.res = [2, 2];
+        p.auto.delay = 2.6;
+        p.auto.drumFilter = [0.4, 0.4];
+        p.auto.width = [0.6 * widthBase, 0.6 * widthBase];
+        C.push("kick out; only a filtered hat remnant", "bass plays one long tail note", s.bars > 1 ? "second bar is near-silent" : "back half of the bar is near-silent", `one hook note through a filtered delay (${fHz(0.3)} Hz)`);
+        break;
+      case "bridge":
+      case "breakdown":
+        p.role = "Changes the rules: no kick, reduced harmony, drone, narrow.";
+        p.drums = noDrums ? "none" : "noKick";
+        p.deconstruct = has("deconstruction") || s.type === "breakdown";
+        p.bass = "sustain";
+        p.pedal = H.pedal;
+        p.harm = "reduced";
+        p.lead = "bridge";
+        p.response = false;
+        p.drone = Math.max(p.drone, 0.6);
+        p.polymeter = false;
+        p.clave = false;
+        p.poly = false;
+        p.auto.width = [0.15, 0.15];
+        p.auto.filter = [hasFilter ? 0.6 : 0.8, hasFilter ? 0.7 : 0.8];
+        p.auto.sat = [0.05, 0.05];
+        p.auto.delay = 1.5;
+        C.push("kick and snare removed; light hats only", "harmony reduced to root + fifth", "tonic drone underneath", "image narrows to 15% width");
+        if (H.borrowed) C.push(`borrowed ${borrowedChord} chord changes the color`);
+        if (p.deconstruct) C.push("remaining percussion thins out bar by bar (deconstruction)");
+        break;
+      case "outro":
+        p.role = "Removes layers deliberately and lands.";
+        p.drums = noDrums ? "none" : "outro";
+        p.bass = "sustain";
+        p.harm = "sustain";
+        p.lead = P.opening === "hookFragment" ? "fragment" : "none";
+        p.response = false;
+        p.bed = P.opening === "textureBed";
+        p.drone = P.opening === "distantDrone" ? 0.7 : p.drone;
+        p.clave = false;
+        p.polymeter = false;
+        p.fills = false;
+        p.glitch = false;
+        p.auto.filter = [hasFilter ? 0.9 : 1, hasFilter ? 0.3 : 0.6];
+        p.auto.width = [0.8 * widthBase, 0.45 * widthBase];
+        C.push("percussion leaves first, then snare, then kick", "bass holds to the end", `filters close to ${fHz(p.auto.filter[1])} Hz`, "returns to the intro texture");
+        break;
+    }
+    if (noDrums) p.drums = "none";
+    if (p.glitch && s.type !== "intro") C.push("stutter edits at phrase ends");
+    if (p.response && ["verse", "hook", "solo"].includes(p.lead)) C.push(`call & response: ${LEAD_LABELS[p.leadInst]} calls, ${LEAD_LABELS[otherInst(p.leadInst)]} answers`);
+    if (p.clave && p.drums !== "none") C.push(`${R.clave} clave on rim`);
+    return p;
   };
 
-  /* --- iterate sections --- */
+  /* --- render sections --- */
   let prevVoicing: number[] | null = null;
-  const leadCenter = LEAD_CENTER[leadInst] - (melodyStyle === "riff" && leadInst !== "acidLead" ? 7 : 0);
-  const mel = makeMelodyKit(rng.fork("melody"), leadSrc, melodyStyle, mode, family);
+  const automation: AutoPoint[] = [];
+  const secPlans: SecPlan[] = [];
+  const kitLabel = KIT_LABELS[inst.kit];
 
-  sections.forEach((sec, si) => {
-    const L = LAYERS[sec.type];
+  sections.forEach((s, si) => {
+    const sp = planSection(s, si);
+    secPlans.push(sp);
+    const L = LAYERS[s.type];
     const next = sections[si + 1];
-    const intensity = sec.intensity * (0.7 + plan.energy * 0.45);
-    const isBig = sec.type === "chorus" || sec.type === "drop" || sec.type === "solo";
-    const pattern = isBig || sec.type === "bridge" ? shapedB : shapedA;
+    const intensity = s.intensity * (0.7 + plan.energy * 0.45);
+    const isHook = s.type === "chorus" || s.type === "drop";
+    const secEnd = s.startBeat + s.beats;
+    const a = sp.auto;
+    automation.push({ beat: s.startBeat, filter: a.filter[0], res: a.res[0], width: a.width[0], sat: a.sat[0], delay: a.delay, drumFilter: a.drumFilter[0] });
+    automation.push({ beat: secEnd - 0.03, filter: a.filter[1], res: a.res[1], width: a.width[1], sat: a.sat[1], delay: a.delay, drumFilter: a.drumFilter[1] });
 
-    for (let b = 0; b < sec.bars; b++) {
-      const bar = sec.startBar + b;
-      const t0 = bar * 4;
+    let phraseStart = s.startBar;
+    for (let b = 0; b < s.bars; b++) {
+      const bar = s.startBar + b;
+      if (b % 4 === 0) phraseStart = bar;
+      const n = barSteps[bar];
+      const info = infoFor(n);
+      const t0 = barStarts[bar];
+      const barBeats = n * 0.25;
       const chord = chordAt(bar);
-      const lastBar = b === sec.bars - 1;
-      const half = b >= sec.bars / 2;
+      const lastBar = b === s.bars - 1;
+      const half = b >= s.bars / 2;
+      let absStep = 0;
+      for (let k = phraseStart; k < bar; k++) absStep += barSteps[k];
+      const stopTime = sp.stopBars > 0 && b < sp.stopBars;
+      const stopBar = stopTime || (sp.breakLast && lastBar && !!next);
+      const bh = stopBar ? (stopTime ? [0] : breakHits.filter((x) => x < n)) : undefined;
+      const silentHalf = s.type === "dropout" && (s.bars > 1 ? b === s.bars - 1 : false);
 
       /* drums */
-      let dl = L.drums * kitLevel;
-      if (sec.type === "outro" && half) dl *= 0.4;
-      if (sec.type === "intro" && form === "edm") dl = 0.7;
-      if (dl > 0) {
-        const thin = sec.type === "intro" && form !== "edm";
-        const build = sec.type === "build";
-        for (const [k, s] of Object.entries(pattern) as [keyof DrumPattern, string][]) {
-          if (!s) continue;
-          if (thin && !["hat", "shaker", "ride", "rim"].includes(k)) continue;
-          if (sec.type === "outro" && half && k !== "kick" && k !== "hat" && k !== "shaker") continue;
-          if (build && (k === "snare" || k === "clap")) continue;
-          if (lastBar && next && df > 25 && (k === "snare" || k === "clap" || k === "tom") && !build) continue; // fill replaces
-          for (let i = 0; i < 16; i++) {
-            const c = s[i];
-            if (!c || c === ".") continue;
-            if (lastBar && next && df > 25 && i >= 12 && k === "kick" && !build) continue;
-            const v = VEL[c] ?? 0.8;
-            const human = organicKit ? drumRng.range(-0.012, 0.012) : 0;
-            const vel = v * dl * (0.75 + 0.25 * intensity) * drumRng.range(0.88, 1);
-            if (c === "r") {
-              for (let j = 0; j < 3; j++) push({ stem: "drums", inst: hitInst[k], kit, t: t0 + sb(i) + (j * 0.25) / 3, dur: 0.1, midi: 0, vel: vel * (0.7 + j * 0.15) });
-            } else push({ stem: "drums", inst: hitInst[k], kit, t: t0 + sb(i) + human, dur: 0.25, midi: k === "tom" ? 45 + (i % 3) * 3 : 0, vel });
+      if (sp.drums !== "none" && !silentHalf) {
+        let dl = L.drums * kitLevel;
+        const pat = pattern(sp.pat, n);
+        const isBuild = sp.drums === "build";
+        const cutBar = sp.dropLastBar && lastBar;
+        const fillBar = lastBar && !!next && sp.fills && df > 25 && !isBuild && next.type !== "dropout";
+        if (stopBar) {
+          for (const x of bh!) {
+            push({ stem: "drums", inst: "kick", kit: inst.kit, t: t0 + sb(x), dur: 0.25, midi: 0, vel: 0.95 * dl });
+            push({ stem: "drums", inst: flavor.snareKey, kit: inst.kit, t: t0 + sb(x), dur: 0.25, midi: 0, vel: 0.8 * dl });
           }
-        }
-        // build: snare roll that accelerates
-        if (build) {
-          const prog = b / sec.bars;
-          const div = prog < 0.25 ? 4 : prog < 0.5 ? 2 : 1;
-          for (let i = 0; i < 16; i += div) {
-            const p = (b * 16 + i) / (sec.bars * 16);
-            push({ stem: "drums", inst: kit === "cinematic" ? "tom" : "snare", kit, t: t0 + i * 0.25, dur: 0.2, midi: 45, vel: (0.25 + p * 0.7) * dl });
+          push({ stem: "drums", inst: "crash", kit: inst.kit, t: t0, dur: 4, midi: 0, vel: 0.5 * dl });
+        } else if (!cutBar) {
+          if (sp.drums === "outro" && b >= s.bars * 0.75) dl *= 0.6;
+          for (const [k, str] of Object.entries(pat) as [keyof DrumPattern, string][]) {
+            if (!str) continue;
+            const isPerc = ["hat", "shaker", "ride", "rim", "open", "perc"].includes(k);
+            if (sp.drums === "thin" && k !== "hat") continue;
+            if (sp.drums === "noKick" && k !== "hat" && k !== "shaker" && k !== "ride" && k !== "rim") continue;
+            if (sp.thinFirstHalf && !half && !isPerc) continue;
+            if (sp.drums === "outro") {
+              if (isPerc && k !== "hat" && b >= s.bars / 4) continue; // perc leaves first
+              if (k === "hat" && b >= s.bars / 2) continue;
+              if ((k === "snare" || k === "clap" || k === "tom") && b >= s.bars / 2) continue;
+              if (k === "kick" && b >= s.bars * 0.75 && s.bars > 2) continue;
+            }
+            if (isBuild && form === "edm" && (k === "snare" || k === "clap") && !avoid.has("festivalBuilds")) continue;
+            if (fillBar && (k === "snare" || k === "clap" || k === "tom")) continue;
+            for (let i = 0; i < n; i++) {
+              let c = str[i];
+              if (!c || c === ".") continue;
+              if (sp.drums === "thin" && i >= n / 2 && s.bars === 1) continue;
+              if (isBuild && k === "hat" && i % 2 === 1 && c !== "X") c = "g";
+              if (fillBar && i >= n - 4 && k === "kick") continue;
+              if (sp.deconstruct && drumRng.chance(0.15 + 0.6 * (b / Math.max(1, s.bars)))) continue;
+              const v = VEL[c] ?? 0.8;
+              const vel = v * dl * (0.75 + 0.25 * intensity) * drumRng.range(0.88, 1) * (sp.drums === "thin" ? 0.6 : 1);
+              const pos = sp.deconstruct && drumRng.chance(0.2) ? Math.min(n - 1, i + 1) : i;
+              if (c === "r") {
+                const sub = tup || 3;
+                for (let j = 0; j < sub; j++) push({ stem: "drums", inst: hitInst[k], kit: inst.kit, t: t0 + sb(pos) + (j * 0.25) / sub, dur: 0.1, midi: 0, vel: vel * (0.7 + (j / sub) * 0.45) });
+              } else push({ stem: "drums", inst: hitInst[k], kit: inst.kit, t: t0 + sb(pos), dur: 0.25, midi: k === "tom" ? 45 + (i % 3) * 3 : 0, vel });
+            }
           }
-        }
-        // fill into next section
-        if (lastBar && next && df > 25 && !build) {
-          const fillSteps = df > 70 ? [8, 10, 12, 13, 14, 15] : [12, 14, 15];
-          fillSteps.forEach((st, j) => {
-            const useTom = organicKit || kit === "cinematic";
-            push({ stem: "drums", inst: useTom && j % 2 === 1 ? "tom" : "snare", kit, t: t0 + sb(st), dur: 0.2, midi: 50 - j * 2, vel: (0.5 + j * 0.08) * dl });
-          });
-          if (!["hat", "ride"].some((k) => pattern[k as keyof DrumPattern])) {
-            /* nothing */
+          // build / Verse B / final hook percussion layers
+          if (isBuild || sp.bigPerc) {
+            for (let i = 0; i < n; i++) push({ stem: "drums", inst: "shaker", kit: inst.kit, t: t0 + sb(i), dur: 0.1, midi: 0, vel: (i % 4 === 0 ? 0.55 : 0.35) * dl * (isBuild ? 0.6 + 0.4 * (b / s.bars) : 1) });
+          } else if (sp.extraPerc) {
+            for (let i = 0; i < n; i++) if (i % 4 === 3 || (i % 4 === 1 && i % 8 !== 1)) push({ stem: "drums", inst: i % 4 === 3 ? "rim" : "shaker", kit: inst.kit, t: t0 + sb(i), dur: 0.1, midi: 0, vel: 0.42 * dl });
           }
-          push({ stem: "drums", inst: "kick", kit, t: t0, dur: 0.25, midi: 0, vel: 0.9 * dl });
+          if (sp.bigPerc) for (const x of info.starts) push({ stem: "drums", inst: drumRng.chance(0.5) ? "hatO" : "ride", kit: inst.kit, t: t0 + sb(Math.min(n - 1, x + 2)), dur: 0.3, midi: 0, vel: 0.5 * dl });
+          if (isBuild && form === "edm" && !avoid.has("festivalBuilds")) {
+            const prog = b / s.bars;
+            const div = prog < 0.25 ? 4 : prog < 0.5 ? 2 : 1;
+            for (let i = 0; i < n; i += div) {
+              const pp = (b * n + i) / (s.bars * n);
+              push({ stem: "drums", inst: inst.kit === "cinematic" ? "tom" : "snare", kit: inst.kit, t: t0 + i * 0.25, dur: 0.2, midi: 45, vel: (0.25 + pp * 0.7) * dl });
+            }
+          }
+          if (sp.syncKick && (isBuild || drumRng.chance(0.45 + R.syncopation * 0.5))) {
+            const cands = [3, 7, 10, 11, 14].filter((x) => x < n && !info.starts.includes(x));
+            const x = drumRng.pick(cands.length ? cands : [n - 1]);
+            push({ stem: "drums", inst: "kick", kit: inst.kit, t: t0 + sb(x), dur: 0.25, midi: 0, vel: 0.55 * dl });
+          }
+          if (sp.clave && sp.drums !== "thin") {
+            for (const x of claveHits(n, (bar - phraseStart) % 2, R.clave, info)) push({ stem: "drums", inst: "rim", kit: inst.kit, t: t0 + sb(x), dur: 0.1, midi: 0, vel: 0.75 * Math.max(0.5, dl) });
+          }
+          if (sp.poly) {
+            const [pa, pb] = R.polyRatio;
+            for (const x of evenHits(pa, barBeats)) push({ stem: "drums", inst: "perc", kit: inst.kit, t: t0 + x, dur: 0.2, midi: 76 + (keyRoot % 12), vel: 0.6 * Math.max(0.6, dl) });
+            if (pb !== info.starts.length && pb !== n / 2 && pb !== n / 4) for (const x of evenHits(pb, barBeats)) push({ stem: "drums", inst: "perc", kit: inst.kit, t: t0 + x, dur: 0.2, midi: 64 + (keyRoot % 12), vel: 0.45 * Math.max(0.6, dl) });
+          }
+          if (sp.rhythmHook) for (const x of rhythmHook.filter((y) => y < n)) push({ stem: "drums", inst: "tom", kit: inst.kit, t: t0 + sb(x), dur: 0.3, midi: 43 + (x % 5), vel: 0.75 * dl });
+          if (fillBar) {
+            const useTom = organicKit || inst.kit === "cinematic";
+            if (df > 70) [n - 8, n - 6].filter((x) => x >= 0).forEach((st, j) => push({ stem: "drums", inst: useTom && j % 2 === 1 ? "tom" : "snare", kit: inst.kit, t: t0 + sb(st), dur: 0.2, midi: 50 - j * 2, vel: (0.5 + j * 0.08) * dl }));
+            if (tup) {
+              for (let j = 0; j < tup; j++) push({ stem: "drums", inst: useTom && j % 2 ? "tom" : "snare", kit: inst.kit, t: t0 + barBeats - 1 + j / tup, dur: 0.15, midi: 50 - j, vel: (0.45 + (j / tup) * 0.45) * dl });
+            } else [n - 4, n - 2, n - 1].forEach((st, j) => push({ stem: "drums", inst: useTom && j % 2 === 1 ? "tom" : "snare", kit: inst.kit, t: t0 + sb(st), dur: 0.2, midi: 48 - j * 2, vel: (0.55 + j * 0.1) * dl }));
+          }
+          if (sp.glitch && b % 2 === 1 && drumRng.chance(R.glitch || 0.3)) {
+            const startT = t0 + barBeats - 0.5;
+            const reps = drumRng.pick([4, 6, 8]);
+            const what = drumRng.pick(["snare", "hatC", "kick"]);
+            for (let j = 0; j < reps; j++) push({ stem: "drums", inst: what, kit: inst.kit, t: startT + (j * 0.5) / reps, dur: 0.06, midi: 0, vel: (0.35 + 0.5 * (j / reps)) * Math.max(0.5, dl) });
+          }
         }
       }
-      // crash on downbeat of big sections
-      if (b === 0 && (isBig || (sec.type === "verse" && si > 1)) && dl > 0) {
-        push({ stem: "drums", inst: "crash", kit, t: t0, dur: 4, midi: 0, vel: 0.7 * Math.max(0.5, dl) });
+      if (b === 0 && (sp.drums === "full" || sp.drums === "build") && (isHook || s.part === "B" || s.type === "solo")) {
+        push({ stem: "drums", inst: "crash", kit: inst.kit, t: t0, dur: 4, midi: 0, vel: 0.7 * L.drums });
       }
 
       /* bass */
-      const bl = L.bass * (sec.type === "intro" && form === "edm" ? 0 : 1);
-      if (bl > 0) {
-        const style: BassStyle = sec.type === "breakdown" ? "sustain" : sec.type === "build" ? "root8" : bassStyle;
-        const nextChord = chordAt(bar + 1);
+      if (sp.bass !== "none" && !(sp.bass === "tail" && b > 0)) {
+        let style: BassMode = sp.bass === "main" ? groovesBass(inst.bassStyle) : sp.bass;
+        if (stopBar) style = "stop";
+        const bl = L.bass * (sp.drums === "outro" && b >= s.bars * 0.75 ? 0.8 : 1);
         bassBar(push, {
           t0,
+          n,
+          starts: info.starts,
           sb,
           chord,
-          nextChord,
+          nextChord: chordAt(bar + 1),
           keyRoot,
           mode,
           style,
-          timbre: bassTimbre,
-          octave: bassSrc.bass.octave,
+          timbre: inst.bassTimbre,
+          octave: src.bass.bass.octave,
           vel: bl * (0.75 + 0.25 * intensity),
           rng: drumRng,
-          kickPattern: (shapedA.kick ?? "x...x...x...x..."),
-          barInChord: (bar - sec.startBar) % (form === "blues" ? 1 : bpc),
-          bpc: form === "blues" ? 1 : bpc,
-          lastBar,
+          kickPattern: pattern(sp.pat, n).kick ?? "x".padEnd(n, "."),
+          barInChord: (bar - s.startBar) % (blues12 ? 1 : bpc),
+          bpc: blues12 ? 1 : bpc,
+          pedal: sp.pedal,
+          short: sp.bassShort,
+          chromatic: H.chromatic && s.type !== "intro",
+          syncopation: R.syncopation,
+          absStep,
+          figure: style === "hook" ? bassHookFig : ostFig.map((f) => ({ step: f.step, deg: [0, 7, 12, 10, 3][f.deg % 5], len: f.len })),
+          iso,
+          breakHits: bh,
+          barBeats: s.type === "dropout" ? s.beats : barBeats,
         });
       }
 
       /* harmony */
-      const hl = L.harmony;
-      if (hl > 0) {
-        const chordStart = form === "blues" || (bar - sec.startBar) % bpc === 0;
-        let rhythm: HarmonyRhythm = harmonyRhythm;
-        if (sec.type === "breakdown") rhythm = ["strum", "pick", "power"].includes(harmonyRhythm) ? "pick" : "sustain";
-        if (sec.type === "intro" && form === "edm") rhythm = "sustain";
-        if (sec.type === "outro" && half) rhythm = "sustain";
-        if (rhythm === "power" && sec.type === "verse") rhythm = "power"; // muted chugs handled via variant
-        const span = form === "blues" ? 1 : bpc;
+      if (sp.harm !== "none") {
+        const hl = L.harmony;
+        const chordStart = blues12 || (bar - s.startBar) % bpc === 0;
+        type HR = HarmonyOpts["rhythm"];
+        let rhythm: HR = sp.harm === "main" ? inst.harmonyRhythm : sp.harm === "reduced" ? "sustain" : (sp.harm as HR);
+        if (sp.harmLate && half) rhythm = has("crossRhythm") ? "cross" : "hemiola";
+        if (stopBar) rhythm = "stop";
+        if (sp.glitch && isHook && (rhythm === "sustain" || rhythm === "swells") && drumRng.chance(Math.max(0.25, R.glitch))) rhythm = "gate";
+        const center = harmonyCenter(inst.harmonyInst);
         if (rhythm === "sustain" || rhythm === "swells") {
-          if (chordStart) {
-            prevVoicing = voiceChord(keyRoot, chord, harmonyCenter(harmonyInst), prevVoicing, harmonySrc.harmony.extend ? 4 : 3);
-            for (const n of prevVoicing) push({ stem: "harmony", inst: harmonyInst, t: t0, dur: span * 4 - 0.05, midi: n, vel: 0.5 * hl * (0.8 + 0.2 * intensity) });
+          if (chordStart || sp.harm === "reduced") {
+            prevVoicing = voiceChord(keyRoot, chord, center, prevVoicing, src.harmony.harmony.extend ? 4 : 3);
+            const notes = sp.harm === "reduced" ? [prevVoicing[0], prevVoicing[0] + 7] : prevVoicing;
+            const span = sp.harm === "reduced" ? barBeats : (blues12 ? 1 : Math.min(bpc, s.bars - (bar - s.startBar))) * barBeats;
+            for (const m of notes) push({ stem: "harmony", inst: inst.harmonyInst, t: t0 + sp.displace, dur: Math.max(0.2, span - 0.05 - sp.displace), midi: m, vel: 0.5 * hl * (0.8 + 0.2 * intensity) * (sp.harm === "reduced" ? 0.85 : 1) });
           }
         } else {
-          prevVoicing = voiceChord(keyRoot, chord, harmonyCenter(harmonyInst), prevVoicing, harmonySrc.harmony.extend ? 4 : 3);
+          prevVoicing = voiceChord(keyRoot, chord, center, prevVoicing, src.harmony.harmony.extend ? 4 : 3);
           harmonyBar(push, {
             t0,
+            n,
+            starts: info.starts,
             sb,
             chord,
             keyRoot,
             voicing: prevVoicing,
-            inst: harmonyInst,
+            inst: inst.harmonyInst,
             rhythm,
             vel: hl * (0.75 + 0.25 * intensity),
             rng: drumRng,
-            muted: sec.type === "verse" || sec.type === "intro",
+            muted: s.type === "verse" || s.type === "intro",
             pulse: dims.pulse,
-            strum: harmonySrc.harmony.strum ?? "D.D.DU.UD.D.DU.U",
+            strum: src.harmony.harmony.strum ?? "D.D.DU.UD.D.DU.U",
+            figure: rhythm === "hookFigure" ? (P.hook === "stab" ? stabFig : chordHookFig) : ostFig,
+            absStep,
+            barBeats,
+            breakHits: bh,
+            arpDir,
+            displace: sp.displace,
           });
         }
       }
 
+      /* polymeter / layered-cycle line: its own cycle, realigning every 4-bar phrase */
+      if (sp.polymeter && !stopBar) {
+        const tones = prevVoicing ? [...prevVoicing, ...prevVoicing.map((m) => m + 12)] : [60, 64, 67, 72];
+        for (let x = 0; x < n; x += 2) {
+          const k = ((absStep + x) / 2) % polyC;
+          push({ stem: "harmony", inst: polyInstName, t: t0 + sb(x), dur: 0.4, midi: tones[polySeq[k] % tones.length], vel: (polyAccents.has(k) ? 0.42 : 0.26) * (isHook ? 1 : 0.85) });
+        }
+      }
+
       /* texture */
-      if (L.texture > 0) {
-        for (const tx of textures) {
-          if ((tx === "vinyl" || tx === "tape" || tx === "rain" || tx === "wind") && b === 0) {
-            push({ stem: "texture", inst: tx, t: t0, dur: sec.bars * 4, midi: 0, vel: L.texture * (tx === "wind" ? 0.6 : 0.5) });
+      for (const tx of inst.textures) {
+        if ((tx === "vinyl" || tx === "tape" || tx === "rain" || tx === "wind") && b === 0) push({ stem: "texture", inst: tx, t: t0, dur: s.beats, midi: 0, vel: L.texture * (tx === "wind" ? 0.6 : 0.5) * (sp.bed ? 1.4 : 1) });
+        if (tx === "shimmer" && ["intro", "breakdown", "chorus", "drop"].includes(s.type) && b % 2 === 0) {
+          const pcs = chord.tones.map((x) => (chord.root + x) % 12);
+          for (let k = 0; k < 4; k++) {
+            if (!drumRng.chance(0.45)) continue;
+            const pc = pcs[drumRng.int(0, pcs.length - 1)];
+            push({ stem: "texture", inst: "shimmer", t: t0 + k * (barBeats / 2), dur: 2, midi: 84 + ((keyRoot + pc) % 12), vel: 0.3 * L.texture });
           }
-          if (tx === "drone" && b === 0 && ["intro", "breakdown", "outro", "verse"].includes(sec.type)) {
-            push({ stem: "texture", inst: "drone", t: t0, dur: sec.bars * 4 - 0.1, midi: 36 + ((keyRoot + 12) % 12), vel: 0.45 * L.texture });
-          }
-          if (tx === "shimmer" && ["intro", "breakdown", "chorus", "drop"].includes(sec.type) && b % 2 === 0) {
-            const pcs = chordPitchClasses(chord);
-            for (let k = 0; k < 4; k++) {
-              if (!drumRng.chance(0.45)) continue;
-              const pc = pcs[drumRng.int(0, pcs.length - 1)];
-              push({ stem: "texture", inst: "shimmer", t: t0 + k * 2, dur: 2, midi: 84 + ((keyRoot + pc) % 12), vel: 0.3 * L.texture });
-            }
-          }
-          if (tx === "impact" && b === 0 && (isBig || (sec.type === "breakdown" && form !== "song"))) {
-            push({ stem: "texture", inst: "impact", t: t0, dur: 4, midi: 24 + ((keyRoot + chord.root) % 12), vel: 0.8 });
-          }
-          if (tx === "riser" && next && (next.type === "drop" || next.type === "chorus") && b === sec.bars - 2) {
-            push({ stem: "texture", inst: "riser", t: t0, dur: 8, midi: 0, vel: 0.55 });
+        }
+        if (tx === "impact" && b === 0 && (isHook || (s.type === "breakdown" && form !== "song"))) push({ stem: "texture", inst: "impact", t: t0, dur: 4, midi: 24 + ((keyRoot + chord.root) % 12), vel: 0.8 });
+        if (tx === "riser" && next && (next.type === "drop" || next.type === "chorus") && b === Math.max(0, s.bars - 2) && !avoid.has("festivalBuilds") && !avoid.has("genericRisers")) push({ stem: "texture", inst: "riser", t: t0, dur: secEnd - t0, midi: 0, vel: 0.55 });
+      }
+      if (sp.bed && b === 0 && !inst.textures.some((x) => x === "vinyl" || x === "tape" || x === "rain")) push({ stem: "texture", inst: organicKit ? "tape" : "vinyl", t: t0, dur: s.beats, midi: 0, vel: 0.7 });
+      if (sp.drone > 0 && b === 0) push({ stem: "texture", inst: "drone", t: t0, dur: s.beats - 0.1, midi: 36 + (keyRoot % 12), vel: 0.5 * sp.drone });
+    }
+
+    /* lead — phrase-level, motif-based */
+    if (sp.lead !== "none" && L.lead > 0) {
+      const phrases: PhraseBar[][] = [];
+      for (let b = 0; b < s.bars; b += 2) {
+        const ph: PhraseBar[] = [];
+        for (let k = b; k < Math.min(s.bars, b + 2); k++) ph.push({ bar: s.startBar + k, start: barStarts[s.startBar + k], info: infoFor(barSteps[s.startBar + k]) });
+        phrases.push(ph);
+      }
+      let use = phrases;
+      if (sp.lead === "fragment") use = s.type === "outro" ? phrases.slice(0, 1) : phrases.slice(Math.max(0, phrases.length - 1));
+      if (sp.lead === "echo") use = phrases.slice(0, 1).map((ph) => ph.slice(0, 1));
+      const center = (sp.leadInst === inst.leadInst ? leadCenter : LEAD_CENTER[sp.leadInst]) + sp.leadShift;
+      const respInst = otherInst(sp.leadInst);
+      const useResponse = sp.response && ["verse", "hook", "solo"].includes(sp.lead);
+      const notes = mel.section(sp.lead, use, {
+        chordAt,
+        keyRoot,
+        center,
+        responseCenter: LEAD_CENTER[respInst] - 3,
+        sb,
+        density: src.lead.lead.density * (0.8 + plan.energy * 0.4) * (0.85 + dims.pulse / 300),
+        displace: sp.displace,
+        longNotes: s.type === "breakdown" || s.type === "bridge" || sp.lead === "fragment",
+        response: useResponse,
+        tuplet: tup && next && s.type !== "intro" ? tup : 0,
+        secEnd: sp.lead === "echo" ? Math.min(secEnd, s.startBeat + barBeatsOf(s.startBar)) : secEnd,
+        seed: sp.lead + (sp.lead === "solo" ? String(s.startBar) : ""),
+      });
+      const lvl = sp.lead === "counter" ? 0.7 : sp.lead === "fragment" ? 0.75 : 1;
+      for (const nn of notes) {
+        const instName = nn.response ? respInst : sp.leadInst;
+        const chop = P.hook === "texture" && sp.lead === "hook" && nn.dur >= 0.75 && !nn.response;
+        const base = { stem: "lead" as const, inst: instName, midi: nn.midi, glide: nn.glide };
+        const v = nn.vel * L.lead * lvl * (0.8 + 0.2 * intensity) * (nn.response ? 0.85 : 1);
+        if (chop) {
+          for (let x = 0; x < nn.dur - 0.1; x += 0.25) push({ ...base, t: nn.t + x, dur: 0.18, vel: v * (x === 0 ? 1 : 0.75) });
+        } else push({ ...base, t: nn.t, dur: nn.dur, vel: v });
+        if (sp.double && !nn.response && nn.midi + 12 <= 96) push({ ...base, t: nn.t, dur: nn.dur, midi: nn.midi + 12, vel: v * 0.5 });
+      }
+      if (sp.glitch && R.glitch > 0.3) {
+        for (const ph of phrases) {
+          const endT = ph[ph.length - 1].start + ph[ph.length - 1].info.steps * 0.25;
+          const cand = events.filter((e) => e.stem === "lead" && e.t >= endT - 1.5 && e.t < endT && e.dur >= 0.5);
+          const e = cand[cand.length - 1];
+          if (e && drumRng.chance(R.glitch)) {
+            const reps = Math.floor(e.dur / 0.125);
+            e.dur = 0.1;
+            for (let j = 1; j < reps; j++) push({ ...e, t: e.t + j * 0.125, dur: 0.09, vel: e.vel * (0.8 - j * (0.4 / Math.max(1, reps))) });
           }
         }
       }
     }
-
-    /* lead — phrase-level */
-    const ll = LAYERS[sec.type].lead;
-    if (ll > 0) {
-      const notes = mel.section(sec, {
-        chordAt,
-        keyRoot,
-        center: leadCenter,
-        sb,
-        density: leadSrc.lead.density * (0.8 + plan.energy * 0.4) * (0.85 + dims.pulse / 300),
-      });
-      for (const n of notes) push({ stem: "lead", inst: leadInst, t: n.t, dur: n.dur, midi: n.midi, vel: n.vel * ll * (0.8 + 0.2 * intensity), glide: n.glide });
-    }
   });
 
-  events.sort((a, b) => a.t - b.t);
-  const totalBeats = totalBars * 4;
+  /* --- ending --- */
+  events.sort((x, y) => x.t - y.t);
+  const last = sections[sections.length - 1];
+  const lastBarIdx = last.startBar + last.bars - 1;
+  const lastBarStart = barStarts[lastBarIdx];
+  const lastBarBeats = barBeatsOf(lastBarIdx);
+  let totalBeats = barStarts[barStarts.length - 1];
+  const tonicChord = chordAt(totalBars - 1);
+  const tonicVoicing = voiceChord(keyRoot, tonicChord, harmonyCenter(inst.harmonyInst), prevVoicing, 4);
+  const lowBase = src.bass.bass.octave <= 1 ? 26 : 31;
+  const bassRoot = lowBase + ((((keyRoot + tonicChord.root - lowBase) % 12) + 12) % 12);
+  const endInst = inst.harmonyInst === "strumGuitar" ? "cleanGuitar" : inst.harmonyInst;
+  const finalHit = (t: number, dur: number, vel: number) => {
+    if (!noDrums) {
+      push({ stem: "drums", inst: "kick", kit: inst.kit, t, dur: 0.3, midi: 0, vel });
+      push({ stem: "drums", inst: "crash", kit: inst.kit, t, dur: 4, midi: 0, vel: 0.8 * vel });
+    }
+    push({ stem: "bass", inst: inst.bassTimbre, t, dur, midi: bassRoot, vel: 0.9 * vel });
+    for (const m of tonicVoicing) push({ stem: "harmony", inst: endInst, t, dur, midi: m, vel: 0.45 * vel });
+    const top = tonicVoicing[tonicVoicing.length - 1];
+    push({ stem: "lead", inst: inst.leadInst, t, dur, midi: top + 12 > 90 ? top : top + 12, vel: 0.5 * vel });
+  };
+  const truncateAt = (cut: number) => {
+    for (let i = events.length - 1; i >= 0; i--) {
+      const e = events[i];
+      if (e.t >= cut - 0.01) events.splice(i, 1);
+      else if (e.t + e.dur > cut) e.dur = e.stem === "texture" ? cut - e.t + 0.5 : Math.max(0.1, cut - e.t);
+    }
+  };
+  let tonicTail = 0;
+  const endNote = (txt: string) => last.desc.changes.push(txt);
+  switch (P.ending) {
+    case "fade": {
+      const fadeStart = last.startBeat;
+      const fadeLen = Math.max(1, totalBeats - fadeStart);
+      for (const e of events) if (e.t >= fadeStart) e.vel *= Math.max(0.04, 1 - ((e.t - fadeStart) / fadeLen) * 0.96);
+      totalBeats += 2;
+      endNote("ending: volume fades out across the outro");
+      break;
+    }
+    case "finalHit": {
+      truncateAt(lastBarStart);
+      finalHit(lastBarStart, 3.5, 1);
+      totalBeats = lastBarStart + 4.5;
+      tonicTail = 4.5;
+      endNote("ending: everything stops, then one full-band tonic hit rings out");
+      break;
+    }
+    case "cut": {
+      truncateAt(lastBarStart);
+      if (!noDrums) {
+        push({ stem: "drums", inst: "kick", kit: inst.kit, t: lastBarStart, dur: 0.25, midi: 0, vel: 1 });
+        push({ stem: "drums", inst: "snare", kit: inst.kit, t: lastBarStart, dur: 0.25, midi: 0, vel: 0.9 });
+      }
+      push({ stem: "bass", inst: inst.bassTimbre, t: lastBarStart, dur: 0.3, midi: bassRoot, vel: 0.9 });
+      for (const m of tonicVoicing) push({ stem: "harmony", inst: endInst, t: lastBarStart, dur: 0.25, midi: m, vel: 0.5 });
+      automation.push({ beat: lastBarStart + 0.3, filter: 1, res: 0.7, width: widthBase, sat: 0.1, delay: 0, drumFilter: 1 });
+      totalBeats = lastBarStart + 1.5;
+      tonicTail = 1.5;
+      endNote("ending: hard dry cut on the downbeat");
+      break;
+    }
+    case "ritard": {
+      const warpStart = barStarts[Math.max(last.startBar, lastBarIdx - 1)];
+      const Lw = lastBarStart + lastBarBeats - warpStart;
+      const warp = (t: number) => {
+        if (t <= warpStart) return t;
+        const u = t - warpStart;
+        if (u <= Lw) return warpStart + u + (u * u) / (2 * Lw);
+        return warpStart + 1.5 * Lw + (u - Lw) * 2;
+      };
+      truncateAt(lastBarStart + lastBarBeats);
+      for (const e of events) {
+        const x = warp(e.t);
+        const z = warp(e.t + e.dur);
+        e.t = x;
+        e.dur = z - x;
+      }
+      for (const p of automation) p.beat = warp(p.beat);
+      const endT = warp(lastBarStart + lastBarBeats);
+      finalHit(endT, 4, 0.85);
+      totalBeats = endT + 5;
+      tonicTail = totalBeats - warpStart;
+      for (let i = 0; i < barStarts.length; i++) barStarts[i] = warp(barStarts[i]);
+      endNote("ending: tempo slows over the last two bars (ritard) into a held final chord");
+      break;
+    }
+  }
+  events.sort((x, y) => x.t - y.t);
+  for (let i = events.length - 1; i >= 0; i--) if (events[i].t >= totalBeats - 0.05) events.splice(i, 1);
+  for (const e of events) if (e.t + e.dur > totalBeats) e.dur = Math.max(0.05, totalBeats - e.t);
+  for (const s of sections) {
+    s.startBeat = barStarts[s.startBar];
+    s.beats = barStarts[s.startBar + s.bars] - s.startBeat;
+  }
+  last.beats = totalBeats - last.startBeat;
+  automation.sort((x, y) => x.beat - y.beat);
+
+  /* --- descriptions (production language) --- */
+  const meterDesc = R.meterLabel + (R.meter !== "mixed" && R.meter !== "6/8" && R.meter !== "3/4" && R.grouping.length > 1 && !defaultGrouping ? ` (${R.grouping.join("+")})` : "");
+  const feelDesc = R.feel === "straight" ? "straight" : `${R.feel} ${Math.round(R.swing * 100)}%`;
+  sections.forEach((s, i) => {
+    const sp = secPlans[i];
+    const ins: string[] = [];
+    if (sp.drums !== "none") ins.push(`${kitLabel}${sp.drums === "noKick" ? " (no kick)" : sp.drums === "thin" ? " (hats only)" : ""}`);
+    if (sp.bass !== "none") ins.push(BASS_LABELS[inst.bassTimbre]);
+    if (sp.harm !== "none") ins.push(HARMONY_LABELS[inst.harmonyInst]);
+    if (sp.lead !== "none") ins.push(LEAD_LABELS[sp.leadInst] + (sp.response && ["verse", "hook", "solo"].includes(sp.lead) ? ` + ${LEAD_LABELS[otherInst(sp.leadInst)]}` : ""));
+    if (sp.lead !== "none" && sp.double) ins.push("octave double");
+    if (sp.polymeter) ins.push(`${polyLabel} line`);
+    if (sp.poly) ins.push("pitched percussion");
+    if (sp.drone > 0) ins.push("tonic drone");
+    for (const tx of inst.textures) if (tx !== "drone" && tx !== "riser" && tx !== "impact" && (tx !== "shimmer" || ["intro", "breakdown", "chorus", "drop"].includes(s.type))) ins.push(TEXTURE_LABELS[tx]);
+    if (sp.bed && !inst.textures.some((x) => ["vinyl", "tape", "rain"].includes(x))) ins.push(organicKit ? "tape hiss" : "vinyl crackle");
+    const rh: string[] = [meterDesc, feelDesc];
+    if (sp.drums === "full" || sp.drums === "build" || sp.drums === "outro") {
+      rh.push(sp.pat === "broken" ? "broken-time kick/snare" : has("halftime") ? "half-time snare on 3" : flavor.fourFloor && R.meter === "4/4" && defaultGrouping ? "four-on-the-floor kick" : R.meter === "4/4" && defaultGrouping ? "kick/snare backbeat" : "kick on each group start, accent on the downbeat");
+      if (sp.pat === "B") rh.push("variant kick pattern");
+    } else if (sp.drums === "noKick") rh.push("no kick, hats only");
+    else if (sp.drums === "thin") rh.push("filtered hats only");
+    if (sp.bass !== "none") rh.push(BASS_STYLE_PLAIN[sp.bass === "main" ? groovesBass(inst.bassStyle) : sp.bass] ?? String(sp.bass));
+    if (sp.harm !== "none") rh.push(HARM_PLAIN[sp.harm === "main" ? inst.harmonyRhythm : sp.harm] ?? String(sp.harm));
+    if (sp.clave && sp.drums !== "none") rh.push(`${R.clave} clave`);
+    if (sp.poly) rh.push(`${R.polyRatio[0]}:${R.polyRatio[1]} polyrhythm`);
+    if (sp.polymeter) rh.push(`${polyC}-against-${R.meter === "4/4" ? 8 : "bar"} polymeter`);
+    if (tup && sp.fills) rh.push(`${tup === 3 ? "triplet" : tup === 5 ? "quintuplet" : "septuplet"} fills`);
+    s.desc = { instruments: ins, rhythm: rh.join(" · "), changes: [...sp.changes, ...s.desc.changes], role: sp.role };
+  });
+
   return {
     bpm,
     totalBeats,
     durationSec: totalBeats * beatSec,
     sections,
     barChords,
+    barStarts,
+    barSteps,
     events,
     keyRoot,
     mode,
     variation,
+    spec,
+    automation,
+    meterLabel: meterDesc,
+    progressionLabel,
+    tonicTail,
     arrangement: {
-      drumsFrom: drumsSrc.id,
-      bassFrom: bassSrc.id,
-      harmonyFrom: harmonySrc.id,
-      leadFrom: leadSrc.id,
-      kit,
-      bassTimbre,
-      bassStyle,
-      harmonyInst,
-      harmonyRhythm,
-      leadInst,
-      melodyStyle,
-      textures,
+      drumsFrom: src.drums.id,
+      bassFrom: src.bass.id,
+      harmonyFrom: src.harmony.id,
+      leadFrom: src.lead.id,
+      kit: inst.kit,
+      bassTimbre: inst.bassTimbre,
+      bassStyle: inst.bassStyle,
+      harmonyInst: inst.harmonyInst,
+      harmonyRhythm: inst.harmonyRhythm,
+      leadInst: inst.leadInst,
+      responseInst: inst.responseInst,
+      hookInst,
+      polyInst: polyInstName,
+      melodyStyle: inst.melodyStyle,
+      textures: inst.textures,
       form,
-      swing,
-    },
-  };
-}
-
-function harmonyCenter(inst: HarmonyInst): number {
-  return { pad: 62, supersaw: 64, piano: 60, epiano: 62, organ: 60, strumGuitar: 55, cleanGuitar: 58, distGuitar: 50, pluckArp: 64, strings: 60, brass: 58, choir: 62 }[inst];
-}
-
-/* ---------------- bass ---------------- */
-
-type Push = (e: NoteEvent) => void;
-
-function bassBar(
-  push: Push,
-  o: {
-    t0: number;
-    sb: (s: number) => number;
-    chord: Chord;
-    nextChord: Chord;
-    keyRoot: number;
-    mode: ModeId;
-    style: BassStyle;
-    timbre: BassTimbre;
-    octave: number;
-    vel: number;
-    rng: Rng;
-    kickPattern: string;
-    barInChord: number;
-    bpc: number;
-    lastBar: boolean;
-  }
-) {
-  const lowBase = o.octave <= 1 ? 26 : 31; // lowest root
-  const fold = (pc: number) => {
-    let n = lowBase + ((((o.keyRoot + pc - lowBase) % 12) + 12) % 12);
-    if (n > lowBase + 11) n -= 12;
-    return n;
-  };
-  const root = fold(o.chord.root);
-  const third = root + (o.chord.tones[1] ?? 4);
-  const fifth = root + 7;
-  const nextRoot = fold(o.nextChord.root);
-  const scale = MODES[o.mode].steps;
-  const inst = o.timbre;
-  const n = (step: number, midi: number, dur: number, v = 1, glide?: number) =>
-    push({ stem: "bass", inst, t: o.t0 + o.sb(step), dur, midi, vel: o.vel * v, glide });
-
-  switch (o.style) {
-    case "root8":
-      for (let s = 0; s < 16; s += 2) n(s, s === 14 && o.rng.chance(0.3) ? fifth : root, 0.42, s % 4 === 0 ? 1 : 0.8);
-      break;
-    case "rootFifth":
-      n(0, root, 1.4);
-      n(8, o.rng.chance(0.8) ? fifth - 12 + 12 : third, 1.4, 0.85);
-      if (o.rng.chance(0.35)) {
-        // walk-up to next chord
-        const step = nextRoot > root ? -1 : 1;
-        n(12, nextRoot + step * 2, 0.45, 0.7);
-        n(14, nextRoot + step, 0.45, 0.75);
-      }
-      break;
-    case "offbeat":
-      for (let s = 2; s < 16; s += 4) n(s, o.rng.chance(0.15) ? root + 12 : root, 0.38, 0.9);
-      break;
-    case "rolling":
-      for (let s = 0; s < 16; s++) if (s % 4 !== 0) n(s, root, 0.2, s % 4 === 2 ? 0.95 : 0.75);
-      break;
-    case "walking": {
-      const tones = [root, root + (o.rng.chance(0.5) ? third - root : scale[1]), fifth, nextRoot + (o.rng.chance(0.5) ? -1 : 1)];
-      tones.forEach((m, i) => n(i * 4, m, 0.95, i === 0 ? 1 : 0.85));
-      break;
-    }
-    case "slide808": {
-      const hits: number[] = [];
-      for (let s = 0; s < 16; s++) if (o.kickPattern[s] && o.kickPattern[s] !== ".") hits.push(s);
-      if (!hits.length) hits.push(0, 8);
-      hits.forEach((s, i) => {
-        const end = i + 1 < hits.length ? hits[i + 1] : 16;
-        const isLast = i === hits.length - 1;
-        const midi = i > 0 && o.rng.chance(0.25) ? root + 12 : root;
-        const glide = isLast && o.rng.chance(0.4) ? (o.rng.chance(0.5) ? 12 : nextRoot - root || 7) : undefined;
-        n(s, midi, Math.max(0.3, (end - s) * 0.25 - 0.05), i === 0 ? 1 : 0.85, glide);
-      });
-      break;
-    }
-    case "sustain":
-      if (o.barInChord === 0) n(0, root, o.bpc * 4 - 0.1, 0.9);
-      break;
-    case "syncopated": {
-      const pats = [[0, 3, 6, 10, 12], [0, 6, 8, 11, 14], [0, 3, 8, 10, 14]];
-      const p = pats[o.rng.int(0, pats.length - 1)];
-      p.forEach((s, i) => n(s, i === 2 && o.rng.chance(0.4) ? root + 12 : i === 3 && o.rng.chance(0.3) ? fifth : root, 0.35, i === 0 ? 1 : 0.8));
-      break;
-    }
-    case "pulse16":
-      for (let s = 0; s < 16; s += 2) n(s, s % 8 === 6 && o.rng.chance(0.5) ? root + 12 : root, 0.4, s % 4 === 0 ? 1 : 0.75);
-      break;
-    case "riff":
-      for (let s = 0; s < 16; s += 2) {
-        let m = root;
-        if (s === 12 && o.rng.chance(0.5)) m = root + 10;
-        if (s === 14 && o.rng.chance(0.5)) m = fifth;
-        n(s, m, 0.4, s % 4 === 0 ? 1 : 0.8);
-      }
-      break;
-    case "sparse":
-      n(0, root, 1.6);
-      n(10, o.rng.chance(0.5) ? fifth : root, 0.9, 0.8);
-      if (o.rng.chance(0.4)) n(14, nextRoot + 2, 0.4, 0.6);
-      break;
-  }
-}
-
-/* ---------------- harmony ---------------- */
-
-function guitarVoicing(keyRoot: number, chord: Chord): number[] {
-  let r = 40 + ((((keyRoot + chord.root - 40) % 12) + 12) % 12); // E2..D#3
-  if (r > 47) r -= 12;
-  if (r < 40) r += 12;
-  const t = chord.tones;
-  if (t.length === 3 && t[1] === 7) return [r, r + 7, r + 12, r + 19];
-  const third = t[1];
-  const sev = t[3] !== undefined && t[3] < 12 ? t[3] : null;
-  return [r, r + 7, r + 12, r + 12 + third, sev !== null ? r + 12 + sev : r + 19, r + 24].sort((a, b) => a - b);
-}
-
-function harmonyBar(
-  push: Push,
-  o: {
-    t0: number;
-    sb: (s: number) => number;
-    chord: Chord;
-    keyRoot: number;
-    voicing: number[];
-    inst: HarmonyInst;
-    rhythm: HarmonyRhythm;
-    vel: number;
-    rng: Rng;
-    muted: boolean;
-    pulse: number;
-    strum: string;
-  }
-) {
-  const { t0, sb, voicing, inst } = o;
-  const chordNotes = (step: number, dur: number, v: number, variant?: number, notes = voicing) => {
-    for (const m of notes) push({ stem: "harmony", inst, t: t0 + sb(step), dur, midi: m, vel: o.vel * v * 0.5, variant });
-  };
-  switch (o.rhythm) {
-    case "strum": {
-      const gv = guitarVoicing(o.keyRoot, o.chord);
-      const pat = o.strum;
-      for (let s = 0; s < 16; s++) {
-        const c = pat[s];
-        if (c !== "D" && c !== "U") continue;
-        let end = 16;
-        for (let k = s + 1; k < 16; k++) if (pat[k] === "D" || pat[k] === "U") { end = k; break; }
-        const notes = c === "U" ? gv.slice(-4).reverse() : gv;
-        push({ stem: "harmony", inst: "strumGuitar", t: t0 + sb(s), dur: Math.max(0.4, (end - s) * 0.25 + 0.3), midi: gv[0], vel: o.vel * (s % 4 === 0 ? 0.85 : c === "U" ? 0.5 : 0.7), variant: c === "U" ? 1 : 0, notes });
-      }
-      break;
-    }
-    case "pick": {
-      const gv = guitarVoicing(o.keyRoot, o.chord);
-      const order = [0, 3, 1, 4, 2, 3, 1, 4];
-      for (let i = 0; i < 8; i++) {
-        const m = gv[order[i] % gv.length];
-        push({ stem: "harmony", inst: inst === "cleanGuitar" || inst === "strumGuitar" ? "cleanGuitar" : inst, t: t0 + sb(i * 2), dur: 1.2, midi: m, vel: o.vel * (i % 2 === 0 ? 0.6 : 0.45) });
-      }
-      break;
-    }
-    case "power": {
-      const r = guitarVoicing(o.keyRoot, o.chord)[0];
-      const pc = [r, r + 7, r + 12];
-      if (o.muted) {
-        for (let s = 0; s < 16; s += 2) chordNotes(s, 0.22, s % 4 === 0 ? 0.9 : 0.7, 1, pc);
-      } else {
-        const sustained = o.rng.chance(0.35);
-        if (sustained) chordNotes(0, 3.9, 1, 0, pc);
-        else for (let s = 0; s < 16; s += 2) chordNotes(s, 0.45, s % 4 === 0 ? 1 : 0.8, 0, pc);
-      }
-      break;
-    }
-    case "stabs": {
-      const opts = [[2, 6, 10, 14], [3, 6, 11, 14], [0, 3, 6, 10]];
-      const p = opts[o.rng.int(0, opts.length - 1)];
-      p.forEach((s) => chordNotes(s, 0.35, 0.85));
-      break;
-    }
-    case "pulse8": {
-      const step = o.pulse > 72 ? 1 : 2;
-      for (let s = 0; s < 16; s += step) chordNotes(s, step * 0.25 * 0.8, s % 4 === 0 ? 0.9 : 0.65);
-      break;
-    }
-    case "comp": {
-      const opts = [[0, 6], [3, 10], [0, 7, 12], [2, 8, 14], [0, 10]];
-      const p = opts[o.rng.int(0, opts.length - 1)];
-      p.forEach((s, i) => chordNotes(s, i === p.length - 1 ? 1.4 : 0.9, i === 0 ? 0.85 : 0.7));
-      break;
-    }
-    case "arp": {
-      const notes = [...voicing, voicing[0] + 12, voicing[1] + 12];
-      const dir = o.rng.int(0, 2);
-      const seq = dir === 0 ? notes : dir === 1 ? [...notes].reverse() : [...notes, ...notes.slice(1, -1).reverse()];
-      const step = o.pulse > 40 ? 1 : 2;
-      let k = 0;
-      for (let s = 0; s < 16; s += step) push({ stem: "harmony", inst, t: t0 + sb(s), dur: step * 0.25 * 0.9, midi: seq[k++ % seq.length], vel: o.vel * (s % 4 === 0 ? 0.55 : 0.4) });
-      break;
-    }
-    default:
-      chordNotes(0, 3.9, 0.9);
-  }
-}
-
-/* ---------------- melody ---------------- */
-
-type MotifNote = { step: number; len: number; deg: number };
-type MelNote = { t: number; dur: number; midi: number; vel: number; glide?: number };
-
-function makeMelodyKit(rng: Rng, src: GenreProfile, style: MelodyStyle, mode: ModeId, family: "major" | "minor") {
-  const modeSteps = MODES[mode].steps;
-  const scale =
-    src.lead.scale === "pentatonic"
-      ? family === "major"
-        ? [0, 2, 4, 7, 9]
-        : [0, 3, 5, 7, 10]
-      : src.lead.scale === "blues"
-        ? [0, 3, 5, 6, 7, 10]
-        : modeSteps;
-
-  const motifs = new Map<string, MotifNote[]>();
-  const melodyStyleRef = style;
-
-  const makeMotif = (density: number, lift: number, r: Rng): MotifNote[] => {
-    const steps = 32; // 2 bars of 16ths
-    const onsets: number[] = [];
-    for (let s = 0; s < steps; s++) {
-      const beatPos = s % 4;
-      let p = 0;
-      switch (style) {
-        case "straight":
-          p = beatPos === 0 ? 0.75 : beatPos === 2 ? 0.55 : 0.05;
-          break;
-        case "syncopated":
-          p = beatPos === 0 ? 0.45 : beatPos === 2 ? 0.55 : beatPos === 3 ? 0.4 : 0.2;
-          break;
-        case "sparse":
-          p = s % 8 === 0 ? 0.55 : beatPos === 2 ? 0.22 : beatPos === 3 ? 0.12 : 0.02;
-          break;
-        case "arp":
-          p = beatPos % 2 === 0 ? 0.95 : 0.35;
-          break;
-        case "long":
-          p = s % 8 === 0 ? 0.55 : s % 4 === 0 ? 0.12 : 0;
-          break;
-        case "bluesy":
-          p = beatPos === 0 ? 0.55 : beatPos === 2 ? 0.6 : 0.08;
-          if (s >= 16 && s < 28) p *= 0.35; // call... then space for response
-          break;
-        case "riff":
-          p = beatPos === 0 ? 0.85 : beatPos === 2 ? 0.7 : beatPos === 3 ? 0.35 : 0.25;
-          break;
-      }
-      p = Math.min(0.97, p * (0.55 + density));
-      if (r.chance(p)) onsets.push(s);
-    }
-    if (!onsets.length || onsets[0] > 6) onsets.unshift(r.chance(0.7) ? 0 : 2);
-    // ensure some breathing room at the end of the 2-bar phrase
-    const trimmed = onsets.filter((s) => s < 30);
-    const out: MotifNote[] = [];
-    let deg = lift + r.int(0, 2);
-    trimmed.forEach((s, i) => {
-      const nextS = i + 1 < trimmed.length ? trimmed[i + 1] : 32;
-      const len = Math.max(1, Math.min(nextS - s, style === "long" ? 16 : 8));
-      if (i > 0) {
-        const moves = style === "arp" ? [-2, 2, 2, -2, 4, -4, 1] : style === "riff" ? [0, 0, -1, 1, 2, -2, 3] : [-1, 1, -1, 1, -2, 2, 3, -3, 1, -1];
-        deg += r.pick(moves);
-        // no more than two of the same scale step in a row (riffs may repeat)
-        if (style !== "riff" && out.length >= 2 && out[out.length - 1].deg === deg && out[out.length - 2].deg === deg) deg += r.chance(0.5) ? 1 : -1;
-        // pull back toward center
-        if (deg > lift + 5) deg -= 2;
-        if (deg < lift - 4) deg += 2;
-      }
-      out.push({ step: s, len, deg });
-    });
-    return out;
-  };
-
-  const vary = (m: MotifNote[], r: Rng, endDeg: number): MotifNote[] => {
-    const v = m.map((n) => ({ ...n }));
-    const k = Math.min(v.length, r.int(1, 3));
-    for (let i = v.length - k; i < v.length; i++) v[i].deg += r.pick([-2, -1, 1, 2]);
-    if (v.length) {
-      v[v.length - 1].deg = endDeg;
-      v[v.length - 1].len = Math.max(v[v.length - 1].len, 32 - v[v.length - 1].step);
-    }
-    return v;
-  };
-
-  const degToMidi = (deg: number, keyRoot: number, center: number) => {
-    const n = scale.length;
-    let base = center - ((((center - keyRoot) % 12) + 12) % 12); // key root at/below center
-    if (center - base > 6) base += 12;
-    const oct = Math.floor(deg / n);
-    const idx = ((deg % n) + n) % n;
-    return base + scale[idx] + oct * 12;
-  };
-
-  return {
-    section(
-      sec: Section,
-      o: { chordAt: (bar: number) => Chord; keyRoot: number; center: number; sb: (s: number) => number; density: number }
-    ): MelNote[] {
-      const kind = sec.type === "chorus" || sec.type === "drop" ? "hook" : sec.type === "solo" ? "solo" : sec.type === "bridge" ? "bridge" : "verse";
-      const r = rng.fork(kind + (kind === "solo" ? sec.startBar : ""));
-      const density = Math.max(0.1, Math.min(1, o.density + (kind === "hook" ? 0.15 : kind === "solo" ? 0.3 : 0)));
-      const lift = kind === "hook" ? 3 : kind === "bridge" ? 1 : 0;
-      const key = kind;
-      if (!motifs.has(key) || kind === "solo") motifs.set(key, makeMotif(density, lift, r));
-      const A = motifs.get(key)!;
-      const B = makeMotif(density * 0.9, lift + 2, rng.fork(kind + "B"));
-      const out: MelNote[] = [];
-      const phrases = Math.max(1, Math.floor(sec.bars / 2));
-      let longNotes = sec.type === "breakdown" || sec.type === "intro";
-      if (sec.type === "outro") longNotes = true;
-      for (let p = 0; p < phrases; p++) {
-        if (sec.type === "outro" && p >= 1) break;
-        if (sec.type === "intro" && p < phrases - 1) continue; // only a hint at the end of intro
-        const pos = p % 4;
-        let motif = pos === 1 ? vary(A, r.fork("v" + p), 0) : pos === 3 ? vary(B, r.fork("b" + p), 0) : A;
-        if (kind === "solo") motif = makeMotif(density, lift + (p % 2), r.fork("s" + p));
-        if (longNotes) motif = motif.filter((n) => n.step % 8 === 0).map((n) => ({ ...n, len: Math.max(n.len, 8) }));
-        for (const n of motif) {
-          const bar = sec.startBar + p * 2 + Math.floor(n.step / 16);
-          if (bar >= sec.startBar + sec.bars) continue;
-          const stepInBar = n.step % 16;
-          const chord = o.chordAt(bar);
-          const chordPcs = chordPitchClasses(chord);
-          let midi = degToMidi(n.deg, o.keyRoot, o.center);
-          const strong = stepInBar % 8 === 0 || n.len >= 6;
-          const pc = (((midi - o.keyRoot) % 12) + 12) % 12;
-          const clashes = chordPcs.some((c) => Math.abs(((pc - c + 18) % 12) - 6) === 5 && !chordPcs.includes(pc));
-          if (strong || clashes) midi = snapToSet(midi, o.keyRoot, chordPcs);
-          while (midi > o.center + 12) midi -= 12;
-          while (midi < o.center - 10) midi += 12;
-          // break up static lines: a third identical pitch on a weak beat moves to a neighbouring chord tone
-          const k = out.length;
-          if (melodyStyleRef !== "riff" && k >= 2 && out[k - 1].midi === midi && out[k - 2].midi === midi) {
-            const alt = snapToSet(midi + (r.chance(0.5) ? 3 : -3), o.keyRoot, strong ? chordPcs : scale.map((s) => s % 12));
-            if (alt !== midi) midi = alt;
-          }
-          const t = bar * 4 + o.sb(stepInBar);
-          const dur = Math.max(0.2, n.len * 0.25 * (longNotes ? 0.98 : 0.88));
-          const bend = src.lead.scale === "blues" && n.len >= 4 && r.chance(0.3) ? 1 : undefined;
-          out.push({ t, dur, midi: bend ? midi - 1 : midi, vel: (stepInBar % 4 === 0 ? 0.85 : 0.7) * r.range(0.9, 1), glide: bend });
-        }
-      }
-      // land the section on the chord root
-      if (out.length) {
-        const last = out[out.length - 1];
-        const lastBar = Math.floor(last.t / 4);
-        const ch = o.chordAt(lastBar);
-        last.midi = snapToSet(last.midi, o.keyRoot, [ch.root % 12, chordPitchClasses(ch)[1]]);
-        const secEnd = (sec.startBar + sec.bars) * 4;
-        last.dur = Math.max(last.dur, Math.min(3, secEnd - last.t - 0.1));
-      }
-      return out;
+      swing: R.swing,
     },
   };
 }

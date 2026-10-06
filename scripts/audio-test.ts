@@ -154,7 +154,7 @@ function analyze(mono: Float32Array, sr: number, bpmHint: number) {
 function sectionRms(mono: Float32Array, sr: number, song: ReturnType<typeof compose>) {
   const beatSec = 60 / song.bpm;
   return song.sections.map((s) => {
-    const a = Math.floor((0.05 + s.startBar * 4 * beatSec) * sr), b = Math.floor((0.05 + (s.startBar + s.bars) * 4 * beatSec) * sr);
+    const a = Math.floor((0.05 + s.startBeat * beatSec) * sr), b = Math.floor((0.05 + (s.startBeat + s.beats) * beatSec) * sr);
     let sum = 0;
     for (let i = a; i < b && i < mono.length; i++) sum += mono[i] * mono[i];
     return `${s.label.replace(/ /g, "")}:${(20 * Math.log10(Math.sqrt(sum / Math.max(1, b - a)) + 1e-9)).toFixed(0)}`;

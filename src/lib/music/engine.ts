@@ -1,5 +1,5 @@
 /** Realtime playback: lookahead scheduler over a composed Song, sharing the render graph with export. */
-import { buildGraph, scheduleEvent, renderSong, type Graph, type MixParams } from "./render";
+import { buildGraph, scheduleEvent, renderSong, autoAt, type Graph, type MixParams } from "./render";
 import { STEM_IDS, type Song, type StemId } from "./compose";
 import { encodeWav, makeZip } from "./files";
 
@@ -16,6 +16,7 @@ export class MusicEngine {
   private playing = false;
   private startTime = 0;
   private cursor = { loop: 0, i: 0 };
+  private autoCursor = { loop: 0, i: 0 };
   private scheduledUntil = 0;
   private timer: ReturnType<typeof setInterval> | null = null;
   private session: Record<StemId, GainNode> | null = null;
@@ -81,6 +82,22 @@ export class MusicEngine {
     return lo;
   }
 
+  private autoIndexAt(beat: number) {
+    const pts = this.song!.automation;
+    let i = 0;
+    while (i < pts.length && pts[i].beat <= beat) i++;
+    return i;
+  }
+
+  /** Reset per-section production automation (filter / width / saturation / delay) to a beat. */
+  private resetAutomation(beat: number) {
+    if (!this.ctx || !this.graph || !this.song) return;
+    const now = this.ctx.currentTime;
+    this.graph.cancelAuto(now);
+    this.graph.setAuto(autoAt(this.song, beat), now);
+    this.autoCursor = { loop: 0, i: this.autoIndexAt(beat) };
+  }
+
   /** Start (or resume) playback at a beat position. */
   play(fromBeat?: number) {
     if (!this.ctx || !this.graph || !this.song) return;
@@ -88,10 +105,12 @@ export class MusicEngine {
     this.newSession();
     const beat = fromBeat ?? this.pausedAt;
     const beatSec = 60 / this.song.bpm;
+    this.graph.applyFx(this.song.spec.production.fx, this.song.spec.production.mix, this.song.bpm);
     this.graph.setTempo(this.song.bpm);
     if (this.mix) this.graph.setMix(this.mix);
     this.startTime = this.ctx.currentTime + 0.08 - beat * beatSec;
     this.cursor = { loop: 0, i: this.indexAt(beat) };
+    this.resetAutomation(beat);
     if (this.cursor.i >= this.song.events.length) this.cursor = { loop: 1, i: 0 };
     this.scheduledUntil = this.ctx.currentTime;
     this.playing = true;
@@ -127,9 +146,11 @@ export class MusicEngine {
     const pos = ((raw % old.totalBeats) + old.totalBeats) % old.totalBeats;
     const newPos = old.totalBeats === song.totalBeats ? pos : (pos / old.totalBeats) * song.totalBeats;
     const beatSec = 60 / song.bpm;
+    this.graph.applyFx(song.spec.production.fx, song.spec.production.mix, song.bpm);
     this.graph.setTempo(song.bpm);
     this.startTime = this.scheduledUntil - newPos * beatSec;
     this.cursor = { loop: 0, i: this.indexAt(newPos) };
+    this.resetAutomation(newPos);
     if (this.cursor.i >= song.events.length) this.cursor = { loop: 1, i: 0 };
   }
 
@@ -153,6 +174,22 @@ export class MusicEngine {
         this.cursor.loop++;
       }
     }
+    // production automation (same clock, same loop wrap)
+    const pts = song.automation;
+    guard = 0;
+    while (pts.length && guard++ < 200) {
+      const p = pts[this.autoCursor.i];
+      const when = this.startTime + (this.autoCursor.loop * song.totalBeats + p.beat) * beatSec;
+      if (when >= horizon) break;
+      if (when >= ctx.currentTime) this.graph.rampAuto(p, when);
+      this.autoCursor.i++;
+      if (this.autoCursor.i >= pts.length) {
+        this.autoCursor.i = 0;
+        this.autoCursor.loop++;
+        const loopStart = this.startTime + this.autoCursor.loop * song.totalBeats * beatSec;
+        if (loopStart >= ctx.currentTime) this.graph.setAuto(autoAt(song, 0), loopStart);
+      }
+    }
     this.scheduledUntil = horizon;
   };
 
@@ -164,8 +201,18 @@ export class MusicEngine {
       const raw = (this.ctx.currentTime - this.startTime) / (60 / song.bpm);
       beat = ((raw % song.totalBeats) + song.totalBeats) % song.totalBeats;
     }
-    const bar = Math.floor(beat / 4);
-    const sectionIndex = Math.max(0, song.sections.findIndex((s) => bar >= s.startBar && bar < s.startBar + s.bars));
+    // bars can have different lengths (odd meters, mixed bars, ritard), so search the bar grid
+    const bs = song.barStarts;
+    let lo = 0;
+    let hi = Math.max(0, bs.length - 2);
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (bs[mid] <= beat) lo = mid;
+      else hi = mid - 1;
+    }
+    const bar = lo;
+    let sectionIndex = 0;
+    for (let i = 0; i < song.sections.length; i++) if (beat >= song.sections[i].startBeat) sectionIndex = i;
     return { beat, bar, sectionIndex, chord: song.barChords[bar] ?? "", progress: beat / song.totalBeats };
   }
 

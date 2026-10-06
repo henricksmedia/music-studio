@@ -307,9 +307,11 @@ function drum(v: VoiceCtx, ev: NoteEvent, when: number, out: AudioNode) {
       break;
     }
     case "perc": {
-      const o = osc(v, "sine", 330, when, when + 0.25);
-      o.frequency.exponentialRampToValueAtTime(220, when + 0.08);
-      const g = envGain(v, pan(v, out, 0.35), when, 0.01, vel * 0.35, { a: 0.002, d: 0.15, s: 0, r: 0.05 });
+      // pitched when the composer gives a note (polyrhythm layers), otherwise a conga-ish blip
+      const f0 = ev.midi > 0 ? 440 * Math.pow(2, (ev.midi - 69) / 12) : 330;
+      const o = osc(v, ev.midi > 0 ? "triangle" : "sine", f0 * 1.5, when, when + 0.25);
+      o.frequency.exponentialRampToValueAtTime(f0, when + (ev.midi > 0 ? 0.02 : 0.08));
+      const g = envGain(v, pan(v, out, ev.midi > 70 ? 0.35 : -0.35), when, 0.01, vel * (ev.midi > 0 ? 0.3 : 0.35), { a: 0.002, d: ev.midi > 0 ? 0.18 : 0.15, s: 0, r: 0.05 });
       o.connect(g);
       break;
     }

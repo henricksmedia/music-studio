@@ -434,9 +434,10 @@ export function resolvePlan(p: ParseResult, edits: PlanEdits = {}): Plan {
   let bpm = lo + rng() * (hi - lo) + p.tempoDelta + moodTempo;
   const slack = Math.abs(p.tempoDelta) >= 14 ? 18 : 8; // explicit "fast"/"slow" may leave the genre range
   bpm = Math.max(lo - slack, Math.min(hi + slack, bpm));
-  if (style.wild && style.edm && !p.bpmExplicit) {
+  if (style.edm && !p.bpmExplicit && (style.wild || p.style.edm)) {
+    // Go wild, or a named substyle in the prompt ("psybient", "future garage"): use its tempo range
     const [a, b] = EDM[style.edm].bpm;
-    bpm = a + rng() * (b - a);
+    bpm = a + rng() * (b - a) + p.tempoDelta * 0.3;
   }
   bpm = Math.round(Math.max(55, Math.min(180, p.bpmExplicit ?? bpm)));
   if (edits.bpm) bpm = edits.bpm;
