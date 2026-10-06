@@ -260,8 +260,9 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   const targetSec = formRng.range(62, 84);
   let sections: Section[] = [];
   if (form === "blues") {
-    const n = Math.max(1, Math.min(3, Math.round((targetSec - 6 * barSec) / (12 * barSec))));
-    const list: [SectionType, number][] = [["intro", 4]];
+    // always at least a verse chorus + a solo chorus; slow blues gets a shorter intro so it stays near 90s
+    const n = Math.max(2, Math.min(3, Math.round((targetSec - 6 * barSec) / (12 * barSec))));
+    const list: [SectionType, number][] = [["intro", 24 * barSec > 70 ? 2 : 4]];
     for (let i = 0; i < n; i++) list.push([i % 2 === 1 ? "solo" : "verse", 12]);
     list.push(["outro", 2]);
     let bar = 0;

@@ -382,7 +382,7 @@ function tonal(v: VoiceCtx, ev: NoteEvent, when: number, beatSec: number, out: A
       break;
     }
     case "808": {
-      const g = envGain(v, dest, when, dur, vel * 0.3, { a: 0.004, d: Math.max(0.4, dur), s: 0.6, r: 0.12 });
+      const g = envGain(v, dest, when, dur, vel * 0.22, { a: 0.004, d: Math.max(0.4, dur), s: 0.6, r: 0.12 });
       const sh = c.createWaveShaper();
       sh.curve = v.shaperCurve;
       const o = osc(v, "sine", f * 1.8, when, end(0.15));

@@ -149,7 +149,9 @@ const TEMPO_LEX: LexEntry[] = [
 /** Instruments. */
 const INST_LEX: LexEntry[] = [
   { re: w("banjo|banjos"), genres: { folk: 0.5, countryRock: 0.4 }, lead: "banjo" },
-  { re: w("acoustic guitar|guitars?|strumming|strummed|fingerpicking|fingerpicked"), genres: { folk: 0.3, countryRock: 0.3, rock: 0.2 }, harmony: "strumGuitar" },
+  { re: /\b(distorted|heavy|dirty|fuzzy|fuzz|crunchy|overdriven|loud|electric|metal) guitars?\b|\bpower chords?\b|\briffs?\b|\bshredding\b/g, genres: { rock: 0.5, countryRock: 0.15 }, harmony: "distGuitar", lead: "distGuitar", dims: { grit: 15 } },
+  { re: /\bacoustic guitars?\b|\bstrumm(ing|ed)\b|\bfingerpick(ing|ed)\b/g, genres: { folk: 0.3, countryRock: 0.3, rock: 0.1 }, harmony: "strumGuitar" },
+  { re: /(?<!(acoustic|distorted|heavy|dirty|fuzzy|fuzz|crunchy|overdriven|loud|electric|metal|lead|slide|steel) )\bguitars?\b/g, genres: { folk: 0.2, countryRock: 0.25, rock: 0.25, blues: 0.1 } },
   { re: w("electric guitar|lead guitar|guitar solo|shred|shredding|slide guitar|steel guitar|pedal steel"), genres: { rock: 0.4, countryRock: 0.3, blues: 0.3 }, lead: "distGuitar" },
   { re: w("twangy|twang|telecaster|chicken pickin"), genres: { countryRock: 0.5 }, lead: "guitar" },
   { re: w("fiddle|violin|violins|cello|viola"), genres: { folk: 0.3, cinematic: 0.4, countryRock: 0.2 }, lead: "strings" },
