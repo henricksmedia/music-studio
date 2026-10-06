@@ -95,7 +95,7 @@ const LAYERS: Record<SectionType, LayerLevels> = {
   drop: { drums: 1, bass: 1, harmony: 1, lead: 1, texture: 0.7 },
   dropout: { drums: 0.5, bass: 0.8, harmony: 0.6, lead: 0.7, texture: 1 },
   breakdown: { drums: 0.4, bass: 0.45, harmony: 1, lead: 0.6, texture: 1 },
-  bridge: { drums: 0.35, bass: 0.6, harmony: 0.6, lead: 0.5, texture: 0.8 },
+  bridge: { drums: 0.35, bass: 0.42, harmony: 0.6, lead: 0.5, texture: 0.8 },
   solo: { drums: 0.9, bass: 0.9, harmony: 0.75, lead: 1, texture: 0.5 },
   outro: { drums: 0.55, bass: 0.65, harmony: 0.75, lead: 0.5, texture: 1 },
 };

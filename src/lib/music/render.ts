@@ -367,17 +367,20 @@ export function scheduleEvent(g: Graph, ev: NoteEvent, when: number, beatSec: nu
   if (ev.stem === "drums" && ev.inst === "kick" && ev.vel > 0.4) pumpKick(g, when, beatSec);
 }
 
-/** Sidechain duck on a kick. Kicks closer than 60 ms to the previous duck are skipped so the
- *  gain automation never gets overlapping/out-of-order target events. */
+/** Sidechain duck on a kick, built from explicit linear ramps (setTargetAtTime misbehaves in the offline
+ *  test renderer). A kick that lands inside the previous duck's envelope is skipped, so ramps never overlap. */
 export function pumpKick(g: Graph, when: number, beatSec: number) {
   if (!g.pumpOn) return;
+  const len = 0.03 + beatSec * 0.42;
   const last = pumpLast.get(g) ?? -Infinity;
-  if (when >= last && when < last + 0.06) return;
+  if (when < last + len + 0.002) return;
   pumpLast.set(g, when);
   for (const id of PUMPED) {
     const p = g.stems[id].pump.gain;
-    p.setTargetAtTime(0.38, when, 0.004);
-    p.setTargetAtTime(1, when + 0.03, beatSec * 0.14);
+    p.setValueAtTime(1, when);
+    p.linearRampToValueAtTime(0.38, when + 0.008);
+    p.setValueAtTime(0.38, when + 0.03);
+    p.linearRampToValueAtTime(1, when + len);
   }
 }
 const pumpLast = new WeakMap<Graph, number>();
