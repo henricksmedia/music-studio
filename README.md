@@ -17,10 +17,44 @@ DAWs make you think in tracks, plugins, and timelines before you’ve decided wh
 
 Shaping is powerful. The UI just doesn’t make you become an engineer.
 
+## How it works (all local)
+
+Everything runs in the browser with the Web Audio API. There are no cloud music APIs, no samples and no network calls for sound.
+
+1. **Understand**: `src/lib/music/parse.ts` maps a large set of words and synonyms onto genre weights, moods, tempo, key, instruments, textures and nudge positions. It covers genres, moods (dark, lonely, dreamy, aggressive…), tempo words, instruments (banjo, 808, harmonica, strings…) and places or eras (80s, desert, campfire, warehouse…).
+   - Blends like "lonely country rock **with a trance pulse**" route the rhythm section to trance and keep the song form, chords and melody from country rock.
+   - Prompts with no recognized words still get a distinct style, seeded from a hash of the text.
+2. **Plan**: genres, moods, BPM, key/mode and instruments show up as editable chips ("say it OR shape it").
+3. **Compose**: `src/lib/music/compose.ts` turns the plan into a 60–90 s arrangement:
+   - sections (intro / verse / build / chorus or drop / breakdown / bridge / solo / outro), each with its own layer levels and drum fills, crashes, risers and impacts
+   - chord progressions with voice leading
+   - a motif-based melody that stays in key and lands on chord tones
+   - genre-specific bass lines and drum patterns with swing
+4. **Synthesize**: `src/lib/music/instruments.ts` builds every sound from oscillators, noise and filters:
+   - Karplus–Strong strings (guitar, banjo, upright bass)
+   - 808s, organ, piano, e-piano, pads, supersaws, strings and brass
+   - a formant "voice" lead and harmonica
+   - textures: vinyl, rain, wind, drones
+5. **Mix**: `src/lib/music/render.ts` has per-stem buses, reverb and delay sends, grit saturation, a glue compressor, a limiter and a soft clipper. Live playback and WAV export share the exact same graph.
+
+### Genres
+House · Techno · Synthwave · Ambient · Trance / cyber-trance · Drum & bass · Folk / acoustic · Country rock · Rock · Blues · Lo-fi hip hop · Hip hop (boom bap) · Trap · Cinematic / orchestral · Jazz.
+
+Each genre has its own tempo range, swing, drum patterns, progressions, modes, bass style, chord instrument and rhythm, lead instrument and textures.
+
+### Nudges
+- **Instant mix moves**: Space, Bass, Grit, Vocal character tone.
+- **Recompose while playing, keeping your place in the song**: Drum feel (density, ghost notes, fills), Pulse (bass and arp drive), Genre pull (swaps organic and electronic instruments at the extremes), Vocal character (airy flute ↔ synth voice lead).
+
+**Surprise** rerolls the melody, groove and arrangement but keeps the vibe.
+
+### Export
+**Mix (.wav)** or **Mix + stems (.zip)**: drums, bass, chords, lead and texture, rendered offline on the device at full length, 44.1 kHz/16-bit. The files are sample-aligned.
+
 ## Stack
 
-- Next.js (App Router) + TypeScript + Tailwind
-- **Web Audio API only** for generation (on-device). No ElevenLabs / Suno / MusicAPI.
+- Next.js (App Router, static export) + TypeScript + Tailwind
+- Web Audio API only
 - PWA: `manifest.webmanifest` + service worker for Add to Home Screen
 
 ## Run locally
@@ -33,31 +67,25 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Production build:
+## Tests (offline renders, no browser needed)
 
 ```bash
-npm run build
-npm start
+npx tsx scripts/plan-check.ts                    # what each prompt is understood as
+npx tsx scripts/audio-test.ts [--wav] ["prompt"] # render + measure tempo/key/loudness/spectrum/clipping per section
+npx tsx scripts/stem-balance.ts "prompt" ...     # per-stem levels in the chorus
+node scripts/browser-test.mjs http://localhost:3020/   # headless Chrome UI + export smoke test (serve out/ first)
 ```
 
 ## Phone testing
 
-1. Run `npm run dev` (or deploy a preview).
-2. On the same network, open the machine’s LAN URL from your phone (Next prints it), **or** use a tunnel / Vercel preview once the repo is on GitHub.
-3. Safari/Chrome → Share → **Add to Home Screen** for the PWA shell.
+Open the live URL below, then go to Share → **Add to Home Screen**. Browsers only start audio after a tap (Generate / Play). On iPhone, turn the ringer switch off silent, because iOS mutes Web Audio in silent mode.
 
-Audio needs a user tap (Generate / Play) — browsers require a gesture to unlock sound.
+## Limits (for now)
 
-## What’s real vs stubbed
-
-| Piece | Status |
-|--------|--------|
-| Intent → coherent local loop | **Real** (keyword lean + dimensions drive Web Audio) |
-| Play / pause + waveform | **Real** |
-| Live nudge rebuild | **Real** |
-| Mix + stem WAV export | **Real** (short local Offline render) |
-| Full ML / sample-accurate composition | **Not yet** — next step is on-device or self-hosted models, still no cloud music APIs |
-| Cloud sync of projects | **Not yet** — local browser session for now |
+- Synthesized approximations, not recorded instruments. There are no real vocals; the "voice" lead is a formant synth.
+- Prompt understanding is rule-based with a big synonym table, not a language model.
+- Exporting a 60–90 s mix takes about 10–20 s on a laptop, and the stems zip takes several times longer. Phones are slower.
+- Projects aren't saved yet. A song lives in the open tab.
 
 ## Live site (GitHub Pages)
 

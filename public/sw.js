@@ -1,5 +1,5 @@
 /* Minimal PWA service worker. Paths are relative to this file, so it works at / and /music-studio/. */
-const CACHE = "music-studio-v2";
+const CACHE = "music-studio-v3";
 const PRECACHE = ["./", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
