@@ -2,6 +2,8 @@
  * Prompt understanding — local, rule-based, synonym-rich.
  * Maps words onto genre weights, moods, tempo, key, instruments, textures and dimension hints.
  */
+import { parseStyle } from "./parseStyle";
+import { EDM, PROGRESSIONS, mergeOverrides, type StyleOverrides } from "./spec";
 import { GENRES, GENRE_IDS, type GenreId, type LeadInst, type HarmonyInst, type BassTimbre, type TextureId, type DrumKit } from "./genres";
 import { MODES, MODE_IDS, type ModeId } from "./theory";
 import { hashString, makeRng } from "./rng";
@@ -204,6 +206,8 @@ export type ParseResult = {
   textures: TextureId[];
   heard: string[];
   fallback: boolean;
+  style: StyleOverrides;
+  modeExplicit?: ModeId;
 };
 
 const NOTE_PC: Record<string, number> = { c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11 };
@@ -219,8 +223,9 @@ function normalize(text: string) {
 }
 
 export function parsePrompt(raw: string): ParseResult {
-  const text = normalize(raw);
-  const hash = hashString(text || "silence");
+  const hash = hashString(normalize(raw) || "silence");
+  const sp = parseStyle(raw, hash);
+  const text = normalize(sp.stripped);
   const res: ParseResult = {
     text: raw,
     hash,
@@ -234,6 +239,8 @@ export function parsePrompt(raw: string): ParseResult {
     textures: [],
     heard: [],
     fallback: false,
+    style: sp.style,
+    modeExplicit: sp.mode,
   };
   const addDims = (d?: Partial<Dimensions>) => {
     if (!d) return;
@@ -294,6 +301,8 @@ export function parsePrompt(raw: string): ParseResult {
   scan(MOOD_LEX, 1);
   scan(TEMPO_LEX, 1);
   scan(INST_LEX, 0.8);
+
+  for (const h of sp.heard) if (!res.heard.includes(h)) res.heard.push(h);
 
   // "country rock" shouldn't also count as plain "rock" as strongly
   if (/country rock|southern rock/.test(text) && res.genreScores.rock) res.genreScores.rock *= 0.3;
@@ -376,6 +385,7 @@ export type Plan = {
   heard: string[];
   fallback: boolean;
   seed: number;
+  style: StyleOverrides;
 };
 
 export type PlanEdits = {
@@ -385,6 +395,7 @@ export type PlanEdits = {
   root?: number;
   mode?: ModeId;
   instruments?: ParseResult["instruments"];
+  style?: StyleOverrides;
 };
 
 export function topGenres(scores: Partial<Record<GenreId, number>>): { id: GenreId; weight: number }[] {
@@ -398,7 +409,12 @@ export function topGenres(scores: Partial<Record<GenreId, number>>): { id: Genre
 
 export function resolvePlan(p: ParseResult, edits: PlanEdits = {}): Plan {
   const rng = makeRng(p.hash);
-  const genres = edits.genres && edits.genres.length ? normalizeWeights(edits.genres) : topGenres(p.genreScores);
+  const style = mergeOverrides(p.style, edits.style);
+  let genres = edits.genres && edits.genres.length ? normalizeWeights(edits.genres) : topGenres(p.genreScores);
+  // a prompt-level "go wild" fusion brings its EDM partner into the blend
+  if (style.edm && !edits.genres && !genres.some((g) => g.id === EDM[style.edm!].genre)) {
+    genres = normalizeWeights([...genres.slice(0, 2), { id: EDM[style.edm].genre, weight: 0.45 }]);
+  }
   const primary = GENRES[genres[0].id];
   const moods = edits.moods ?? p.moods.slice(0, 3);
 
@@ -418,6 +434,10 @@ export function resolvePlan(p: ParseResult, edits: PlanEdits = {}): Plan {
   let bpm = lo + rng() * (hi - lo) + p.tempoDelta + moodTempo;
   const slack = Math.abs(p.tempoDelta) >= 14 ? 18 : 8; // explicit "fast"/"slow" may leave the genre range
   bpm = Math.max(lo - slack, Math.min(hi + slack, bpm));
+  if (style.wild && style.edm && !p.bpmExplicit) {
+    const [a, b] = EDM[style.edm].bpm;
+    bpm = a + rng() * (b - a);
+  }
   bpm = Math.round(Math.max(55, Math.min(180, p.bpmExplicit ?? bpm)));
   if (edits.bpm) bpm = edits.bpm;
 
@@ -429,6 +449,13 @@ export function resolvePlan(p: ParseResult, edits: PlanEdits = {}): Plan {
   if (p.keyExplicit?.mode) {
     const fam = MODES[p.keyExplicit.mode].family;
     if (MODES[mode].family !== fam) mode = p.keyExplicit.mode;
+  }
+  if (p.modeExplicit) mode = p.modeExplicit;
+  // a named progression brings its home mode unless the mode was set explicitly
+  const np = style.progression && style.progression !== "genre" ? PROGRESSIONS[style.progression] : null;
+  if (np && !p.modeExplicit && !edits.mode) {
+    if (np.mode) mode = np.mode;
+    else if (MODES[mode].family !== np.family) mode = np.family === "major" ? "ionian" : "aeolian";
   }
   if (edits.mode) mode = edits.mode;
 
@@ -459,6 +486,7 @@ export function resolvePlan(p: ParseResult, edits: PlanEdits = {}): Plan {
     heard: p.heard,
     fallback: p.fallback,
     seed: p.hash,
+    style,
   };
 }
 
