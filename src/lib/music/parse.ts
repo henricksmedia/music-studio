@@ -5,6 +5,7 @@
 import { parseStyle } from "./parseStyle";
 import { EDM, PROGRESSIONS, mergeOverrides, type StyleOverrides } from "./spec";
 import { GENRES, GENRE_IDS, type GenreId, type LeadInst, type HarmonyInst, type BassTimbre, type TextureId, type DrumKit } from "./genres";
+import { TEMPO_LIMITS } from "./styles";
 import { MODES, MODE_IDS, type ModeId } from "./theory";
 import { hashString, makeRng } from "./rng";
 import type { Dimensions } from "../types";
@@ -439,7 +440,7 @@ export function resolvePlan(p: ParseResult, edits: PlanEdits = {}): Plan {
     const [a, b] = EDM[style.edm].bpm;
     bpm = a + rng() * (b - a) + p.tempoDelta * 0.3;
   }
-  bpm = Math.round(Math.max(55, Math.min(180, p.bpmExplicit ?? bpm)));
+  bpm = Math.round(Math.max(TEMPO_LIMITS.min, Math.min(TEMPO_LIMITS.max, p.bpmExplicit ?? bpm)));
   if (edits.bpm) bpm = edits.bpm;
 
   // Mode: primary profile preference + mood boosts

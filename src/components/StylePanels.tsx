@@ -34,7 +34,7 @@ function DebouncedSlider({ label, hint, value, onCommit }: { label: string; hint
         }}
         className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/15 accent-indigo-400"
       />
-      <span className="text-[11px] leading-snug text-white/45">{hint}</span>
+      <span className="text-[11px] leading-snug text-white/60">{hint}</span>
     </label>
   );
 }
@@ -48,7 +48,7 @@ export function GroovePanel({ song, onEdit }: Props) {
   return (
     <Collapsible title="Groove" subtitle={`${song.meterLabel} · ${FEELS[R.feel].label} · ${R.tricks.filter((t) => t !== "humanize").map((t) => TRICKS[t].label).slice(0, 3).join(", ") || "plain"}`} testId="groove-panel">
       <div>
-        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/45">Meter</p>
+        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/60">Meter</p>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {METER_IDS.map((m) => (
             <ExplainChip key={m} label={METERS[m].label} plain={METERS[m].plain} active={R.meter === m} onClick={() => st({ meter: m, grouping: undefined })} />
@@ -56,7 +56,7 @@ export function GroovePanel({ song, onEdit }: Props) {
         </div>
         {meter.groupings.length > 1 && R.meter !== "mixed" && (
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] text-white/45">Accent groups:</span>
+            <span className="text-[11px] text-white/60">Accent groups:</span>
             {meter.groupings.map((g) => (
               <button key={g.join("+")} type="button" className={chipCls(R.grouping.join() === g.join())} onClick={() => st({ grouping: g })}>
                 {g.join("+")}
@@ -75,7 +75,7 @@ export function GroovePanel({ song, onEdit }: Props) {
         )}
       </div>
       <div>
-        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/45">Feel</p>
+        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/60">Feel</p>
         <div className="grid grid-cols-3 gap-1.5">
           {(Object.keys(FEELS) as FeelId[]).map((f) => (
             <ExplainChip key={f} label={FEELS[f].label} plain={FEELS[f].plain} active={R.feel === f} onClick={() => st({ feel: f })} />
@@ -90,7 +90,7 @@ export function GroovePanel({ song, onEdit }: Props) {
       </div>
       {groups.map((g) => (
         <div key={g}>
-          <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/45">{GROUP_LABEL[g]}</p>
+          <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/60">{GROUP_LABEL[g]}</p>
           <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
             {TRICK_IDS.filter((t) => TRICKS[t].group === g).map((t) => (
               <ExplainChip key={t} label={`${on(t) ? "✓ " : ""}${TRICKS[t].label}`} plain={TRICKS[t].plain} active={on(t)} onClick={() => st({ tricks: { [t]: !on(t) } })} />
@@ -135,7 +135,7 @@ export function HarmonyPanel({ song, onEdit }: Props) {
   return (
     <Collapsible title="Harmony" subtitle={`${NOTE_NAMES[song.keyRoot]} ${MODE_INFO[song.mode].name} · ${song.progressionLabel}`} testId="harmony-panel">
       <div>
-        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/45">Mode (the color of the scale)</p>
+        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/60">Mode (the color of the scale)</p>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {MODE_IDS.map((m) => (
             <ExplainChip key={m} label={MODE_INFO[m].name} plain={MODE_INFO[m].plain} active={song.mode === m} onClick={() => onEdit({ mode: m })} />
@@ -143,7 +143,7 @@ export function HarmonyPanel({ song, onEdit }: Props) {
         </div>
       </div>
       <div>
-        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/45">Chord color</p>
+        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/60">Chord color</p>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
           {(Object.keys(CHORD_COLORS) as ChordColorId[]).map((c) => (
             <ExplainChip key={c} label={CHORD_COLORS[c].label} plain={CHORD_COLORS[c].plain} active={H.chordColor === c} onClick={() => st({ chordColor: c })} />
@@ -151,7 +151,7 @@ export function HarmonyPanel({ song, onEdit }: Props) {
         </div>
       </div>
       <div>
-        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/45">Progression</p>
+        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/60">Progression</p>
         <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
           <ExplainChip label="Style's own" plain="Let the genre pick its usual changes." active={H.progression === "genre"} onClick={() => st({ progression: "genre" })} />
           {PROGRESSION_IDS.map((p) => (
@@ -160,7 +160,7 @@ export function HarmonyPanel({ song, onEdit }: Props) {
         </div>
       </div>
       <div>
-        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/45">Harmony tricks</p>
+        <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-white/60">Harmony tricks</p>
         <div className="grid grid-cols-2 gap-1.5">
           {(Object.keys(HARMONY_TRICKS) as (keyof typeof HARMONY_TRICKS)[]).map((k) => (
             <ExplainChip key={k} label={`${H[k] ? "✓ " : ""}${HARMONY_TRICKS[k].label}`} plain={HARMONY_TRICKS[k].plain} active={H[k]} onClick={() => st({ harmonyTricks: { [k]: !H[k] } })} />

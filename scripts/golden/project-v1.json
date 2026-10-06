@@ -1,0 +1,308 @@
+{
+ "format": "music-studio-project",
+ "version": 1,
+ "exportedAt": 1791244800000,
+ "project": {
+  "id": "p-golden",
+  "name": "Golden project",
+  "createdAt": 1791244800000,
+  "updatedAt": 1791244800000
+ },
+ "songs": [
+  {
+   "prompt": "dark techno warehouse at 3am",
+   "edits": {},
+   "locks": {},
+   "wild": false,
+   "variation": 0,
+   "dimensions": {
+    "space": 52,
+    "bass": 65,
+    "drumFeel": 75,
+    "grit": 56,
+    "pulse": 75,
+    "vocalCharacter": 45,
+    "genrePull": 95
+   },
+   "tracks": {
+    "drums": {
+     "name": "Drums",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "bass": {
+     "name": "Bass",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "harmony": {
+     "name": "Chords",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "lead": {
+     "name": "Lead",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "texture": {
+     "name": "Texture",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    }
+   },
+   "id": "s-0",
+   "projectId": "p-golden",
+   "title": "prompt:dark techno warehouse at 3am",
+   "createdAt": 1791244800000,
+   "updatedAt": 1791244800000
+  },
+  {
+   "prompt": "delta blues",
+   "edits": {
+    "genres": [
+     {
+      "id": "blues",
+      "weight": 0.6035361364972778
+     },
+     {
+      "id": "trance",
+      "weight": 0.35406083094421775
+     }
+    ],
+    "bpm": 144,
+    "root": 7,
+    "mode": "harmonicMinor",
+    "style": {
+     "wild": true,
+     "edm": "psytrance"
+    }
+   },
+   "locks": {},
+   "wild": true,
+   "variation": 3,
+   "dimensions": {
+    "space": 51,
+    "bass": 57,
+    "drumFeel": 52,
+    "grit": 31,
+    "pulse": 55,
+    "vocalCharacter": 45,
+    "genrePull": 41
+   },
+   "tracks": {
+    "drums": {
+     "name": "Drums",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "bass": {
+     "name": "Bass",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "harmony": {
+     "name": "Chords",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "lead": {
+     "name": "Lead",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "texture": {
+     "name": "Texture",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    }
+   },
+   "id": "s-1",
+   "projectId": "p-golden",
+   "title": "wild:delta blues:101",
+   "createdAt": 1791244800000,
+   "updatedAt": 1791244800000
+  },
+  {
+   "prompt": "slow delta blues with harmonica",
+   "edits": {},
+   "locks": {},
+   "wild": false,
+   "variation": 2,
+   "dimensions": {
+    "space": 40,
+    "bass": 55,
+    "drumFeel": 45,
+    "grit": 35,
+    "pulse": 40,
+    "vocalCharacter": 45,
+    "genrePull": 10
+   },
+   "tracks": {
+    "drums": {
+     "name": "Drums",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 13
+    },
+    "bass": {
+     "name": "Bass",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": true,
+     "solo": false,
+     "seed": 0
+    },
+    "harmony": {
+     "name": "Chords",
+     "gainDb": -6,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "lead": {
+     "name": "Lead",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 31
+    },
+    "texture": {
+     "name": "Texture",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    }
+   },
+   "id": "s-2",
+   "projectId": "p-golden",
+   "title": "parts:slow delta blues with harmonica",
+   "createdAt": 1791244800000,
+   "updatedAt": 1791244800000
+  },
+  {
+   "prompt": "music",
+   "edits": {
+    "style": {
+     "edm": "ukg"
+    }
+   },
+   "locks": {},
+   "wild": false,
+   "variation": 0,
+   "dimensions": {
+    "space": 52,
+    "bass": 60,
+    "drumFeel": 66,
+    "grit": 52,
+    "pulse": 64,
+    "vocalCharacter": 45,
+    "genrePull": 44
+   },
+   "tracks": {
+    "drums": {
+     "name": "Drums",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "bass": {
+     "name": "Bass",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "harmony": {
+     "name": "Chords",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "lead": {
+     "name": "Lead",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    },
+    "texture": {
+     "name": "Texture",
+     "gainDb": 0,
+     "pan": 0,
+     "mute": false,
+     "solo": false,
+     "seed": 0
+    }
+   },
+   "id": "s-3",
+   "projectId": "p-golden",
+   "title": "edm:ukg",
+   "createdAt": 1791244800000,
+   "updatedAt": 1791244800000
+  },
+  {
+   "prompt": "house",
+   "edits": {},
+   "locks": {},
+   "wild": false,
+   "variation": 0,
+   "dimensions": {
+    "space": 40,
+    "bass": 60,
+    "drumFeel": 60,
+    "grit": 15,
+    "pulse": 65,
+    "vocalCharacter": 45,
+    "genrePull": 80
+   },
+   "id": "s-4",
+   "projectId": "p-golden",
+   "title": "legacy:no-tracks",
+   "createdAt": 1791244800000,
+   "updatedAt": 1791244800000
+  }
+ ]
+}

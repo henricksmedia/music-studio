@@ -4,13 +4,16 @@
 import { STEM_IDS, type AutoPoint, type NoteEvent, type Song, type StemId } from "./compose";
 import { makeVoiceCtx, playEvent, type VoiceCtx } from "./instruments";
 import type { Fx, MixGeometry, ReverbId, DelayId } from "./spec";
+import type { TrackMix } from "./tracks";
 import type { Dimensions } from "../types";
 
 export type MixParams = Pick<Dimensions, "space" | "bass" | "grit" | "vocalCharacter" | "genrePull" | "drumFeel">;
 export type AutoValues = Omit<AutoPoint, "beat">;
 
 type StemBus = {
+  /** Track fader: volume and mute/solo act pre-send, so a muted track also leaves the reverb/delay. */
   input: GainNode;
+  pan: StereoPannerNode;
   tone: BiquadFilterNode;
   auto: BiquadFilterNode;
   pump: GainNode;
@@ -22,16 +25,28 @@ type StemBus = {
   dly: GainNode;
 };
 
+/** Read-only analyser taps for the live visuals. They are sinks, so they never change what is heard. */
+export type Taps = {
+  /** Master after the clipper (mono sum), for scope, spectrum and spectrogram. */
+  master: AnalyserNode;
+  left: AnalyserNode;
+  right: AnalyserNode;
+  /** Each track post-fader and post-pan, before the master bus (dry; sends are not included). */
+  tracks: Record<StemId, AnalyserNode>;
+};
+
 export type Graph = {
   ctx: BaseAudioContext;
   voice: VoiceCtx;
   stems: Record<StemId, StemBus>;
   out: GainNode;
   analyser: AnalyserNode | null;
+  taps: Taps | null;
   delay: DelayNode;
   lowShelf: BiquadFilterNode;
   highShelf: BiquadFilterNode;
   setMix: (m: MixParams, smooth?: boolean) => void;
+  setTracks: (t: TrackMix, smooth?: boolean) => void;
   setTempo: (bpm: number) => void;
   applyFx: (fx: Fx, mix: MixGeometry, bpm: number) => void;
   setAuto: (a: AutoValues, when: number) => void;
@@ -233,7 +248,8 @@ export function buildGraph(ctx: BaseAudioContext, withAnalyser = false): Graph {
     auto.connect(pump);
     pump.connect(dry).connect(level);
     pump.connect(gritPre).connect(shaper).connect(gritOut).connect(level);
-    level.connect(masterIn);
+    const panner = ctx.createStereoPanner();
+    level.connect(panner).connect(masterIn);
     // stereo width: Haas-delayed, high-passed mono copy added as +L / -R (side). Mono sum is unchanged.
     const mono = ctx.createGain();
     mono.channelCount = 1;
@@ -257,8 +273,32 @@ export function buildGraph(ctx: BaseAudioContext, withAnalyser = false): Graph {
     const dly = ctx.createGain();
     level.connect(rev).connect(revIn);
     level.connect(dly).connect(dlyIn);
-    stems[id] = { input, tone, auto, pump, dry, gritOut, level, side, rev, dly };
+    stems[id] = { input, pan: panner, tone, auto, pump, dry, gritOut, level, side, rev, dly };
   });
+
+  let taps: Taps | null = null;
+  if (withAnalyser) {
+    const tap = (fft: number) => {
+      const a = ctx.createAnalyser();
+      a.fftSize = fft;
+      a.smoothingTimeConstant = 0;
+      return a;
+    };
+    const master = tap(8192);
+    clip.connect(master);
+    const split = ctx.createChannelSplitter(2);
+    const left = tap(2048);
+    const right = tap(2048);
+    clip.connect(split);
+    split.connect(left, 0);
+    split.connect(right, 1);
+    const tracks = {} as Record<StemId, AnalyserNode>;
+    for (const id of STEM_IDS) {
+      tracks[id] = tap(1024);
+      stems[id].pan.connect(tracks[id]);
+    }
+    taps = { master, left, right, tracks };
+  }
 
   const live = "currentTime" in ctx && !(typeof OfflineAudioContext !== "undefined" && ctx instanceof OfflineAudioContext);
   const setParam = (p: AudioParam, v: number, smooth: boolean) => {
@@ -291,6 +331,7 @@ export function buildGraph(ctx: BaseAudioContext, withAnalyser = false): Graph {
     stems,
     out,
     analyser,
+    taps,
     delay,
     lowShelf,
     highShelf,
@@ -356,6 +397,12 @@ export function buildGraph(ctx: BaseAudioContext, withAnalyser = false): Graph {
       setParam(lowShelf.gain, (bass - 0.5) * 9, smooth);
       setParam(highShelf.gain, -2 + (m.genrePull / 100) * 3 - grit * 1.5, smooth);
     },
+    setTracks(t, smooth = false) {
+      for (const id of STEM_IDS) {
+        setParam(stems[id].input.gain, t[id].gain, smooth);
+        setParam(stems[id].pan.pan, Math.max(-1, Math.min(1, t[id].pan)), smooth);
+      }
+    },
   };
   return g;
 }
@@ -418,11 +465,16 @@ export const SHAPER_OVERSAMPLE: OverSampleType = typeof window === "undefined" ?
 
 export type OfflineCtor = new (channels: number, length: number, sampleRate: number) => OfflineAudioContext;
 
+/** Offline renders build note nodes in chunks of this many seconds, a little ahead of the render position.
+ *  Building every note up front keeps thousands of idle nodes in the graph for the whole song (slower than realtime). */
+const RENDER_CHUNK = 2;
+const RENDER_AHEAD = 0.1;
+
 /** Render a song (or a subset of stems) to an AudioBuffer. */
 export async function renderSong(
   song: Song,
   mix: MixParams,
-  opts: { stems?: StemId[]; sampleRate?: number; seconds?: number; startBeat?: number; Ctor?: OfflineCtor } = {}
+  opts: { stems?: StemId[]; tracks?: TrackMix; sampleRate?: number; seconds?: number; startBeat?: number; Ctor?: OfflineCtor; onProgress?: (fraction: number) => void } = {}
 ): Promise<AudioBuffer> {
   const sr = opts.sampleRate ?? 44100;
   const beatSec = 60 / song.bpm;
@@ -434,21 +486,53 @@ export async function renderSong(
   g.applyFx(song.spec.production.fx, song.spec.production.mix, song.bpm);
   g.setTempo(song.bpm);
   g.setMix(mix);
+  if (opts.tracks) g.setTracks(opts.tracks);
   const start = 0.05;
   scheduleAutomation(g, song, startBeat, start - startBeat * beatSec, beatSec, startBeat + seconds / beatSec);
   const want = opts.stems ? new Set(opts.stems) : null;
-  for (const ev of song.events) {
-    if (ev.t < startBeat) continue;
-    const when = start + (ev.t - startBeat) * beatSec;
-    if (when > seconds) break;
-    // kicks still drive the sidechain pump on stem-only renders
-    if (want && !want.has(ev.stem)) {
-      if (ev.inst === "kick" && ev.stem === "drums" && ev.vel > 0.4) pumpKick(g, when, beatSec);
-      continue;
+  const events = song.events;
+  let i = 0;
+  const scheduleUntil = (limit: number) => {
+    for (; i < events.length; i++) {
+      const ev = events[i];
+      if (ev.t < startBeat) continue;
+      const when = start + (ev.t - startBeat) * beatSec;
+      if (when > seconds) {
+        i = events.length;
+        return;
+      }
+      if (when >= limit) return;
+      // kicks still drive the sidechain pump on stem-only renders
+      if (want && !want.has(ev.stem)) {
+        if (ev.inst === "kick" && ev.stem === "drums" && ev.vel > 0.4) pumpKick(g, when, beatSec);
+        continue;
+      }
+      scheduleEvent(g, ev, when, beatSec);
     }
-    scheduleEvent(g, ev, when, beatSec);
+  };
+  scheduleUntil(RENDER_CHUNK + RENDER_AHEAD);
+  // A throw inside a suspend callback would leave the render suspended forever, so it is captured and the render resumed.
+  let failure: unknown = null;
+  // suspend() rounds up to a 128-frame render quantum and throws if that lands at or past the end of the buffer
+  const suspendable = (t: number) => Math.ceil((t * sr) / 128) * 128 < ctx.length;
+  for (let k = 1; suspendable(k * RENDER_CHUNK); k++) {
+    const at = k * RENDER_CHUNK;
+    ctx.suspend(at).then(() => {
+      try {
+        if (!failure) scheduleUntil(at + RENDER_CHUNK + RENDER_AHEAD);
+      } catch (err) {
+        failure = err;
+      }
+      opts.onProgress?.(at / seconds);
+      return ctx.resume();
+    }, (err) => {
+      failure ??= err;
+    });
   }
-  return ctx.startRendering();
+  const buf = await ctx.startRendering();
+  if (failure) throw failure;
+  opts.onProgress?.(1);
+  return buf;
 }
 
 export function peakOf(buf: AudioBuffer): number {

@@ -1,0 +1,2902 @@
+{
+ "prompt:lonely country rock with a trance pulse": {
+  "plan": "a51c712bb9fc1bd3d7ab",
+  "song": "79f708f4ee0114c77464",
+  "events": 1378,
+  "cards": "255b9b1a144614f02beb",
+  "prompt": "ab2cee4d8c3062b8d54e",
+  "label": "Heartland Rock × Trance",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Hammond B-3 + Leslie 122 | Gibson SG with fuzz | EMT 140 plate",
+  "summary": "111 BPM 4/4 electronic/fm/organ/distGuitar 9 sections 74.1s"
+ },
+ "prompt:campfire banjo folk at dusk": {
+  "plan": "580eea943db92c61f741",
+  "song": "731274c56068cf8ebf8d",
+  "events": 1085,
+  "cards": "7d4126cfc5355cc18c38",
+  "prompt": "b5b669ec917f0c3543f6",
+  "label": "Campfire Folk",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Martin D-28 | Deering Goodtime banjo | EMT 140 plate",
+  "summary": "110 BPM 6/8 brush/upright/strumGuitar/banjo 9 sections 69.8s"
+ },
+ "prompt:dark techno warehouse at 3am": {
+  "plan": "06b30b22151cb68dda43",
+  "song": "1104fa83140240c5a746",
+  "events": 2488,
+  "cards": "a395ad4c57ff76487b13",
+  "prompt": "7b59125659d63a6d424d",
+  "label": "Dub Techno",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Roland TB-303 (acid lead) | Lexicon 480L hall",
+  "summary": "128 BPM 4/4 electronic/reese/pluckArp/acidLead 10 sections 83.4s"
+ },
+ "prompt:dreamy 80s synthwave night drive": {
+  "plan": "428520b145f2b9c397e1",
+  "song": "8f7803b4cc218c1b0aab",
+  "events": 1523,
+  "cards": "c17aece5a0fdd7ecb540",
+  "prompt": "56dab4630d46585cce69",
+  "label": "Dreamwave",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland JP-8000 | Clavia Nord Lead 2 | Studer A800 tape",
+  "summary": "103 BPM 4/4 gated/saw/supersaw/squareLead 9 sections 89.7s"
+ },
+ "prompt:lo-fi hip hop study beats with rain": {
+  "plan": "97b98f0ac961e86703f7",
+  "song": "2bd627b5227399b21cc2",
+  "events": 880,
+  "cards": "acb1d423b6cb702b3f6e",
+  "prompt": "bd570c7b5f907270e49a",
+  "label": "Lo-fi Hip Hop × Hip hop (boom bap)",
+  "gear": "Akai MPC60 | Moog Sub 37 (sub) | Steinway Model D",
+  "summary": "65 BPM 4/4 lofi/sub/piano/epiano 9 sections 94.2s"
+ },
+ "prompt:epic cinematic battle with taiko drums": {
+  "plan": "b26f31f1eecacf3e9548",
+  "song": "8d687fa08290edaca412",
+  "events": 1088,
+  "cards": "9b5e1d616c235eedb9e4",
+  "prompt": "932a460f9b7caa9ee443",
+  "label": "Epic Trailer",
+  "gear": "Taiko ensemble | Moog Sub 37 (sub) | Mellotron M400 strings | Mellotron M400 flute | Lexicon 480L hall",
+  "summary": "85 BPM 4/4 cinematic/sub/strings/flute 9 sections 85.1s"
+ },
+ "prompt:slow delta blues with harmonica": {
+  "plan": "31b87d14a96ab2e2f7fa",
+  "song": "e559898cd13e5dcb558f",
+  "events": 796,
+  "cards": "977f681ff050a6515ae5",
+  "prompt": "e5f4775126989a02f1bf",
+  "label": "Delta Blues",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | Hohner Marine Band harmonica | Fender '65 Twin Reverb (spring)",
+  "summary": "69 BPM 4/4 brush/upright/piano/harmonica 4 sections 105.2s"
+ },
+ "prompt:aggressive trap with 808s": {
+  "plan": "98647b8822d37b804950",
+  "song": "151f1666c3dc820a8bd9",
+  "events": 2459,
+  "cards": "1645021b8c49ab8a2bf9",
+  "prompt": "0ce99a00bcda2023d64a",
+  "label": "Phonk",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Sequential Prophet-5 (arp) | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "154 BPM 4/4 808/808/pluckArp/bell 9 sections 76.9s"
+ },
+ "prompt:ambient space drift": {
+  "plan": "9b6d93a1457d03c64292",
+  "song": "de1bcbeaf56e59a38bbd",
+  "events": 495,
+  "cards": "7505df2b1ebdd3809a29",
+  "prompt": "7f6f5dc26ac9d5924626",
+  "label": "Space Ambient",
+  "gear": "Gretsch kit with brushes | Yamaha DX7 (FM bass) | Roland Juno-106 | Eventide H9 shimmer | Roland Space Echo RE-201",
+  "summary": "69 BPM 4/4 brush/fm/pad/epiano 9 sections 88.7s"
+ },
+ "prompt:happy summer house party": {
+  "plan": "6a619f03027b289da004",
+  "song": "9282b92c1e65fc292939",
+  "events": 2201,
+  "cards": "e3b763adaf7b09146ff9",
+  "prompt": "56a53bc4949d978ed481",
+  "label": "Afro House",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "133 BPM 4/4 electronic/fm/pad/bell 10 sections 74.7s"
+ },
+ "prompt:delta blues, no supersaws, no 808s": {
+  "plan": "efe37543960abc5b2a23",
+  "song": "60e0b80285541b1b495f",
+  "events": 800,
+  "cards": "955f52a3fc25cf05404e",
+  "prompt": "46283fa6d21a52367992",
+  "label": "Delta Blues",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Gibson ES-335 | Gibson SG with fuzz",
+  "summary": "89 BPM 4/4 brush/pluck/cleanGuitar/distGuitar 4 sections 81.2s"
+ },
+ "prompt:funky groove in 7/8 with clave": {
+  "plan": "e2b7fb769dc01b9a8d00",
+  "song": "6da9656c65839c365a25",
+  "events": 1387,
+  "cards": "8f4e1f223b27ed0ad493",
+  "prompt": "6919038bec31598fb5bc",
+  "label": "Boom Bap × House",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Fender Rhodes Mark I | Roland VP-330 vocoder | Roland Space Echo RE-201",
+  "summary": "103 BPM 7/8 (2+2+3) electronic/saw/epiano/voice 9 sections 74.6s"
+ },
+ "prompt:polyrhythm 3 over 4 afrobeat house": {
+  "plan": "714b6a6de11eeb507607",
+  "song": "0ebd93ce55b510ee8602",
+  "events": 2393,
+  "cards": "10b95e4362b10e817812",
+  "prompt": "c0a33dac8a5db27a15b4",
+  "label": "Tech House",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Hammond B-3 + Leslie 122 | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "122 BPM 4/4 electronic/fm/organ/bell 10 sections 87.5s"
+ },
+ "prompt:lydian drone ambient with pedal tone": {
+  "plan": "4be92252f59f52c5e306",
+  "song": "1d821df4d273e67eaed3",
+  "events": 357,
+  "cards": "4a7d491c8953d295685f",
+  "prompt": "a58bc6f2cd6b1de3cdd8",
+  "label": "Drone Ambient",
+  "gear": "Gretsch kit with brushes | Moog Sub 37 (sub) | Roland Juno-106 | Eventide H9 shimmer",
+  "summary": "70 BPM 4/4 brush/sub/pad/epiano 9 sections 87.4s"
+ },
+ "prompt:dark psybient, no supersaws, no trap hats, mono sub, wide pads, opening with distant drone, hook is the bassline": {
+  "plan": "9eb0ec234863acb39e04",
+  "song": "ef081d648fb37ed17fc4",
+  "events": 930,
+  "cards": "b06650c2c7e672876bdc",
+  "prompt": "532c7024dacf55a277e7",
+  "label": "Dark Psybient",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Roland Juno-106 | Yamaha DX7 bells | Eventide H9 shimmer",
+  "summary": "103 BPM 4/4 electronic/saw/pad/bell 9 sections 80.4s"
+ },
+ "prompt:prog rock in 5/4 with hemiola": {
+  "plan": "7b05dc2076e25adeceac",
+  "song": "9a53bd50208e8f13a495",
+  "events": 1306,
+  "cards": "c3389a404ce640b9425b",
+  "prompt": "ce8ed3fdc1c4edcfc5d4",
+  "label": "Stoner Rock",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Gibson Les Paul into a Marshall JCM800 | Gibson SG with fuzz | Roland Space Echo RE-201",
+  "summary": "108 BPM 5/4 (3+3+2+2) acoustic/pluck/distGuitar/distGuitar 9 sections 75.0s"
+ },
+ "prompt:aggressive trap, no 808s, no risers": {
+  "plan": "e3c404f62e7984b175b4",
+  "song": "ee60fd0b8422931a4c6c",
+  "events": 1976,
+  "cards": "799e94c92ef82c53af13",
+  "prompt": "443424fb49641eb1fad2",
+  "label": "Dark Trap",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Yamaha DX7 bells | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "144 BPM 4/4 electronic/sub/choir/bell 9 sections 82.3s"
+ },
+ "prompt:techno": {
+  "plan": "9c4323311a6ddd3a5354",
+  "song": "c214c1958076784b70db",
+  "events": 2109,
+  "cards": "844ee81f7b151811276e",
+  "prompt": "f30dfc65b7b12903d5e6",
+  "label": "Dub Techno",
+  "gear": "Roland TR-909 | Roland TB-303 | Roland Juno-106 | Lexicon 480L hall",
+  "summary": "134 BPM 4/4 electronic/acid/pad/fmLead 10 sections 66.9s"
+ },
+ "prompt:house": {
+  "plan": "61e1143829b734e3d86d",
+  "song": "a038001c1825af9c366d",
+  "events": 1942,
+  "cards": "ddd401f3c8b7708b5ad6",
+  "prompt": "5feebd8422262aa9f559",
+  "label": "Afro House",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Steinway Model D | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "125 BPM 4/4 electronic/sub/piano/voice 10 sections 81.6s"
+ },
+ "prompt:deep house": {
+  "plan": "a91d3816d8f0b49d6e5f",
+  "song": "74d06e360c8a092ed27a",
+  "events": 1941,
+  "cards": "0ec448e7c0eaaeede9fb",
+  "prompt": "0932f6e085906c2c08e1",
+  "label": "Deep House",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Fender Rhodes Mark I | Roland VP-330 vocoder | EMT 140 plate",
+  "summary": "121 BPM 4/4 electronic/fm/epiano/voice 10 sections 84.3s"
+ },
+ "prompt:trance": {
+  "plan": "72114737a9bf3039e678",
+  "song": "d0f23e27d6c182e8553a",
+  "events": 2444,
+  "cards": "fa6ea1de84398c889216",
+  "prompt": "993f10aeaf26c827daa8",
+  "label": "Progressive Trance",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Moog Minimoog lead | Lexicon 480L hall",
+  "summary": "137 BPM 4/4 electronic/reese/pluckArp/sawLead 10 sections 87.8s"
+ },
+ "prompt:drum and bass": {
+  "plan": "e91d588b1aebaaec7640",
+  "song": "5ef556af854c2138182b",
+  "events": 2728,
+  "cards": "a8c5bc1b9a01d63e91b3",
+  "prompt": "4a49a6611083d6029b66",
+  "label": "Liquid Drum & Bass",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Roland VP-330 vocoder | EMT 140 plate",
+  "summary": "173 BPM 4/4 electronic/sub/pad/voice 10 sections 81.2s"
+ },
+ "prompt:dubstep": {
+  "plan": "ea2b26a810e8a501090d",
+  "song": "575a617e291648076d29",
+  "events": 487,
+  "cards": "280a84ac3bef8ffeb380",
+  "prompt": "b8b7469d967c2575f2c9",
+  "label": "Dark Ambient × Rock",
+  "gear": "Ludwig Supraphonic kit | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Eventide H9 shimmer",
+  "summary": "73 BPM 6/8 acoustic/sub/pad/bell 9 sections 75.6s"
+ },
+ "prompt:trap": {
+  "plan": "8fc0f75888ca9c924846",
+  "song": "dbb7d07d9e884951329f",
+  "events": 1551,
+  "cards": "85e02f8237d33051373b",
+  "prompt": "a769d4abbbf4de63c6c9",
+  "label": "Drill",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Mellotron M400 flute | Lexicon 480L hall",
+  "summary": "145 BPM 4/4 808/808/choir/flute 9 sections 78.4s"
+ },
+ "prompt:drill": {
+  "plan": "589096090a4d43bc88c1",
+  "song": "b2173a9e5e945958ae03",
+  "events": 1424,
+  "cards": "6bba7833cb09dfa8ea59",
+  "prompt": "3ff6e1d504618eda0a06",
+  "label": "Drill",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Mellotron M400 strings | Mellotron M400 flute | Lexicon 480L hall",
+  "summary": "140 BPM 4/4 808/808/strings/flute 9 sections 83.1s"
+ },
+ "prompt:phonk": {
+  "plan": "0210f18de32fb40108a9",
+  "song": "c87458dea78de4737a15",
+  "events": 1825,
+  "cards": "972bf01bdb8e47c91318",
+  "prompt": "ee2d921600d72d5cef1c",
+  "label": "Phonk",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Roland Juno-106 | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "141 BPM 4/4 808/808/pad/voice 9 sections 77.2s"
+ },
+ "prompt:boom bap": {
+  "plan": "29e7ae99fc20741d33b5",
+  "song": "b900981e9ab2273fe315",
+  "events": 957,
+  "cards": "cb69385cf0ec0e027c50",
+  "prompt": "1f875b390cb68d9ddd08",
+  "label": "Boom Bap",
+  "gear": "Ludwig Supraphonic kit | Moog Sub 37 (sub) | Mellotron M400 strings | EMT 140 plate",
+  "summary": "86 BPM 4/4 acoustic/sub/strings/piano 9 sections 82.0s"
+ },
+ "prompt:lo-fi hip hop": {
+  "plan": "b83de530f09d94808b9f",
+  "song": "e7f3882dd8ce19ac8ebe",
+  "events": 883,
+  "cards": "56f7637b2ff857df1475",
+  "prompt": "1a6e9726e24a899c12b4",
+  "label": "Lo-fi Hip Hop × Hip hop (boom bap)",
+  "gear": "Akai MPC60 | Moog Sub 37 (sub) | Fender Rhodes Mark I",
+  "summary": "90 BPM 4/4 lofi/sub/epiano/piano 9 sections 73.0s"
+ },
+ "prompt:jazz": {
+  "plan": "db5274bae4c94dc18e05",
+  "song": "585117c44958808e7ae1",
+  "events": 1034,
+  "cards": "e910d85065e0f2c4da93",
+  "prompt": "df497bf9fbdc8d7b4c9b",
+  "label": "Cool Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | EMT 140 plate",
+  "summary": "129 BPM 5/4 (3+3+2+2) brush/upright/piano/brass 9 sections 69.5s"
+ },
+ "prompt:bossa nova": {
+  "plan": "8a4c31e7b4569c396b41",
+  "song": "dd3e0439782d7df9cef3",
+  "events": 996,
+  "cards": "e3c1e91582f4a273f6f8",
+  "prompt": "ab1b81a1e93a21836ba5",
+  "label": "Cool Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | National Reso-Phonic Tricone (slide) | EMT 140 plate",
+  "summary": "106 BPM 3/4 brush/upright/piano/guitar 9 sections 75.6s"
+ },
+ "prompt:blues": {
+  "plan": "15e5db698b7bd1c4523d",
+  "song": "b4301d53678ec1d289f6",
+  "events": 782,
+  "cards": "0a4b9e452b9643ebd319",
+  "prompt": "50ff26bc921bacb95612",
+  "label": "Texas Blues",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | National Reso-Phonic Tricone (slide) | Studer A800 tape",
+  "summary": "77 BPM 4/4 brush/upright/piano/guitar 4 sections 87.7s"
+ },
+ "prompt:folk": {
+  "plan": "1ef1078fd85c49c4fd53",
+  "song": "494ef2fbbaa29c71cfef",
+  "events": 998,
+  "cards": "d572cffd7ff3a5fd67aa",
+  "prompt": "0b5003e9a80c00bfc67f",
+  "label": "Appalachian Folk",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Martin D-28",
+  "summary": "90 BPM 4/4 brush/pluck/strumGuitar/whistle 9 sections 81.3s"
+ },
+ "prompt:bluegrass": {
+  "plan": "1684b55b7e91a67b2904",
+  "song": "9ebdddd78fc1983e1c57",
+  "events": 1031,
+  "cards": "bd78cc7cb0eefa310c8e",
+  "prompt": "828f3e3ce5b0db6b8d30",
+  "label": "Appalachian Folk",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Martin D-28 | Deering Goodtime banjo",
+  "summary": "84 BPM 4/4 brush/upright/strumGuitar/banjo 9 sections 87.1s"
+ },
+ "prompt:country": {
+  "plan": "dae56d0a0d3aeb94aff3",
+  "song": "d5416c40285b67af6f64",
+  "events": 1617,
+  "cards": "20320222a67ce56caed9",
+  "prompt": "26575dcb9adca4158f7c",
+  "label": "Desert Country Rock",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Martin D-28 | National Reso-Phonic Tricone (slide) | Fender '65 Twin Reverb (spring)",
+  "summary": "128 BPM 4/4 acoustic/pluck/strumGuitar/guitar 9 sections 79.0s"
+ },
+ "prompt:rock": {
+  "plan": "45c37462ae202ff1cea7",
+  "song": "4599422cebb74e9e7a56",
+  "events": 1479,
+  "cards": "769beb4b3ee2743ba238",
+  "prompt": "faaba22e3c8052dfd902",
+  "label": "Post-Punk",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Hammond B-3 + Leslie 122 | Gibson SG with fuzz | Fender '65 Twin Reverb (spring)",
+  "summary": "131 BPM 4/4 acoustic/pluck/organ/distGuitar 9 sections 66.2s"
+ },
+ "prompt:punk": {
+  "plan": "1274fe4683d6403a7265",
+  "song": "879f5fb0622c7d3dc220",
+  "events": 2102,
+  "cards": "58c45d1561c6ce9f9e2a",
+  "prompt": "887d1eeba5633b8e96eb",
+  "label": "Stoner Rock",
+  "gear": "Ludwig Supraphonic kit | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Gibson SG with fuzz | Fender '65 Twin Reverb (spring)",
+  "summary": "143 BPM 4/4 acoustic/square/distGuitar/distGuitar 9 sections 77.4s"
+ },
+ "prompt:metal": {
+  "plan": "12e6f9a4966c87561caa",
+  "song": "df27792ad5f43f2c60ee",
+  "events": 2186,
+  "cards": "e17ab6101387e29f8950",
+  "prompt": "566be97af9a4cf0a4293",
+  "label": "Stoner Rock",
+  "gear": "Ludwig Supraphonic kit | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Gibson SG with fuzz | EMT 140 plate",
+  "summary": "148 BPM 4/4 acoustic/square/distGuitar/distGuitar 9 sections 78.2s"
+ },
+ "prompt:pop": {
+  "plan": "40653e837d064129da2b",
+  "song": "257e67246a0fab573edd",
+  "events": 1142,
+  "cards": "c2546c162471d60fff1e",
+  "prompt": "87167a1c5fa948632de0",
+  "label": "Campfire Folk × Synthwave",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Gibson Les Paul into a Marshall JCM800 | Clavia Nord Lead 2 | EMT 140 plate",
+  "summary": "113 BPM 6/8 acoustic/upright/distGuitar/squareLead 9 sections 74.3s"
+ },
+ "prompt:funk": {
+  "plan": "7ad18f1562fb252cf909",
+  "song": "f3de39932dec2c07b2ed",
+  "events": 1942,
+  "cards": "a8bb2d0a3f18abecc0f2",
+  "prompt": "1855f4db0c38687988ae",
+  "label": "Deep House × Hip hop (boom bap)",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Steinway Model D | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "113 BPM 4/4 electronic/upright/piano/pluck 10 sections 86.0s"
+ },
+ "prompt:disco": {
+  "plan": "915b164c877d7531dd0c",
+  "song": "80a2105bc0f77faa22ac",
+  "events": 1804,
+  "cards": "8220f129af82023a9dd6",
+  "prompt": "281b57b4a0d06b9cac13",
+  "label": "Afro House",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Steinway Model D | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "122 BPM 4/4 electronic/saw/piano/voice 10 sections 79.7s"
+ },
+ "prompt:reggae": {
+  "plan": "7d5e1578ee0f50be273a",
+  "song": "f0076d3190b8dec38533",
+  "events": 1267,
+  "cards": "8bacedac298dfe4c9407",
+  "prompt": "ab0d3cac6b540a8d250c",
+  "label": "Jazz Rap Instrumental × Drum & bass",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Fender Rhodes Mark I | Studer A800 tape | Roland Space Echo RE-201",
+  "summary": "103 BPM 4/4 electronic/upright/epiano/piano 9 sections 77.8s"
+ },
+ "prompt:afrobeat": {
+  "plan": "d8a504ffb80b74a5247e",
+  "song": "b7824425aecbdb955f47",
+  "events": 1608,
+  "cards": "0ca9139e366dd8b43247",
+  "prompt": "a6f6423f5d1f27977763",
+  "label": "Indie Folk × Rock",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Gibson Les Paul into a Marshall JCM800 | Roland VP-330 vocoder | EMT 140 plate",
+  "summary": "106 BPM 3/4 brush/upright/distGuitar/voice 9 sections 86.0s"
+ },
+ "prompt:r&b": {
+  "plan": "f3842ec7c6aa925ba3a3",
+  "song": "be7622682e6b416c382e",
+  "events": 698,
+  "cards": "407e2255df002ffc0da2",
+  "prompt": "159c3e4970fbbd9c08a6",
+  "label": "Texas Blues × Hip hop (boom bap)",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Hammond B-3 + Leslie 122 | Fender Telecaster | Studer A800 tape",
+  "summary": "78 BPM 4/4 brush/upright/organ/guitar 4 sections 86.5s"
+ },
+ "prompt:soul": {
+  "plan": "f45c2351fae95e9eba80",
+  "song": "55315a93d5c05f1f8d5c",
+  "events": 748,
+  "cards": "7fdc24dbe26576201585",
+  "prompt": "131412c93ee4a6e257f9",
+  "label": "Texas Blues × Hip hop (boom bap)",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Hammond B-3 + Leslie 122 | Hohner Marine Band harmonica | Studer A800 tape",
+  "summary": "97 BPM 4/4 brush/pluck/organ/harmonica 4 sections 74.5s"
+ },
+ "prompt:gospel": {
+  "plan": "4a869f894172341db3e9",
+  "song": "c998dace8f84c1244bf3",
+  "events": 661,
+  "cards": "a880549b03cfee515826",
+  "prompt": "b851ef4c3971e201f389",
+  "label": "Texas Blues × Hip hop (boom bap)",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Hammond B-3 + Leslie 122 | Fender Telecaster | Studer A800 tape",
+  "summary": "74 BPM 4/4 brush/upright/organ/guitar 4 sections 98.1s"
+ },
+ "prompt:synthwave": {
+  "plan": "7322de44e15bb1451181",
+  "song": "a8ad1295aa08f832f415",
+  "events": 1248,
+  "cards": "399e62d3375957754bb5",
+  "prompt": "fd61875af9fa9b843a22",
+  "label": "Darksynth",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland Juno-106 | Moog Minimoog lead | Studer A800 tape",
+  "summary": "101 BPM 4/4 gated/saw/pad/sawLead 9 sections 82.0s"
+ },
+ "prompt:ambient": {
+  "plan": "7608147c8252e5ebc5b7",
+  "song": "9ea5a383427d05ed9ec0",
+  "events": 528,
+  "cards": "ae52926e79d0c095f43e",
+  "prompt": "4b6da68b4fc0e35baedc",
+  "label": "Psybient",
+  "gear": "Gretsch kit with brushes | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Eventide H9 shimmer",
+  "summary": "78 BPM 4/4 brush/sub/pad/bell 9 sections 87.7s"
+ },
+ "prompt:cinematic": {
+  "plan": "e3c224d72f4a3a36e73f",
+  "song": "5469bdab054c300b0f18",
+  "events": 862,
+  "cards": "d6bd26980fdcfa210071",
+  "prompt": "b7111c87143f2fccb227",
+  "label": "Dark Score",
+  "gear": "Taiko ensemble | Moog Sub 37 (sub) | Oberheim OB-Xa brass | Eventide H9 shimmer",
+  "summary": "90 BPM 4/4 cinematic/sub/brass/piano 9 sections 86.0s"
+ },
+ "prompt:hardstyle": {
+  "plan": "49499f5354e2b57ab5ab",
+  "song": "9cdda409f593fa5e3d43",
+  "events": 2708,
+  "cards": "157beb48145cd5483b41",
+  "prompt": "9c204d505900dc322292",
+  "label": "Uplifting Trance",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland JP-8000 | Lexicon 480L hall",
+  "summary": "137 BPM 4/4 electronic/reese/supersaw/pluck 10 sections 78.0s"
+ },
+ "prompt:k-pop": {
+  "plan": "422ff2a0207e9f2e2f84",
+  "song": "72a4e96d4b8bc0205735",
+  "events": 1141,
+  "cards": "20649eaa764087f6ac0b",
+  "prompt": "e516fd9e470e14e5e659",
+  "label": "Appalachian Folk × Synthwave",
+  "gear": "LinnDrum LM-2 | Fender Precision Bass | Martin D-28 | Mellotron M400 flute | EMT 140 plate",
+  "summary": "102 BPM 4/4 gated/pluck/strumGuitar/flute 9 sections 76.5s"
+ },
+ "prompt:latin salsa": {
+  "plan": "d48a80b5e36758dc0db9",
+  "song": "14c6e5039db4c7ff054e",
+  "events": 1301,
+  "cards": "507e134f74a3334e9a5c",
+  "prompt": "84b6e5421242a765e025",
+  "label": "Nu-Jazz × Techno",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Fender Rhodes Mark I",
+  "summary": "121 BPM 4/4 brush/upright/epiano/piano 9 sections 83.6s"
+ },
+ "prompt:psybient": {
+  "plan": "81cea17bb82dd9a940e3",
+  "song": "94acc55e55850eba615b",
+  "events": 1751,
+  "cards": "976fb3aafdd25e44388d",
+  "prompt": "44b1a342064611295a48",
+  "label": "Psybient",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Sequential Prophet-5 (arp) | Mellotron M400 flute | Lexicon 480L hall",
+  "summary": "97 BPM 4/4 808/808/pluckArp/flute 9 sections 85.4s"
+ },
+ "prompt:future garage": {
+  "plan": "1de47be546aad2dafc52",
+  "song": "55b1dfd724a10de7899a",
+  "events": 2171,
+  "cards": "48ad4501a7cb0fd648d3",
+  "prompt": "0f9d46a5ae750ed9b454",
+  "label": "Future Garage",
+  "gear": "Roland Juno-106 | Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Roland VP-330 vocoder",
+  "summary": "131 BPM 4/4 electronic/reese/pluckArp/voice 10 sections 83.1s"
+ },
+ "prompt:melodic techno": {
+  "plan": "b08f99d1b155bfcfc71d",
+  "song": "d2c3e72995a98c683f3f",
+  "events": 2542,
+  "cards": "03a21df04fffea3ce49a",
+  "prompt": "bf458d8f997fab9f9821",
+  "label": "Melodic Techno",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Sequential Prophet-5 (arp) | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "126 BPM 4/4 electronic/sub/pluckArp/bell 10 sections 84.8s"
+ },
+ "prompt:psytrance": {
+  "plan": "faf5b4ad2b91e59b775c",
+  "song": "e1330f4e90b361b6a694",
+  "events": 2361,
+  "cards": "370b084f068b840473a6",
+  "prompt": "9406fefd239eef168c02",
+  "label": "Psytrance",
+  "gear": "Roland TR-909 | Roland TB-303 | Sequential Prophet-5 (arp) | Roland TB-303 (acid lead) | EMT 140 plate",
+  "summary": "145 BPM 4/4 electronic/acid/pluckArp/acidLead 10 sections 80.3s"
+ },
+ "prompt:goa": {
+  "plan": "6ab1c2af8018a109add4",
+  "song": "755a3df0774b6b2bb6d4",
+  "events": 1675,
+  "cards": "817112d9b152c28e264f",
+  "prompt": "6d12b00540ced1874015",
+  "label": "Psytrance",
+  "gear": "Clavia Nord Lead 2 | Ludwig Supraphonic kit | Kay M-1 upright bass | Gibson ES-335 | EMT 140 plate",
+  "summary": "140 BPM 4/4 acoustic/upright/cleanGuitar/fmLead 9 sections 75.9s"
+ },
+ "prompt:liquid dnb": {
+  "plan": "821d5201286366dc0486",
+  "song": "ccc1b10f38b3ac7aa523",
+  "events": 1845,
+  "cards": "27d51ef7ef72378c3e7b",
+  "prompt": "99f2e6b7896a0421be59",
+  "label": "Liquid Drum & Bass",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Fender Rhodes Mark I | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "175 BPM 4/4 electronic/reese/epiano/bell 10 sections 72.0s"
+ },
+ "prompt:acid house": {
+  "plan": "a6bb5e4e18a6fa729228",
+  "song": "7a5fa1bd2df896a7f080",
+  "events": 1948,
+  "cards": "72244102c6b49f73c86e",
+  "prompt": "4c7250484e015eedbc2c",
+  "label": "Acid House",
+  "gear": "Roland TR-808 | Roland TR-909 | Roland TB-303 | Roland JP-8000 | Roland TB-303 (acid lead)",
+  "summary": "122 BPM 4/4 electronic/acid/supersaw/acidLead 10 sections 79.7s"
+ },
+ "prompt:breakbeat": {
+  "plan": "4ad54f8d9d1581e17da8",
+  "song": "a21f5da4aa9788670483",
+  "events": 2264,
+  "cards": "922f114cabcc767ddb7a",
+  "prompt": "570bbd370ddfb2d27b40",
+  "label": "Breakbeat",
+  "gear": "Akai MPC60 | Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "126 BPM 4/4 electronic/sub/pad/bell 10 sections 84.8s"
+ },
+ "prompt:darksynth": {
+  "plan": "45b3522ce43cb78ab1f0",
+  "song": "37075feb84e7506b3e67",
+  "events": 1442,
+  "cards": "b9a77de897b0e9fe4833",
+  "prompt": "37e304f7a4558dd9ec16",
+  "label": "Darksynth",
+  "gear": "Sequential Prophet-5 | LinnDrum LM-2 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Moog Minimoog lead",
+  "summary": "115 BPM 4/4 gated/reese/pad/sawLead 9 sections 84.5s"
+ },
+ "prompt:halftime bass": {
+  "plan": "80c61244bcc2b77bfe22",
+  "song": "b362137ff1715a2af219",
+  "events": 1248,
+  "cards": "50e20341084f659edf74",
+  "prompt": "b607c52e6efbafa1b4f0",
+  "label": "Halftime Bass",
+  "gear": "Elektron Analog Rytm | Gretsch kit with brushes | Moog Sub 37 (sub) | Roland Juno-106 | Eventide H9 shimmer",
+  "summary": "167 BPM 6/8 brush/sub/pad/strings 9 sections 71.7s"
+ },
+ "prompt:uk garage": {
+  "plan": "41e012e1fef0a2f152b1",
+  "song": "29da4d4d0d0f00e2635d",
+  "events": 2526,
+  "cards": "40c971e5f960019433d3",
+  "prompt": "5ffe4a3e50be0ed8a419",
+  "label": "UK Garage (2-step)",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Hammond B-3 + Leslie 122 | Roland VP-330 vocoder | EMT 140 plate",
+  "summary": "133 BPM 4/4 electronic/sub/organ/voice 10 sections 85.5s"
+ },
+ "prompt:2 step": {
+  "plan": "e18e1b4c901ab8afbc5d",
+  "song": "16c1f37ec51c4f9013f0",
+  "events": 1964,
+  "cards": "b0cdd6b5a23549a9e3cb",
+  "prompt": "1a422e58bbc293a17f62",
+  "label": "UK Garage (2-step)",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Fender Rhodes Mark I | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "131 BPM 4/4 electronic/fm/epiano/bell 10 sections 75.8s"
+ },
+ "prompt:future bass": {
+  "plan": "4db949ead4c8c6058dce",
+  "song": "d668ee5cafde4b7a00f8",
+  "events": 1962,
+  "cards": "8b8d70be7a68a3c45e5b",
+  "prompt": "ba2d90c31a9c324da71f",
+  "label": "Future Bass",
+  "gear": "LinnDrum LM-2 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Roland TB-303 (acid lead) | Lexicon 480L hall",
+  "summary": "143 BPM 4/4 gated/reese/pluckArp/acidLead 10 sections 78.0s"
+ },
+ "prompt:electro": {
+  "plan": "229b6265ca71e4f2949f",
+  "song": "c889c2a243388f12ca76",
+  "events": 1591,
+  "cards": "5a38e8b5a43b31cf41b5",
+  "prompt": "c510f3df6f9601d64a66",
+  "label": "Electro",
+  "gear": "LinnDrum LM-2 | Sequential Pro-One | Sequential Prophet-5 (arp) | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "129 BPM 4/4 gated/square/pluckArp/voice 9 sections 79.1s"
+ },
+ "prompt:dub techno": {
+  "plan": "d9998404c6822f42e143",
+  "song": "938d1d9f7532236d825b",
+  "events": 2370,
+  "cards": "4d7c06de8a5e58a1cddf",
+  "prompt": "bbaf2417d3bea8225462",
+  "label": "Dub Techno",
+  "gear": "Sequential Prophet-5 | Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Lexicon 480L hall",
+  "summary": "120 BPM 4/4 electronic/reese/pad/fmLead 10 sections 81.0s"
+ },
+ "prompt:trip hop": {
+  "plan": "17913bf51f5abbbe2542",
+  "song": "4fefcf50999dbd273a43",
+  "events": 731,
+  "cards": "b2653beba448330a7982",
+  "prompt": "b5be9b28dcc1b8fa7a4e",
+  "label": "Trip Hop",
+  "gear": "Akai MPC60 | Ludwig Supraphonic kit | Moog Sub 37 (sub) | Steinway Model D | Mellotron M400 flute",
+  "summary": "84 BPM 4/4 acoustic/sub/piano/flute 9 sections 75.7s"
+ },
+ "prompt:glitch hop": {
+  "plan": "f7a0941eaf4fda902c67",
+  "song": "d5f38ad85043f71a1080",
+  "events": 1934,
+  "cards": "c074f673ebcd791e2e01",
+  "prompt": "dc6d9be47176cf7a26fb",
+  "label": "Glitch Hop",
+  "gear": "Akai MPC2000XL | Roland TR-909 | Moog Minimoog Model D | Roland JP-8000 | Roland TB-303 (acid lead)",
+  "summary": "105 BPM 4/4 electronic/saw/supersaw/acidLead 10 sections 78.9s"
+ },
+ "prompt:go wild": {
+  "plan": "c71f7572472f94dbbcd3",
+  "song": "d52482e7153be429d229",
+  "events": 2348,
+  "cards": "445be7607cc2012c41bc",
+  "prompt": "f29489981b1d9a70f392",
+  "label": "French House × Cyber-Trance",
+  "gear": "Roland JP-8000 | Roland TR-909 | Moog Minimoog Model D | Sequential Prophet-5 (arp) | Studer A800 tape",
+  "summary": "142 BPM 7/8 (2+3+2) electronic/saw/pluckArp/pluck 10 sections 74.8s"
+ },
+ "prompt:random edm fusion": {
+  "plan": "03505e118789ed25098a",
+  "song": "a458a7ac276094770a05",
+  "events": 3099,
+  "cards": "3d7b40029c32ac9fe079",
+  "prompt": "dec82471470cb9c19502",
+  "label": "Cyber-Trance × Liquid Drum & Bass",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Sequential Prophet-5 (arp) | Roland VP-330 vocoder | EMT 140 plate",
+  "summary": "171 BPM 4/4 + 5/4 electronic/sub/pluckArp/voice 10 sections 82.3s"
+ },
+ "prompt:industrial techno": {
+  "plan": "13c4be4dba90faaa9613",
+  "song": "abc6f75039a8b48ca5bc",
+  "events": 2406,
+  "cards": "d4e6b7f3083544b9c7b8",
+  "prompt": "35f232055c9d24a4f56d",
+  "label": "Industrial Techno",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Clavia Nord Lead 2 | EMT 140 plate",
+  "summary": "135 BPM 4/4 electronic/reese/pluckArp/squareLead 10 sections 72.0s"
+ },
+ "prompt:minimal techno": {
+  "plan": "e8afc7e2d79c2169b720",
+  "song": "9e28f2e8c9a09f97f062",
+  "events": 2685,
+  "cards": "60b2a497105a0c6ebb41",
+  "prompt": "a9e1ef776f64618d7c8a",
+  "label": "Minimal Techno",
+  "gear": "Roland TR-909 | Roland TB-303 | Sequential Prophet-5 (arp) | Roland TB-303 (acid lead) | EMT 140 plate",
+  "summary": "130 BPM 4/4 electronic/acid/pluckArp/acidLead 10 sections 80.1s"
+ },
+ "prompt:tech house": {
+  "plan": "a1b8debaf7e88c5869b5",
+  "song": "52c5a7ba2999e52308d0",
+  "events": 1859,
+  "cards": "9e6bfc3307fc3d8b348f",
+  "prompt": "f536b45efeb5c89dd130",
+  "label": "Deep House",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Hammond B-3 + Leslie 122 | EMT 140 plate | Roland Space Echo RE-201",
+  "summary": "124 BPM 4/4 electronic/saw/organ/pluck 10 sections 74.5s"
+ },
+ "prompt:french house": {
+  "plan": "8455ac6d0b767a0bdbb9",
+  "song": "e7ea29196dc045d8e52c",
+  "events": 1804,
+  "cards": "c99fbeabef619f46505f",
+  "prompt": "3dd1fd1dc0b3b8d27f6b",
+  "label": "Deep House",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Steinway Model D | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "122 BPM 4/4 electronic/fm/piano/bell 10 sections 75.7s"
+ },
+ "prompt:afro house": {
+  "plan": "d6e44285a857db7e0294",
+  "song": "7f1d09b5147f9343d46e",
+  "events": 1853,
+  "cards": "09c20818b5b4a10dbfa0",
+  "prompt": "06556f0670178bd3c32d",
+  "label": "Deep House",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Fender Rhodes Mark I | Lexicon 480L hall",
+  "summary": "120 BPM 4/4 electronic/fm/epiano/pluck 10 sections 77.0s"
+ },
+ "prompt:dark trap": {
+  "plan": "d581fa5e2e3628c111d7",
+  "song": "b46f443dfc8ba8e5adc3",
+  "events": 1781,
+  "cards": "fc4b73abab67709732c1",
+  "prompt": "b7423b6a50dabe021cda",
+  "label": "Dark Trap",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Sequential Prophet-5 (arp) | Roland VP-330 vocoder | EMT 140 plate",
+  "summary": "131 BPM 4/4 808/808/pluckArp/voice 9 sections 83.1s"
+ },
+ "prompt:neurofunk": {
+  "plan": "731cb12c8014649ae960",
+  "song": "a24a9072654b87f48373",
+  "events": 1086,
+  "cards": "185cde42cc5cbd0bd109",
+  "prompt": "ce4c7173e8fab1e5b59e",
+  "label": "Darksynth × Ambient",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Moog Minimoog lead | Studer A800 tape",
+  "summary": "90 BPM 4/4 gated/saw/choir/sawLead 9 sections 76.0s"
+ },
+ "prompt:jungle": {
+  "plan": "196227d649b54ecef48f",
+  "song": "8e739d6387afc9998a4c",
+  "events": 2498,
+  "cards": "7ccdcf61749f05a8b5ee",
+  "prompt": "77fbabd539533e83f4bc",
+  "label": "Jungle",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "170 BPM 4/4 electronic/reese/pad/bell 10 sections 82.6s"
+ },
+ "prompt:outrun": {
+  "plan": "46f9211f071791ad2d8b",
+  "song": "4f5816c6483cdb4f11a5",
+  "events": 1278,
+  "cards": "78cddf3a44d98fd2afd5",
+  "prompt": "466731db952bb35af8a1",
+  "label": "Outrun",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland Juno-106 | Yamaha DX7 bells | Studer A800 tape",
+  "summary": "102 BPM 4/4 gated/saw/pad/bell 9 sections 90.6s"
+ },
+ "prompt:dreamwave": {
+  "plan": "6a8b9f2acc308f15b2c6",
+  "song": "e35a16989d928c0e270b",
+  "events": 2080,
+  "cards": "41dd7824b8693f315bb9",
+  "prompt": "66f1d3d17304cfeae105",
+  "label": "Jungle × Synthwave",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Moog Minimoog lead | EMT 140 plate",
+  "summary": "158 BPM 4/4 electronic/reese/pad/sawLead 10 sections 73.7s"
+ },
+ "prompt:chillhop": {
+  "plan": "595476f23dd00c615016",
+  "song": "f815347dc8076eddaa47",
+  "events": 822,
+  "cards": "e158affef52d7dd50c74",
+  "prompt": "b0d70c256b87bf840a0c",
+  "label": "Chillhop",
+  "gear": "Akai MPC60 | Moog Sub 37 (sub) | Steinway Model D | Mellotron M400 flute | Studer A800 tape",
+  "summary": "77 BPM 4/4 lofi/sub/piano/flute 9 sections 82.6s"
+ },
+ "prompt:jazzhop": {
+  "plan": "28713c2886efdc2724b8",
+  "song": "3a3004359ffad5a9e664",
+  "events": 878,
+  "cards": "d63995b14c26094064f1",
+  "prompt": "c601e29d9e4c49c9a4e3",
+  "label": "Jazzhop",
+  "gear": "Akai MPC60 | Kay M-1 upright bass | Steinway Model D | Studer A800 tape",
+  "summary": "73 BPM 4/4 lofi/upright/piano/epiano 9 sections 83.8s"
+ },
+ "prompt:cool jazz": {
+  "plan": "c3f930bb7fdafab3525f",
+  "song": "8f76d23accb17a0812c7",
+  "events": 1146,
+  "cards": "c2c5b524a8134c3e2e61",
+  "prompt": "5d4925ede4263f08f018",
+  "label": "Cool Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | EMT 140 plate",
+  "summary": "104 BPM 4/4 brush/upright/piano/brass 9 sections 79.0s"
+ },
+ "prompt:modal jazz": {
+  "plan": "15c13c7cf1325656753d",
+  "song": "0d066193c0f057e581fe",
+  "events": 1110,
+  "cards": "6e0cb4d7351d43212a92",
+  "prompt": "f0188931c5b0ee9bf303",
+  "label": "Modal Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D",
+  "summary": "106 BPM 4/4 brush/upright/piano/piano 9 sections 72.7s"
+ },
+ "prompt:nu-jazz": {
+  "plan": "a0952d74a7e68683c20f",
+  "song": "4298077ed06afcc7d04c",
+  "events": 1317,
+  "cards": "beb6984d5670699c9fce",
+  "prompt": "8a7cc119638308c1a87a",
+  "label": "Cool Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D",
+  "summary": "119 BPM 4/4 brush/upright/piano/brass 9 sections 85.0s"
+ },
+ "prompt:garage rock": {
+  "plan": "6e2342da9fd5d66e3293",
+  "song": "e0ab18544a439f3bfacb",
+  "events": 1943,
+  "cards": "b67857802466b0b63a95",
+  "prompt": "74d750de57b4e34c0259",
+  "label": "Tech House × Rock",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Fender Rhodes Mark I | EMT 140 plate | Roland Space Echo RE-201",
+  "summary": "117 BPM 4/4 electronic/fm/epiano/pluck 10 sections 87.2s"
+ },
+ "prompt:stoner rock": {
+  "plan": "a897d738db73c3e12fcc",
+  "song": "7b68e92867c7a24bd871",
+  "events": 2003,
+  "cards": "396d138862deb5765755",
+  "prompt": "0de87ededa25446a12c0",
+  "label": "Garage Rock",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Gibson Les Paul into a Marshall JCM800 | Gibson SG with fuzz | Roland Space Echo RE-201",
+  "summary": "123 BPM 4/4 acoustic/pluck/distGuitar/distGuitar 9 sections 82.2s"
+ },
+ "prompt:arena rock": {
+  "plan": "2e08239bf43ad8bc482b",
+  "song": "ccbc1295ded769d4a5ef",
+  "events": 2278,
+  "cards": "a3b865b645f5f1a3d5f5",
+  "prompt": "08f56d562ed93146219a",
+  "label": "Arena Rock",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Gibson Les Paul into a Marshall JCM800 | Gibson SG with fuzz | EMT 140 plate",
+  "summary": "131 BPM 4/4 acoustic/pluck/distGuitar/distGuitar 9 sections 92.1s"
+ },
+ "prompt:post-punk": {
+  "plan": "a21857739936d897136c",
+  "song": "6de0efdc704c4669e63b",
+  "events": 2233,
+  "cards": "7ab66cc0016f44271547",
+  "prompt": "a81ce44c4de5f59a3209",
+  "label": "Arena Rock",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Gibson Les Paul into a Marshall JCM800 | Gibson SG with fuzz | Roland Space Echo RE-201",
+  "summary": "145 BPM 4/4 acoustic/pluck/distGuitar/distGuitar 9 sections 71.8s"
+ },
+ "prompt:delta blues": {
+  "plan": "355653f9fe92099b9547",
+  "song": "5849a6b4abb38334baef",
+  "events": 732,
+  "cards": "48db1380547aa83d82aa",
+  "prompt": "167aa37948ff867171b7",
+  "label": "Delta Blues",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Steinway Model D | Hohner Marine Band harmonica",
+  "summary": "69 BPM 4/4 brush/pluck/piano/harmonica 4 sections 97.8s"
+ },
+ "prompt:chicago blues": {
+  "plan": "fa391f5e484b0ab616ef",
+  "song": "d8219e6f7d6bd43943b7",
+  "events": 852,
+  "cards": "15288bae8a04ba793e8c",
+  "prompt": "26ed658f2106e2687576",
+  "label": "Texas Blues",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Gibson ES-335 | Fender Telecaster | Studer A800 tape",
+  "summary": "84 BPM 4/4 brush/pluck/cleanGuitar/guitar 4 sections 86.1s"
+ },
+ "prompt:texas blues": {
+  "plan": "09743c241952a93e8fce",
+  "song": "c0c9dc7bcfa078acb39c",
+  "events": 781,
+  "cards": "80a860bd4b5be06d84d6",
+  "prompt": "752f3bdab6a1d6806bbe",
+  "label": "Chicago Blues",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Gibson ES-335 | Hohner Marine Band harmonica",
+  "summary": "84 BPM 4/4 brush/upright/cleanGuitar/harmonica 4 sections 92.1s"
+ },
+ "prompt:appalachian folk": {
+  "plan": "a1f232d5ba4e7077f9f4",
+  "song": "caa1f8f9d2277ce7bc89",
+  "events": 1046,
+  "cards": "d591dfd89aacd45440ad",
+  "prompt": "9e2723d48acd89459310",
+  "label": "Appalachian Folk",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Martin D-28 | Roland VP-330 vocoder | EMT 140 plate",
+  "summary": "106 BPM 4/4 brush/pluck/strumGuitar/voice 9 sections 73.0s"
+ },
+ "prompt:indie folk": {
+  "plan": "cae46cbb06dd5577a741",
+  "song": "4ac827f2c059df1791b1",
+  "events": 1193,
+  "cards": "5dff47ad7f14d75c9481",
+  "prompt": "b1a8a76f86819f4ce222",
+  "label": "Indie Folk",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Martin D-28 | Deering Goodtime banjo | EMT 140 plate",
+  "summary": "107 BPM 4/4 brush/upright/strumGuitar/banjo 9 sections 90.8s"
+ },
+ "prompt:heartland rock": {
+  "plan": "0bcfff6aa53213a76c61",
+  "song": "bb85dbe7ebb6a58da192",
+  "events": 1270,
+  "cards": "19f6d600e8588d74f014",
+  "prompt": "9a52bfaad65323f0cef4",
+  "label": "Heartland Rock × Rock",
+  "gear": "Ludwig Supraphonic kit | Sequential Pro-One | Gibson ES-335 | Fender Telecaster | Fender '65 Twin Reverb (spring)",
+  "summary": "107 BPM 4/4 acoustic/square/cleanGuitar/guitar 9 sections 85.5s"
+ },
+ "prompt:outlaw country": {
+  "plan": "07ba105c8f2b513e27b3",
+  "song": "cba3ecb008a6a1459bbf",
+  "events": 1357,
+  "cards": "73118d28c806f96380f9",
+  "prompt": "8276272a88b8e9593c5c",
+  "label": "Outlaw Country",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Martin D-28 | Deering Goodtime banjo | Fender '65 Twin Reverb (spring)",
+  "summary": "104 BPM 4/4 acoustic/pluck/strumGuitar/banjo 9 sections 83.4s"
+ },
+ "prompt:epic trailer": {
+  "plan": "e961f8e3e9f7b09c3087",
+  "song": "2608c73e1be6b39cdddb",
+  "events": 786,
+  "cards": "e29b09b793a7ad0019fe",
+  "prompt": "3e68a4cc1601ddef58c0",
+  "label": "Epic Trailer",
+  "gear": "Taiko ensemble | Kay M-1 upright bass | Oberheim OB-Xa brass | Lexicon 480L hall",
+  "summary": "92 BPM 5/4 (2+2+2+2+2) cinematic/upright/brass/strings 9 sections 81.2s"
+ },
+ "prompt:dark score": {
+  "plan": "68c04c91aaa2df3e3c89",
+  "song": "c1aca5b156e2f5134ea7",
+  "events": 682,
+  "cards": "bc7ee1f4d71996a7d36a",
+  "prompt": "0b007dea89f4759547d6",
+  "label": "Dark Score",
+  "gear": "Taiko ensemble | Moog Sub 37 (sub) | Mellotron M400 strings | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "91 BPM 5/4 (2+2+2+2+2) cinematic/sub/strings/strings 9 sections 83.7s"
+ },
+ "prompt:western score": {
+  "plan": "d1a7227e3ecc9a769871",
+  "song": "273d5b4b6dba389fcbf1",
+  "events": 1243,
+  "cards": "aee32940feb09b8c374c",
+  "prompt": "0c9f59999f745c37597f",
+  "label": "Heartland Rock × Cinematic / orchestral",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Martin D-28 | Fender '65 Twin Reverb (spring)",
+  "summary": "118 BPM 4/4 acoustic/pluck/strumGuitar/brass 9 sections 73.5s"
+ },
+ "prompt:space ambient": {
+  "plan": "17e7da3dc55163e8522c",
+  "song": "534063be1193870d2c2f",
+  "events": 575,
+  "cards": "8d7c34645ca33b2ad650",
+  "prompt": "ea96d0971fe330fe1230",
+  "label": "Space Ambient",
+  "gear": "Gretsch kit with brushes | Moog Sub 37 (sub) | Roland Juno-106 | Mellotron M400 flute | Eventide H9 shimmer",
+  "summary": "71 BPM 4/4 brush/sub/pad/flute 9 sections 86.2s"
+ },
+ "prompt:something I have never heard": {
+  "plan": "4527fb7f1a68826a7c16",
+  "song": "25b6a9da45fd77231382",
+  "events": 2125,
+  "cards": "263ac95b00826124c05f",
+  "prompt": "ca823810b4de68842fc5",
+  "label": "Jungle × Folk / acoustic",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Deering Goodtime banjo | Lexicon 480L hall",
+  "summary": "158 BPM 4/4 electronic/reese/pad/banjo 10 sections 88.9s"
+ },
+ "prompt:a robot learning to hum the blues": {
+  "plan": "d5e43a1643d794f8fd6d",
+  "song": "f6e8fdc8644e634cf278",
+  "events": 803,
+  "cards": "ee716c3770ecb49c3acf",
+  "prompt": "0892a6986f66543b476b",
+  "label": "Chicago Blues × Trance",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Gibson ES-335 | Hohner Marine Band harmonica",
+  "summary": "102 BPM 4/4 brush/upright/cleanGuitar/harmonica 4 sections 70.9s"
+ },
+ "genre:house:v0": {
+  "plan": "61e1143829b734e3d86d",
+  "song": "a038001c1825af9c366d",
+  "events": 1942,
+  "cards": "ddd401f3c8b7708b5ad6",
+  "prompt": "5feebd8422262aa9f559",
+  "label": "Afro House",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Steinway Model D | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "125 BPM 4/4 electronic/sub/piano/voice 10 sections 81.6s"
+ },
+ "genre:house:v1": {
+  "plan": "61e1143829b734e3d86d",
+  "song": "8319c258e78424688225",
+  "events": 1944,
+  "cards": "bf5ceed0c5a8d409fa15",
+  "prompt": "50516ac05ba49d4fa208",
+  "label": "Deep House",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "125 BPM 4/4 electronic/sub/pad/bell 10 sections 83.3s"
+ },
+ "genre:house:v2": {
+  "plan": "61e1143829b734e3d86d",
+  "song": "56f2b0e93e1f5986d64d",
+  "events": 2077,
+  "cards": "670474d377ea5a04b9fc",
+  "prompt": "0f8e233f1c75bfe1ef0c",
+  "label": "French House",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Fender Rhodes Mark I | Roland VP-330 vocoder | EMT 140 plate",
+  "summary": "125 BPM 4/4 electronic/fm/epiano/voice 10 sections 75.6s"
+ },
+ "genre:house:pull5": {
+  "plan": "61e1143829b734e3d86d",
+  "song": "e1001eedbd28ecdd04bf",
+  "events": 1942,
+  "cards": "9cfcde3ecb1f2af07303",
+  "prompt": "b218232f920cdee9e9bd",
+  "label": "Afro House",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Steinway Model D | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "125 BPM 4/4 acoustic/upright/piano/voice 10 sections 81.6s"
+ },
+ "genre:house:pull95": {
+  "plan": "61e1143829b734e3d86d",
+  "song": "b347ccd85b9b2cabf61c",
+  "events": 1942,
+  "cards": "a53747451f1da3e17cb3",
+  "prompt": "52b0b5b7ad1523ac255f",
+  "label": "Afro House",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Fender Rhodes Mark I | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "125 BPM 4/4 electronic/sub/epiano/voice 10 sections 81.6s"
+ },
+ "blend:house+techno": {
+  "plan": "948a379616e3a3c13698",
+  "song": "69553bd7fba6b2316e6e",
+  "events": 1997,
+  "cards": "691d855c34b8a38fcab9",
+  "prompt": "8087504b651fb0e19704",
+  "label": "Afro House × Techno",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Fender Rhodes Mark I | Lexicon 480L hall",
+  "summary": "127 BPM 4/4 electronic/sub/epiano/fmLead 10 sections 80.3s"
+ },
+ "blend:house+synthwave": {
+  "plan": "8e28701d773368f4a861",
+  "song": "3cb475dbaebec5f41417",
+  "events": 1829,
+  "cards": "3a53aae5e4de0500b0f3",
+  "prompt": "5a23979c650a15805412",
+  "label": "Afro House × Synthwave",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Steinway Model D | Clavia Nord Lead 2 | Lexicon 480L hall",
+  "summary": "121 BPM 4/4 electronic/sub/piano/squareLead 10 sections 80.3s"
+ },
+ "genre:techno:v0": {
+  "plan": "9c4323311a6ddd3a5354",
+  "song": "c214c1958076784b70db",
+  "events": 2109,
+  "cards": "844ee81f7b151811276e",
+  "prompt": "f30dfc65b7b12903d5e6",
+  "label": "Dub Techno",
+  "gear": "Roland TR-909 | Roland TB-303 | Roland Juno-106 | Lexicon 480L hall",
+  "summary": "134 BPM 4/4 electronic/acid/pad/fmLead 10 sections 66.9s"
+ },
+ "genre:techno:v1": {
+  "plan": "9c4323311a6ddd3a5354",
+  "song": "40f70931a50021b2e03d",
+  "events": 2259,
+  "cards": "0ada607b48ee8603e84d",
+  "prompt": "336ee7f838591e6989c5",
+  "label": "Dub Techno",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Roland TB-303 (acid lead) | EMT 140 plate",
+  "summary": "134 BPM 4/4 electronic/reese/pad/acidLead 10 sections 81.3s"
+ },
+ "genre:techno:v2": {
+  "plan": "9c4323311a6ddd3a5354",
+  "song": "013ebc45d06dc6aafd7f",
+  "events": 2560,
+  "cards": "817bceace55bb3b32956",
+  "prompt": "23dc804e6d564cebd822",
+  "label": "Melodic Techno",
+  "gear": "Roland TR-909 | Roland TB-303 | Sequential Prophet-5 (arp) | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "134 BPM 4/4 electronic/acid/pluckArp/fmLead 10 sections 83.3s"
+ },
+ "genre:techno:pull5": {
+  "plan": "9c4323311a6ddd3a5354",
+  "song": "30a14d05036bb903fadd",
+  "events": 2109,
+  "cards": "bad63c952be8150178e2",
+  "prompt": "150226016c5ba9cf5275",
+  "label": "Dub Techno",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Hammond B-3 + Leslie 122 | Mellotron M400 flute | Lexicon 480L hall",
+  "summary": "134 BPM 4/4 acoustic/pluck/organ/flute 10 sections 66.9s"
+ },
+ "genre:techno:pull95": {
+  "plan": "9c4323311a6ddd3a5354",
+  "song": "c214c1958076784b70db",
+  "events": 2109,
+  "cards": "844ee81f7b151811276e",
+  "prompt": "f30dfc65b7b12903d5e6",
+  "label": "Dub Techno",
+  "gear": "Roland TR-909 | Roland TB-303 | Roland Juno-106 | Lexicon 480L hall",
+  "summary": "134 BPM 4/4 electronic/acid/pad/fmLead 10 sections 66.9s"
+ },
+ "blend:techno+house": {
+  "plan": "232322cc9694ebe21f95",
+  "song": "d86936a8af80bcaa371d",
+  "events": 1898,
+  "cards": "88ff1e44cce311ab97d0",
+  "prompt": "dc3f18c2a7e82bcefcab",
+  "label": "Minimal Techno × House",
+  "gear": "Roland TR-909 | Roland TB-303 | Roland Juno-106 | Lexicon 480L hall",
+  "summary": "132 BPM 4/4 electronic/acid/pad/fmLead 10 sections 70.0s"
+ },
+ "blend:techno+synthwave": {
+  "plan": "6aef00145f440638deb6",
+  "song": "258f9c294cd811452101",
+  "events": 1548,
+  "cards": "323a4e9689d28664e6f9",
+  "prompt": "2a36a7756a895798117a",
+  "label": "Minimal Techno × Synthwave",
+  "gear": "LinnDrum LM-2 | Roland TB-303 | Roland Juno-106 | Lexicon 480L hall",
+  "summary": "127 BPM 4/4 gated/acid/pad/fmLead 10 sections 69.0s"
+ },
+ "genre:synthwave:v0": {
+  "plan": "7322de44e15bb1451181",
+  "song": "a8ad1295aa08f832f415",
+  "events": 1248,
+  "cards": "399e62d3375957754bb5",
+  "prompt": "fd61875af9fa9b843a22",
+  "label": "Darksynth",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland Juno-106 | Moog Minimoog lead | Studer A800 tape",
+  "summary": "101 BPM 4/4 gated/saw/pad/sawLead 9 sections 82.0s"
+ },
+ "genre:synthwave:v1": {
+  "plan": "7322de44e15bb1451181",
+  "song": "adb3464a464764323350",
+  "events": 1738,
+  "cards": "c88871edef5318969f96",
+  "prompt": "ff8aab5e2b291a2eb086",
+  "label": "Darksynth",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland JP-8000 | Clavia Nord Lead 2 | EMT 140 plate",
+  "summary": "101 BPM 4/4 gated/saw/supersaw/squareLead 9 sections 76.3s"
+ },
+ "genre:synthwave:v2": {
+  "plan": "7322de44e15bb1451181",
+  "song": "b4504610a57c4f62484c",
+  "events": 1200,
+  "cards": "1c157f6f58e7b14de472",
+  "prompt": "fe28d89b57f1201c0114",
+  "label": "Outrun",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Oberheim OB-Xa brass | Moog Minimoog lead | EMT 140 plate",
+  "summary": "101 BPM 4/4 gated/saw/brass/sawLead 9 sections 81.1s"
+ },
+ "genre:synthwave:pull5": {
+  "plan": "7322de44e15bb1451181",
+  "song": "c5fbf2d3e9aa64d5669c",
+  "events": 1248,
+  "cards": "a756516de54087428ceb",
+  "prompt": "03fe5d0ecef4f91ac411",
+  "label": "Darksynth",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Hammond B-3 + Leslie 122 | Fender Telecaster | Studer A800 tape",
+  "summary": "101 BPM 4/4 acoustic/pluck/organ/guitar 9 sections 82.0s"
+ },
+ "genre:synthwave:pull95": {
+  "plan": "7322de44e15bb1451181",
+  "song": "a8ad1295aa08f832f415",
+  "events": 1248,
+  "cards": "399e62d3375957754bb5",
+  "prompt": "fd61875af9fa9b843a22",
+  "label": "Darksynth",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland Juno-106 | Moog Minimoog lead | Studer A800 tape",
+  "summary": "101 BPM 4/4 gated/saw/pad/sawLead 9 sections 82.0s"
+ },
+ "blend:synthwave+house": {
+  "plan": "7b132034943e6212ba5d",
+  "song": "cee6bc0d425949a7d8ee",
+  "events": 1253,
+  "cards": "08eabb571fe8c3c9f683",
+  "prompt": "3b202092cf08b5647528",
+  "label": "Darksynth × House",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland Juno-106 | Studer A800 tape | Roland Space Echo RE-201",
+  "summary": "106 BPM 4/4 gated/saw/pad/pluck 9 sections 82.6s"
+ },
+ "blend:synthwave+techno": {
+  "plan": "19a9af80d561707dc175",
+  "song": "5c8bdd490ee5624ed730",
+  "events": 1254,
+  "cards": "8494ddb599258199dc58",
+  "prompt": "8ceb3d7d98759fc7a102",
+  "label": "Darksynth × Techno",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland Juno-106 | Roland TB-303 (acid lead) | Studer A800 tape",
+  "summary": "107 BPM 4/4 gated/saw/pad/acidLead 9 sections 81.9s"
+ },
+ "genre:ambient:v0": {
+  "plan": "7608147c8252e5ebc5b7",
+  "song": "9ea5a383427d05ed9ec0",
+  "events": 528,
+  "cards": "ae52926e79d0c095f43e",
+  "prompt": "4b6da68b4fc0e35baedc",
+  "label": "Psybient",
+  "gear": "Gretsch kit with brushes | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Eventide H9 shimmer",
+  "summary": "78 BPM 4/4 brush/sub/pad/bell 9 sections 87.7s"
+ },
+ "genre:ambient:v1": {
+  "plan": "7608147c8252e5ebc5b7",
+  "song": "617459e8ddcd488b7e95",
+  "events": 839,
+  "cards": "67f3dd83fd776c827771",
+  "prompt": "11ee181d503d59e0df83",
+  "label": "Psybient",
+  "gear": "Gretsch kit with brushes | Yamaha DX7 (FM bass) | Yamaha DX7 bells | Eventide H9 shimmer | Roland Space Echo RE-201",
+  "summary": "78 BPM 4/4 brush/fm/choir/bell 9 sections 87.7s"
+ },
+ "genre:ambient:v2": {
+  "plan": "7608147c8252e5ebc5b7",
+  "song": "bb31144a4cf560d545b3",
+  "events": 918,
+  "cards": "7fc33406261c24c77018",
+  "prompt": "91dffdbb0a521e22c12b",
+  "label": "Dark Ambient",
+  "gear": "Gretsch kit with brushes | Moog Sub 37 (sub) | Mellotron M400 strings | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "78 BPM 7/8 (2+2+3) brush/sub/strings/bell 9 sections 87.7s"
+ },
+ "genre:ambient:pull5": {
+  "plan": "7608147c8252e5ebc5b7",
+  "song": "9e576c5b250b0dd854b9",
+  "events": 528,
+  "cards": "e1f8966553518ab3553a",
+  "prompt": "1c5120db057a88efc276",
+  "label": "Psybient",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Hammond B-3 + Leslie 122 | Yamaha DX7 bells | Eventide H9 shimmer",
+  "summary": "78 BPM 4/4 brush/upright/organ/bell 9 sections 87.7s"
+ },
+ "genre:ambient:pull95": {
+  "plan": "7608147c8252e5ebc5b7",
+  "song": "315fbff4c072af7bbd92",
+  "events": 528,
+  "cards": "2d07db6da5c0c75b2c58",
+  "prompt": "618048f6a4328e0f346e",
+  "label": "Psybient",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Eventide H9 shimmer",
+  "summary": "78 BPM 4/4 electronic/sub/pad/bell 9 sections 87.7s"
+ },
+ "blend:ambient+house": {
+  "plan": "6afb576bfa5edad2720b",
+  "song": "c89f5769d67c34204bd2",
+  "events": 698,
+  "cards": "6e803c25fe1c2db89187",
+  "prompt": "df769adad543da23df40",
+  "label": "Psybient × House",
+  "gear": "Gretsch kit with brushes | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Eventide H9 shimmer",
+  "summary": "87 BPM 4/4 brush/sub/pad/bell 9 sections 84.1s"
+ },
+ "blend:ambient+techno": {
+  "plan": "94af1a6b0431ac551b1c",
+  "song": "bf870826cf9ad1b103cf",
+  "events": 822,
+  "cards": "d45af4865ffca902053c",
+  "prompt": "9efa3eddc0f1592c78d3",
+  "label": "Psybient × Techno",
+  "gear": "Gretsch kit with brushes | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Eventide H9 shimmer",
+  "summary": "89 BPM 4/4 brush/sub/pad/bell 9 sections 87.6s"
+ },
+ "genre:trance:v0": {
+  "plan": "72114737a9bf3039e678",
+  "song": "d0f23e27d6c182e8553a",
+  "events": 2444,
+  "cards": "fa6ea1de84398c889216",
+  "prompt": "993f10aeaf26c827daa8",
+  "label": "Progressive Trance",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Moog Minimoog lead | Lexicon 480L hall",
+  "summary": "137 BPM 4/4 electronic/reese/pluckArp/sawLead 10 sections 87.8s"
+ },
+ "genre:trance:v1": {
+  "plan": "72114737a9bf3039e678",
+  "song": "cc792a2d49bef985eb94",
+  "events": 2422,
+  "cards": "4ff0a1f400a2f32327bf",
+  "prompt": "e8be7b299c692440ebcd",
+  "label": "Psytrance",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Sequential Prophet-5 (arp) | Moog Minimoog lead | Lexicon 480L hall",
+  "summary": "137 BPM 4/4 electronic/saw/pluckArp/sawLead 10 sections 85.0s"
+ },
+ "genre:trance:v2": {
+  "plan": "72114737a9bf3039e678",
+  "song": "837a3d3f2008cb5ed5ae",
+  "events": 2428,
+  "cards": "426f180158d6ff6ebdd2",
+  "prompt": "f6422e1c96e20152c1c8",
+  "label": "Uplifting Trance",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Roland Juno-106 | Moog Minimoog lead | EMT 140 plate",
+  "summary": "137 BPM 4/4 electronic/fm/pad/sawLead 10 sections 80.8s"
+ },
+ "genre:trance:pull5": {
+  "plan": "72114737a9bf3039e678",
+  "song": "35070eed60166b2f0adb",
+  "events": 2348,
+  "cards": "5e64937668b602f29615",
+  "prompt": "ff92e960904a99e6d14a",
+  "label": "Progressive Trance",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Gibson ES-335 | National Reso-Phonic Tricone (slide) | Lexicon 480L hall",
+  "summary": "137 BPM 4/4 acoustic/upright/cleanGuitar/guitar 10 sections 87.8s"
+ },
+ "genre:trance:pull95": {
+  "plan": "72114737a9bf3039e678",
+  "song": "d0f23e27d6c182e8553a",
+  "events": 2444,
+  "cards": "fa6ea1de84398c889216",
+  "prompt": "993f10aeaf26c827daa8",
+  "label": "Progressive Trance",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Moog Minimoog lead | Lexicon 480L hall",
+  "summary": "137 BPM 4/4 electronic/reese/pluckArp/sawLead 10 sections 87.8s"
+ },
+ "blend:trance+house": {
+  "plan": "325856c768fc8c99f71c",
+  "song": "d6a1608989bc8e0faced",
+  "events": 2435,
+  "cards": "6a7cb5884c8edbec3ff6",
+  "prompt": "cc2623c02ac5184a6c66",
+  "label": "Progressive Trance × House",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Moog Minimoog lead | Lexicon 480L hall",
+  "summary": "134 BPM 4/4 electronic/reese/pluckArp/sawLead 10 sections 89.8s"
+ },
+ "blend:trance+techno": {
+  "plan": "fa64fe4cbcfebbe1c10e",
+  "song": "5ebb8e438a0135633a28",
+  "events": 2459,
+  "cards": "ef9c2a601003744b8253",
+  "prompt": "5b5033fe6ad9859221f8",
+  "label": "Progressive Trance × Techno",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Moog Minimoog lead | Lexicon 480L hall",
+  "summary": "136 BPM 4/4 electronic/reese/pluckArp/sawLead 10 sections 88.5s"
+ },
+ "genre:dnb:v0": {
+  "plan": "6742b07513aa50a7b64a",
+  "song": "b24f8b0b568011591c9e",
+  "events": 3389,
+  "cards": "06dec798fb71ed03823d",
+  "prompt": "472c4e76d806e6a2e737",
+  "label": "Neurofunk",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "175 BPM 4/4 electronic/reese/pad/bell 10 sections 78.7s"
+ },
+ "genre:dnb:v1": {
+  "plan": "6742b07513aa50a7b64a",
+  "song": "0e6871cd3ffb3ce4cac9",
+  "events": 2632,
+  "cards": "6581f5198b8f61b55125",
+  "prompt": "cb3fdbdb2d41c71f19ca",
+  "label": "Neurofunk",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Moog Minimoog lead | Lexicon 480L hall",
+  "summary": "175 BPM 4/4 electronic/reese/pad/sawLead 10 sections 78.7s"
+ },
+ "genre:dnb:v2": {
+  "plan": "6742b07513aa50a7b64a",
+  "song": "7d2f044070a32140da74",
+  "events": 2799,
+  "cards": "77c474e776d283be0e4e",
+  "prompt": "b1eb9dffbf1670e9c8bc",
+  "label": "Liquid Drum & Bass",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "175 BPM 4/4 electronic/sub/pad/bell 10 sections 78.7s"
+ },
+ "genre:dnb:pull5": {
+  "plan": "6742b07513aa50a7b64a",
+  "song": "a99372ee8041d6ebf029",
+  "events": 3389,
+  "cards": "854e1c5e9a2f8b2fbc85",
+  "prompt": "248ace495bd18b9149d3",
+  "label": "Neurofunk",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Hammond B-3 + Leslie 122 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "175 BPM 4/4 acoustic/upright/organ/bell 10 sections 78.7s"
+ },
+ "genre:dnb:pull95": {
+  "plan": "6742b07513aa50a7b64a",
+  "song": "b24f8b0b568011591c9e",
+  "events": 3389,
+  "cards": "06dec798fb71ed03823d",
+  "prompt": "472c4e76d806e6a2e737",
+  "label": "Neurofunk",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "175 BPM 4/4 electronic/reese/pad/bell 10 sections 78.7s"
+ },
+ "blend:dnb+house": {
+  "plan": "ec7cad58d1d59a2c6aa5",
+  "song": "c252700971ec318df701",
+  "events": 3413,
+  "cards": "f642c3bbcc2256841a2e",
+  "prompt": "190139bea35eac7b9e1e",
+  "label": "Neurofunk × House",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "165 BPM 4/4 electronic/reese/pad/bell 10 sections 83.5s"
+ },
+ "blend:dnb+techno": {
+  "plan": "9da319f9e6cefa813b73",
+  "song": "b58ae419b49bf63bbfad",
+  "events": 3387,
+  "cards": "2d48cc0e3e6960161633",
+  "prompt": "4ea73599587030e923c6",
+  "label": "Neurofunk × Techno",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "167 BPM 4/4 electronic/reese/pad/bell 10 sections 82.5s"
+ },
+ "genre:folk:v0": {
+  "plan": "6be2569df5ca43ede1b7",
+  "song": "9d80977f10bd604ba682",
+  "events": 985,
+  "cards": "774fb83b711990ee1cb9",
+  "prompt": "1db7a4a11ac2c3fae1c5",
+  "label": "Indie Folk",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Martin D-28 | Mellotron M400 flute",
+  "summary": "93 BPM 3/4 brush/upright/strumGuitar/flute 9 sections 74.8s"
+ },
+ "genre:folk:v1": {
+  "plan": "6be2569df5ca43ede1b7",
+  "song": "8e25b1af11b8eb1d7bad",
+  "events": 810,
+  "cards": "fa8b05ee66f6f198ba24",
+  "prompt": "4bfb368d9e31737325fc",
+  "label": "Campfire Folk",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Martin D-28 | Deering Goodtime banjo",
+  "summary": "93 BPM 3/4 brush/upright/strumGuitar/banjo 9 sections 74.8s"
+ },
+ "genre:folk:v2": {
+  "plan": "6be2569df5ca43ede1b7",
+  "song": "ad51d891923f73105f7a",
+  "events": 1161,
+  "cards": "72bf094babe7b47f5bdb",
+  "prompt": "0692956e64fc990a6002",
+  "label": "Appalachian Folk",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Martin D-28 | Mellotron M400 flute",
+  "summary": "93 BPM 4/4 brush/upright/strumGuitar/flute 9 sections 88.4s"
+ },
+ "genre:folk:pull5": {
+  "plan": "6be2569df5ca43ede1b7",
+  "song": "9d80977f10bd604ba682",
+  "events": 985,
+  "cards": "774fb83b711990ee1cb9",
+  "prompt": "1db7a4a11ac2c3fae1c5",
+  "label": "Indie Folk",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Martin D-28 | Mellotron M400 flute",
+  "summary": "93 BPM 3/4 brush/upright/strumGuitar/flute 9 sections 74.8s"
+ },
+ "genre:folk:pull95": {
+  "plan": "6be2569df5ca43ede1b7",
+  "song": "c6dc913620a6d098d80f",
+  "events": 986,
+  "cards": "5bc8f25f75f25287621c",
+  "prompt": "2fa894e2db7c116b07e0",
+  "label": "Indie Folk",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Sequential Prophet-5 (arp)",
+  "summary": "93 BPM 3/4 electronic/sub/pluckArp/fmLead 9 sections 74.8s"
+ },
+ "blend:folk+house": {
+  "plan": "29f2abbb88761692a6f9",
+  "song": "61965082ab8a0928615b",
+  "events": 1214,
+  "cards": "49e4f3b86ee5bfa65f71",
+  "prompt": "0282024df8d3b1f33123",
+  "label": "Campfire Folk × House",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Martin D-28 | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "99 BPM 3/4 electronic/upright/strumGuitar/bell 9 sections 73.9s"
+ },
+ "blend:folk+techno": {
+  "plan": "6534391504f8c530c271",
+  "song": "6555fd471cf8b34ece5a",
+  "events": 1527,
+  "cards": "1c645540572f5099233a",
+  "prompt": "332d24f84c345c774f6f",
+  "label": "Campfire Folk × Techno",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Martin D-28 | Roland TB-303 (acid lead) | EMT 140 plate",
+  "summary": "101 BPM 3/4 electronic/upright/strumGuitar/acidLead 9 sections 76.0s"
+ },
+ "genre:countryRock:v0": {
+  "plan": "11d6f866c89017024ea3",
+  "song": "6695c5f67e1e58beaf9f",
+  "events": 1279,
+  "cards": "af1c9b60dc4a949ec65a",
+  "prompt": "beba1fa0cbf91e68b10a",
+  "label": "Desert Country Rock",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Martin D-28 | Deering Goodtime banjo | Fender '65 Twin Reverb (spring)",
+  "summary": "113 BPM 4/4 acoustic/pluck/strumGuitar/banjo 9 sections 68.2s"
+ },
+ "genre:countryRock:v1": {
+  "plan": "11d6f866c89017024ea3",
+  "song": "05ee4f6eb47397be1f61",
+  "events": 1412,
+  "cards": "2403a12d45babdb32be5",
+  "prompt": "790c6239c9abe2aef2d0",
+  "label": "Outlaw Country",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Martin D-28 | Deering Goodtime banjo | Fender '65 Twin Reverb (spring)",
+  "summary": "113 BPM 4/4 acoustic/pluck/strumGuitar/banjo 9 sections 76.7s"
+ },
+ "genre:countryRock:v2": {
+  "plan": "11d6f866c89017024ea3",
+  "song": "e6b9d89afaa76442fd30",
+  "events": 1500,
+  "cards": "48b1cdd08d5f1b88c6e9",
+  "prompt": "6804178a85cff168674d",
+  "label": "Heartland Rock",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Martin D-28 | Fender Telecaster | EMT 140 plate",
+  "summary": "113 BPM 4/4 acoustic/upright/strumGuitar/guitar 9 sections 85.2s"
+ },
+ "genre:countryRock:pull5": {
+  "plan": "11d6f866c89017024ea3",
+  "song": "6695c5f67e1e58beaf9f",
+  "events": 1279,
+  "cards": "af1c9b60dc4a949ec65a",
+  "prompt": "beba1fa0cbf91e68b10a",
+  "label": "Desert Country Rock",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Martin D-28 | Deering Goodtime banjo | Fender '65 Twin Reverb (spring)",
+  "summary": "113 BPM 4/4 acoustic/pluck/strumGuitar/banjo 9 sections 68.2s"
+ },
+ "genre:countryRock:pull95": {
+  "plan": "11d6f866c89017024ea3",
+  "song": "ed7c85107aea059dc78d",
+  "events": 1375,
+  "cards": "f47486905180150cd599",
+  "prompt": "bda842ec8579c07a677e",
+  "label": "Desert Country Rock",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Sequential Prophet-5 (arp) | Fender '65 Twin Reverb (spring)",
+  "summary": "113 BPM 4/4 electronic/saw/pluckArp/pluck 9 sections 68.2s"
+ },
+ "blend:countryRock+house": {
+  "plan": "cc50bf9ac71b83fa80c0",
+  "song": "6117e1ec0db480fd79e9",
+  "events": 1575,
+  "cards": "e6ff01173ae473d024cb",
+  "prompt": "e8ea0303bbb5c1127ea0",
+  "label": "Outlaw Country × House",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Martin D-28 | Deering Goodtime banjo | Fender '65 Twin Reverb (spring)",
+  "summary": "115 BPM 4/4 electronic/saw/strumGuitar/banjo 9 sections 75.7s"
+ },
+ "blend:countryRock+techno": {
+  "plan": "328f7de8786a2f5560aa",
+  "song": "edf2d3d568d5e058a753",
+  "events": 1796,
+  "cards": "86dd0c66e9134ec988a3",
+  "prompt": "97154e15823e1cce2d38",
+  "label": "Outlaw Country × Techno",
+  "gear": "Roland TR-909 | Roland TB-303 | Martin D-28 | Deering Goodtime banjo | EMT 140 plate",
+  "summary": "117 BPM 4/4 electronic/acid/strumGuitar/banjo 9 sections 70.0s"
+ },
+ "genre:rock:v0": {
+  "plan": "45c37462ae202ff1cea7",
+  "song": "4599422cebb74e9e7a56",
+  "events": 1479,
+  "cards": "769beb4b3ee2743ba238",
+  "prompt": "faaba22e3c8052dfd902",
+  "label": "Post-Punk",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Hammond B-3 + Leslie 122 | Gibson SG with fuzz | Fender '65 Twin Reverb (spring)",
+  "summary": "131 BPM 4/4 acoustic/pluck/organ/distGuitar 9 sections 66.2s"
+ },
+ "genre:rock:v1": {
+  "plan": "45c37462ae202ff1cea7",
+  "song": "481365ad29574f83f638",
+  "events": 1598,
+  "cards": "b2fd835ab3a3e6f03927",
+  "prompt": "6a911721a24d3362dbf5",
+  "label": "Post-Punk",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Hammond B-3 + Leslie 122 | Gibson SG with fuzz",
+  "summary": "131 BPM 4/4 acoustic/pluck/organ/distGuitar 9 sections 75.8s"
+ },
+ "genre:rock:v2": {
+  "plan": "45c37462ae202ff1cea7",
+  "song": "6cd8a00d4dc9874b3f27",
+  "events": 1948,
+  "cards": "932c229e61bac6f7953b",
+  "prompt": "324d835083ee364b86bb",
+  "label": "Garage Rock",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Gibson Les Paul into a Marshall JCM800 | Gibson SG with fuzz | EMT 140 plate",
+  "summary": "131 BPM 4/4 acoustic/pluck/distGuitar/distGuitar 9 sections 75.8s"
+ },
+ "genre:rock:pull5": {
+  "plan": "45c37462ae202ff1cea7",
+  "song": "4599422cebb74e9e7a56",
+  "events": 1479,
+  "cards": "769beb4b3ee2743ba238",
+  "prompt": "faaba22e3c8052dfd902",
+  "label": "Post-Punk",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Hammond B-3 + Leslie 122 | Gibson SG with fuzz | Fender '65 Twin Reverb (spring)",
+  "summary": "131 BPM 4/4 acoustic/pluck/organ/distGuitar 9 sections 66.2s"
+ },
+ "genre:rock:pull95": {
+  "plan": "45c37462ae202ff1cea7",
+  "song": "ccbce067c97f27058aa2",
+  "events": 1478,
+  "cards": "cabe10672527721bbaf0",
+  "prompt": "61c56b6e201802520a00",
+  "label": "Post-Punk",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Roland Juno-106 | Gibson SG with fuzz | Fender '65 Twin Reverb (spring)",
+  "summary": "131 BPM 4/4 electronic/saw/pad/distGuitar 9 sections 66.2s"
+ },
+ "blend:rock+house": {
+  "plan": "0aa8c677ea96b287ee51",
+  "song": "c93aa18226086e8fffc6",
+  "events": 1698,
+  "cards": "da9dee698e05937f819a",
+  "prompt": "b1beda6d56d07ad79689",
+  "label": "Post-Punk × House",
+  "gear": "Roland TR-909 | Fender Precision Bass | Steinway Model D | Yamaha DX7 bells | Fender '65 Twin Reverb (spring)",
+  "summary": "129 BPM 4/4 electronic/pluck/piano/bell 9 sections 67.2s"
+ },
+ "blend:rock+techno": {
+  "plan": "f31b90763b17a58e3b2a",
+  "song": "24bc1c69e4e8e3cbd583",
+  "events": 2021,
+  "cards": "09e2907927dafec57fc0",
+  "prompt": "88a0dccdf9eeb21d7bed",
+  "label": "Post-Punk × Techno",
+  "gear": "Roland TR-909 | Fender Precision Bass | Roland JP-8000",
+  "summary": "131 BPM 4/4 electronic/pluck/supersaw/fmLead 9 sections 70.1s"
+ },
+ "genre:blues:v0": {
+  "plan": "15e5db698b7bd1c4523d",
+  "song": "b4301d53678ec1d289f6",
+  "events": 782,
+  "cards": "0a4b9e452b9643ebd319",
+  "prompt": "50ff26bc921bacb95612",
+  "label": "Texas Blues",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | National Reso-Phonic Tricone (slide) | Studer A800 tape",
+  "summary": "77 BPM 4/4 brush/upright/piano/guitar 4 sections 87.7s"
+ },
+ "genre:blues:v1": {
+  "plan": "15e5db698b7bd1c4523d",
+  "song": "47cc4cd8e825dbd81724",
+  "events": 843,
+  "cards": "aaedc32c9ff6491385ce",
+  "prompt": "0015a9d46811203f1d48",
+  "label": "Chicago Blues",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | Hohner Marine Band harmonica | Fender '65 Twin Reverb (spring)",
+  "summary": "77 BPM 4/4 brush/upright/piano/harmonica 4 sections 94.3s"
+ },
+ "genre:blues:v2": {
+  "plan": "15e5db698b7bd1c4523d",
+  "song": "0f60f83620074149a43d",
+  "events": 872,
+  "cards": "1e78f98c79715f856940",
+  "prompt": "8aba6bd1e965c5564287",
+  "label": "Delta Blues",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Steinway Model D | Fender Telecaster | Fender '65 Twin Reverb (spring)",
+  "summary": "77 BPM 4/4 brush/pluck/piano/guitar 4 sections 94.3s"
+ },
+ "genre:blues:pull5": {
+  "plan": "15e5db698b7bd1c4523d",
+  "song": "b4301d53678ec1d289f6",
+  "events": 782,
+  "cards": "0a4b9e452b9643ebd319",
+  "prompt": "50ff26bc921bacb95612",
+  "label": "Texas Blues",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | National Reso-Phonic Tricone (slide) | Studer A800 tape",
+  "summary": "77 BPM 4/4 brush/upright/piano/guitar 4 sections 87.7s"
+ },
+ "genre:blues:pull95": {
+  "plan": "15e5db698b7bd1c4523d",
+  "song": "4b2cc37f458f97deb800",
+  "events": 781,
+  "cards": "844b04c55482a53d2bab",
+  "prompt": "6225a383ca97b6710f91",
+  "label": "Texas Blues",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Fender Rhodes Mark I | Moog Minimoog lead | Studer A800 tape",
+  "summary": "77 BPM 4/4 electronic/sub/epiano/sawLead 4 sections 87.7s"
+ },
+ "blend:blues+house": {
+  "plan": "f422c9b20c7e0087519d",
+  "song": "523f6bc7e6cfa255bf80",
+  "events": 1153,
+  "cards": "166ac56b07666872d5f2",
+  "prompt": "13ec2cba91696bba5b1e",
+  "label": "Delta Blues × House",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Steinway Model D | National Reso-Phonic Tricone (slide) | Fender '65 Twin Reverb (spring)",
+  "summary": "86 BPM 4/4 electronic/upright/piano/guitar 4 sections 90.0s"
+ },
+ "blend:blues+techno": {
+  "plan": "7d1d2388f0e1714f25fc",
+  "song": "698130f08d5c190dc9a2",
+  "events": 1205,
+  "cards": "f82461e6ac08a3b864b9",
+  "prompt": "0c433b45c66b686d89e5",
+  "label": "Delta Blues × Techno",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Steinway Model D | National Reso-Phonic Tricone (slide)",
+  "summary": "88 BPM 4/4 electronic/upright/piano/guitar 4 sections 88.0s"
+ },
+ "genre:lofi:v0": {
+  "plan": "5f1a3a7fe259205c1141",
+  "song": "0909e9a2006cbbd772c2",
+  "events": 873,
+  "cards": "127e66c5eefd36090c96",
+  "prompt": "372ce3466cfc73454ed7",
+  "label": "Lo-fi Hip Hop",
+  "gear": "Akai MPC60 | Moog Sub 37 (sub) | Fender Rhodes Mark I",
+  "summary": "88 BPM 4/4 lofi/sub/epiano/epiano 9 sections 74.7s"
+ },
+ "genre:lofi:v1": {
+  "plan": "5f1a3a7fe259205c1141",
+  "song": "314680b6be8d0188a7fc",
+  "events": 874,
+  "cards": "2b545460d23c2b8feaa6",
+  "prompt": "306f5c8ed9708813861d",
+  "label": "Jazzhop",
+  "gear": "Akai MPC60 | Moog Sub 37 (sub) | Fender Rhodes Mark I | Studer A800 tape",
+  "summary": "88 BPM 4/4 lofi/sub/epiano/epiano 9 sections 69.5s"
+ },
+ "genre:lofi:v2": {
+  "plan": "5f1a3a7fe259205c1141",
+  "song": "dd398faf73701483c839",
+  "events": 895,
+  "cards": "f421579273fc0b12d3c7",
+  "prompt": "424d02198fda29bf0386",
+  "label": "Chillhop",
+  "gear": "Akai MPC60 | Kay M-1 upright bass | Gibson ES-335 | Fender Telecaster | Studer A800 tape",
+  "summary": "88 BPM 4/4 lofi/upright/cleanGuitar/guitar 9 sections 77.7s"
+ },
+ "genre:lofi:pull5": {
+  "plan": "5f1a3a7fe259205c1141",
+  "song": "75c5546a4067629091b5",
+  "events": 826,
+  "cards": "ad23d95364551a6c369a",
+  "prompt": "c56589b283a56f102e77",
+  "label": "Lo-fi Hip Hop",
+  "gear": "Akai MPC60 | Kay M-1 upright bass | Steinway Model D",
+  "summary": "88 BPM 4/4 lofi/upright/piano/piano 9 sections 74.7s"
+ },
+ "genre:lofi:pull95": {
+  "plan": "5f1a3a7fe259205c1141",
+  "song": "f1df57e2ab123663cf1d",
+  "events": 873,
+  "cards": "eb0aa3641524d18c95ed",
+  "prompt": "6b2daf297bcea262f358",
+  "label": "Lo-fi Hip Hop",
+  "gear": "Roland TR-808 | Moog Sub 37 (sub) | Fender Rhodes Mark I",
+  "summary": "88 BPM 4/4 808/sub/epiano/epiano 9 sections 74.7s"
+ },
+ "blend:lofi+house": {
+  "plan": "633b51ae10f695ebeb4f",
+  "song": "c06660a32ce9621f8b34",
+  "events": 1220,
+  "cards": "c8f293b0d525925b8537",
+  "prompt": "49e5f3678e14eb7dbde1",
+  "label": "Lo-fi Hip Hop × House",
+  "gear": "Akai MPC60 | Moog Minimoog Model D | Fender Rhodes Mark I",
+  "summary": "96 BPM 4/4 lofi/saw/epiano/pluck 9 sections 73.4s"
+ },
+ "blend:lofi+techno": {
+  "plan": "76f64f17d004e780d833",
+  "song": "59be30bf8de229040cf2",
+  "events": 1484,
+  "cards": "3bec771bfda5a8679bb9",
+  "prompt": "63133f079d8fa89a4e4c",
+  "label": "Lo-fi Hip Hop × Techno",
+  "gear": "Akai MPC60 | Roland TB-303 | Fender Rhodes Mark I | Roland TB-303 (acid lead)",
+  "summary": "98 BPM 4/4 lofi/acid/epiano/acidLead 9 sections 76.8s"
+ },
+ "genre:boombap:v0": {
+  "plan": "268a9623a7240bbc4049",
+  "song": "1b02a69fc1dbdbd2643e",
+  "events": 1036,
+  "cards": "55b657476695d0114823",
+  "prompt": "42ac912fe8e59b53fdb7",
+  "label": "Boom Bap",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Fender Rhodes Mark I | Roland Space Echo RE-201",
+  "summary": "95 BPM 4/4 acoustic/upright/epiano/brass 9 sections 74.2s"
+ },
+ "genre:boombap:v1": {
+  "plan": "268a9623a7240bbc4049",
+  "song": "7ff039e4086e4970919b",
+  "events": 1263,
+  "cards": "0227638cd14bdedfa9de",
+  "prompt": "67153d8731a281d183c6",
+  "label": "Boom Bap",
+  "gear": "Ludwig Supraphonic kit | Moog Sub 37 (sub) | Mellotron M400 strings | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "95 BPM 4/4 acoustic/sub/strings/bell 9 sections 84.3s"
+ },
+ "genre:boombap:v2": {
+  "plan": "268a9623a7240bbc4049",
+  "song": "235c5df3dec0d7b5d5c4",
+  "events": 989,
+  "cards": "1e3e94dc1782bdc0afcd",
+  "prompt": "929486bdb255e36a61d4",
+  "label": "Boom Bap",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Fender Rhodes Mark I | Yamaha DX7 bells | Roland Space Echo RE-201",
+  "summary": "95 BPM 4/4 acoustic/upright/epiano/bell 9 sections 69.2s"
+ },
+ "genre:boombap:pull5": {
+  "plan": "268a9623a7240bbc4049",
+  "song": "8ac7ce7982e43569e4a3",
+  "events": 1036,
+  "cards": "7eea8bf017d25f5bcabc",
+  "prompt": "031a6be9335f4a22a0c4",
+  "label": "Boom Bap",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Steinway Model D | Roland Space Echo RE-201",
+  "summary": "95 BPM 4/4 acoustic/upright/piano/brass 9 sections 74.2s"
+ },
+ "genre:boombap:pull95": {
+  "plan": "268a9623a7240bbc4049",
+  "song": "88ac3e00a841a2a08dfc",
+  "events": 1033,
+  "cards": "e71b1bb186bb22b95fce",
+  "prompt": "d07d7a2fcb3497b66481",
+  "label": "Boom Bap",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Fender Rhodes Mark I | Moog Minimoog lead | Roland Space Echo RE-201",
+  "summary": "95 BPM 4/4 electronic/sub/epiano/sawLead 9 sections 74.2s"
+ },
+ "blend:boombap+house": {
+  "plan": "f9fe62e883cba7690fa1",
+  "song": "df03c2346a26f4bf84b9",
+  "events": 1335,
+  "cards": "d794c2d8925c81837e5d",
+  "prompt": "86f9215aadf112f9bad9",
+  "label": "Boom Bap × House",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Fender Rhodes Mark I | Roland Space Echo RE-201",
+  "summary": "101 BPM 4/4 electronic/upright/epiano/brass 9 sections 74.6s"
+ },
+ "blend:boombap+techno": {
+  "plan": "91a87b04f57c6bda9f64",
+  "song": "1a563fa8ed057d87fa33",
+  "events": 1721,
+  "cards": "47cf99163f7bcf0031e8",
+  "prompt": "85f3795ae2a1f5b6f2f5",
+  "label": "Boom Bap × Techno",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Fender Rhodes Mark I",
+  "summary": "104 BPM 4/4 electronic/upright/epiano/brass 9 sections 72.4s"
+ },
+ "genre:trap:v0": {
+  "plan": "8fc0f75888ca9c924846",
+  "song": "dbb7d07d9e884951329f",
+  "events": 1551,
+  "cards": "85e02f8237d33051373b",
+  "prompt": "a769d4abbbf4de63c6c9",
+  "label": "Drill",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Mellotron M400 flute | Lexicon 480L hall",
+  "summary": "145 BPM 4/4 808/808/choir/flute 9 sections 78.4s"
+ },
+ "genre:trap:v1": {
+  "plan": "8fc0f75888ca9c924846",
+  "song": "8dcdc1356234853d93b5",
+  "events": 1757,
+  "cards": "97af22da7794369a6fb2",
+  "prompt": "d7e7b17ede2ac1b2a25a",
+  "label": "Drill",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Sequential Prophet-5 (arp) | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "145 BPM 4/4 808/808/pluckArp/bell 9 sections 75.1s"
+ },
+ "genre:trap:v2": {
+  "plan": "8fc0f75888ca9c924846",
+  "song": "360bbe9f6b5ed0ee335e",
+  "events": 1228,
+  "cards": "8b6cf84647fbc9780fd2",
+  "prompt": "fba706d808d546f70eaf",
+  "label": "Drill",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Mellotron M400 strings | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "145 BPM 4/4 808/808/strings/bell 9 sections 70.3s"
+ },
+ "genre:trap:pull5": {
+  "plan": "8fc0f75888ca9c924846",
+  "song": "708f13d26a50c5978570",
+  "events": 1551,
+  "cards": "c2662982b296b54a290c",
+  "prompt": "90665fe3cc5316d33db4",
+  "label": "Drill",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Mellotron M400 flute | Lexicon 480L hall",
+  "summary": "145 BPM 4/4 acoustic/upright/choir/flute 9 sections 78.4s"
+ },
+ "genre:trap:pull95": {
+  "plan": "8fc0f75888ca9c924846",
+  "song": "ece21526028b8759eaa8",
+  "events": 1580,
+  "cards": "4189a7604a05dc6748b4",
+  "prompt": "80ce5eb6a98c84d5d6fb",
+  "label": "Drill",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Lexicon 480L hall",
+  "summary": "145 BPM 4/4 808/808/choir/fmLead 9 sections 78.4s"
+ },
+ "blend:trap+house": {
+  "plan": "e4aa62dade9680edca66",
+  "song": "b5c4a9e64a3b710fac75",
+  "events": 1721,
+  "cards": "36b2e869b5073011bcef",
+  "prompt": "e7d41a5c9033a32d6e7c",
+  "label": "Drill × House",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Steinway Model D | Mellotron M400 flute | Lexicon 480L hall",
+  "summary": "141 BPM 4/4 808/808/piano/flute 9 sections 77.2s"
+ },
+ "blend:trap+techno": {
+  "plan": "58466315140627b1c3a0",
+  "song": "0bd317e3bd48faf6b29e",
+  "events": 1897,
+  "cards": "4cb0d9b62fcc9c1b7e1d",
+  "prompt": "80f6bcb79986645e3424",
+  "label": "Drill × Techno",
+  "gear": "Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Sequential Prophet-5 (arp) | Lexicon 480L hall",
+  "summary": "143 BPM 4/4 808/808/pluckArp/fmLead 9 sections 76.2s"
+ },
+ "genre:cinematic:v0": {
+  "plan": "ef52daef98f7782746d3",
+  "song": "19890dc8972928e57661",
+  "events": 758,
+  "cards": "665fd41a03861971897f",
+  "prompt": "f3b61f3339a2b1377d51",
+  "label": "Hybrid Orchestral",
+  "gear": "Taiko ensemble | Kay M-1 upright bass | Mellotron M400 strings | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "87 BPM 6/8 cinematic/upright/strings/strings 9 sections 79.7s"
+ },
+ "genre:cinematic:v1": {
+  "plan": "ef52daef98f7782746d3",
+  "song": "16c1413051a7f467253b",
+  "events": 878,
+  "cards": "69a30fa631486d2e8325",
+  "prompt": "2ddaba89998615809839",
+  "label": "Dark Score",
+  "gear": "Taiko ensemble | Kay M-1 upright bass | Mellotron M400 strings | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "87 BPM 4/4 cinematic/upright/strings/strings 9 sections 89.0s"
+ },
+ "genre:cinematic:v2": {
+  "plan": "ef52daef98f7782746d3",
+  "song": "eabddba3ddf9dc055097",
+  "events": 672,
+  "cards": "6e055c2b12a3dd60d662",
+  "prompt": "8a3f7f7fd1aad94fe769",
+  "label": "Dark Score",
+  "gear": "Taiko ensemble | Kay M-1 upright bass | Mellotron M400 strings | Eventide H9 shimmer",
+  "summary": "87 BPM 4/4 cinematic/upright/strings/brass 9 sections 77.6s"
+ },
+ "genre:cinematic:pull5": {
+  "plan": "ef52daef98f7782746d3",
+  "song": "19890dc8972928e57661",
+  "events": 758,
+  "cards": "665fd41a03861971897f",
+  "prompt": "f3b61f3339a2b1377d51",
+  "label": "Hybrid Orchestral",
+  "gear": "Taiko ensemble | Kay M-1 upright bass | Mellotron M400 strings | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "87 BPM 6/8 cinematic/upright/strings/strings 9 sections 79.7s"
+ },
+ "genre:cinematic:pull95": {
+  "plan": "ef52daef98f7782746d3",
+  "song": "b4b5a19e710739fd8444",
+  "events": 758,
+  "cards": "637ec95cbc3545e9baf9",
+  "prompt": "3d20613361b16919f438",
+  "label": "Hybrid Orchestral",
+  "gear": "Taiko ensemble | Moog Sub 37 (sub) | Mellotron M400 strings | Moog Minimoog lead | Lexicon 480L hall",
+  "summary": "87 BPM 6/8 cinematic/sub/strings/sawLead 9 sections 79.7s"
+ },
+ "blend:cinematic+house": {
+  "plan": "7a862d3190e41fd7223c",
+  "song": "d49c52812fa5013a6c0f",
+  "events": 1125,
+  "cards": "89bb735cfc29ef7ee925",
+  "prompt": "d64f5740dc46abdbeb42",
+  "label": "Epic Trailer × House",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Mellotron M400 strings | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "94 BPM 6/8 electronic/upright/strings/strings 9 sections 77.9s"
+ },
+ "blend:cinematic+techno": {
+  "plan": "e42a3420153d3d3653be",
+  "song": "9c3bb5d69a05be8b9bae",
+  "events": 1198,
+  "cards": "2c0d240cb5a3cfa1da65",
+  "prompt": "c7ed9575cdb5e54d8483",
+  "label": "Epic Trailer × Techno",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Mellotron M400 strings | Lexicon 480L hall | Roland Space Echo RE-201",
+  "summary": "96 BPM 6/8 electronic/upright/strings/strings 9 sections 83.8s"
+ },
+ "genre:jazz:v0": {
+  "plan": "db5274bae4c94dc18e05",
+  "song": "585117c44958808e7ae1",
+  "events": 1034,
+  "cards": "e910d85065e0f2c4da93",
+  "prompt": "df497bf9fbdc8d7b4c9b",
+  "label": "Cool Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | EMT 140 plate",
+  "summary": "129 BPM 5/4 (3+3+2+2) brush/upright/piano/brass 9 sections 69.5s"
+ },
+ "genre:jazz:v1": {
+  "plan": "db5274bae4c94dc18e05",
+  "song": "55df7836f838c579f7f1",
+  "events": 1336,
+  "cards": "c0903577c19746ee72e2",
+  "prompt": "bcadbb12364f73d64646",
+  "label": "Nu-Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D",
+  "summary": "129 BPM 4/4 brush/upright/piano/brass 9 sections 82.3s"
+ },
+ "genre:jazz:v2": {
+  "plan": "db5274bae4c94dc18e05",
+  "song": "ab4f17e2e5568753c411",
+  "events": 1127,
+  "cards": "22e9cb839fb2ebe815d4",
+  "prompt": "8903bec4f4ad5e297871",
+  "label": "Modal Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D",
+  "summary": "129 BPM 3/4 brush/upright/piano/brass 9 sections 73.5s"
+ },
+ "genre:jazz:pull5": {
+  "plan": "db5274bae4c94dc18e05",
+  "song": "585117c44958808e7ae1",
+  "events": 1034,
+  "cards": "e910d85065e0f2c4da93",
+  "prompt": "df497bf9fbdc8d7b4c9b",
+  "label": "Cool Jazz",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Steinway Model D | EMT 140 plate",
+  "summary": "129 BPM 5/4 (3+3+2+2) brush/upright/piano/brass 9 sections 69.5s"
+ },
+ "genre:jazz:pull95": {
+  "plan": "db5274bae4c94dc18e05",
+  "song": "e2772bcc753df3cc7187",
+  "events": 1034,
+  "cards": "e2eee94e591339d4f28c",
+  "prompt": "0a551fa2ec1cfec0dcb9",
+  "label": "Cool Jazz",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Fender Rhodes Mark I | Moog Minimoog lead | EMT 140 plate",
+  "summary": "129 BPM 5/4 (3+3+2+2) electronic/sub/epiano/sawLead 9 sections 69.5s"
+ },
+ "blend:jazz+house": {
+  "plan": "12828fd3d9468829d4a6",
+  "song": "ddf69abeba650c1f20c6",
+  "events": 1393,
+  "cards": "9881882257396a65de6f",
+  "prompt": "f73499a5155f8b16134a",
+  "label": "Nu-Jazz × House",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Steinway Model D",
+  "summary": "128 BPM 5/4 (2+2+3+3) electronic/upright/piano/brass 9 sections 70.1s"
+ },
+ "blend:jazz+techno": {
+  "plan": "b0b24e785ab70f7bd59c",
+  "song": "1c0c8b9f2d7977a7ba67",
+  "events": 1551,
+  "cards": "1b042404faae3467ae05",
+  "prompt": "184c2e57fd0c963ee7da",
+  "label": "Nu-Jazz × Techno",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Steinway Model D",
+  "summary": "130 BPM 5/4 (2+2+2+2+2) electronic/upright/piano/brass 9 sections 78.5s"
+ },
+ "edm:futureGarage": {
+  "plan": "024201047b63b8b277c6",
+  "song": "1c7993899b437d5b825a",
+  "events": 1908,
+  "cards": "864d786a757ab1ecd7b2",
+  "prompt": "a60f82e48ef5308a112c",
+  "label": "Dark Future Garage",
+  "gear": "Akai MPC2000XL | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "131 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 77.2s"
+ },
+ "edm:futureGarage:dark": {
+  "plan": "6b83ba7fbc61f62c0e5d",
+  "song": "38ffadf6c86efbfa3fdd",
+  "events": 2044,
+  "cards": "49baf094157a94631ca6",
+  "prompt": "6cf58783742aac7074b4",
+  "label": "Dark Future Garage",
+  "gear": "Akai MPC2000XL | Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "136 BPM 4/4 electronic/reese/pad/bell 9 sections 83.6s"
+ },
+ "edm:melodicTechno": {
+  "plan": "0999720dbefa4a9e6d68",
+  "song": "818fdbdd7be6e839fd78",
+  "events": 2016,
+  "cards": "b17386ce158e97e4c913",
+  "prompt": "1d4bddf49484a750d298",
+  "label": "Dark Melodic Techno",
+  "gear": "Moog Subsequent 37 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "132 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.6s"
+ },
+ "edm:melodicTechno:dark": {
+  "plan": "7d481e44b7876426064c",
+  "song": "5d6cebbbcc3968f70af6",
+  "events": 2386,
+  "cards": "123d36635ea5032d44ba",
+  "prompt": "854012128d3a7305a663",
+  "label": "Dark Melodic Techno",
+  "gear": "Moog Subsequent 37 | Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "137 BPM 4/4 electronic/sub/pad/bell 9 sections 85.0s"
+ },
+ "edm:psytrance": {
+  "plan": "25ed61ee2ae19a7d004a",
+  "song": "4a801b79e864fb2e3f6a",
+  "events": 1784,
+  "cards": "d1e1e4cac4ce9cb91673",
+  "prompt": "dc460aa0ad1b00820480",
+  "label": "Dark Psytrance",
+  "gear": "Access Virus TI | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "133 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.0s"
+ },
+ "edm:psytrance:dark": {
+  "plan": "f532789617d20702c9d4",
+  "song": "5f520a8be95228438b28",
+  "events": 2034,
+  "cards": "0cc22747f1734ee37331",
+  "prompt": "c5fb462c6bf3ea6bbef1",
+  "label": "Dark Psytrance",
+  "gear": "Access Virus TI | Roland TR-909 | Roland TB-303 | Sequential Prophet-5 (arp) | Yamaha DX7 bells",
+  "summary": "138 BPM 4/4 electronic/acid/pluckArp/bell 9 sections 85.9s"
+ },
+ "edm:liquidDnb": {
+  "plan": "c17295c4b37de2711815",
+  "song": "521287cb4225bcca83db",
+  "events": 1864,
+  "cards": "48aa11d2eeb5e64c1bb8",
+  "prompt": "bd9586a62035575282b1",
+  "label": "Dark Liquid Drum & Bass",
+  "gear": "Fender Rhodes Mark I | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "138 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.7s"
+ },
+ "edm:liquidDnb:dark": {
+  "plan": "20c7e681f4f9ccaa3f16",
+  "song": "d4f011fa16895a30c694",
+  "events": 1789,
+  "cards": "5c70d2a0aaa997a7c1a6",
+  "prompt": "0ad750b0c556ba2fdf09",
+  "label": "Dark Liquid Drum & Bass",
+  "gear": "Fender Rhodes Mark I | Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "144 BPM 4/4 electronic/sub/pad/bell 9 sections 82.3s"
+ },
+ "edm:deepHouse": {
+  "plan": "9fa0433de01b9c1a5e09",
+  "song": "03cbd9b4f8cc0cdcd509",
+  "events": 1784,
+  "cards": "ebfe76dfed8331e9bac1",
+  "prompt": "430104a6300542caeebd",
+  "label": "Dark Deep House",
+  "gear": "Roland TR-909 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "131 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 77.2s"
+ },
+ "edm:deepHouse:dark": {
+  "plan": "45b1f0c40fb1b4ab41db",
+  "song": "b0262e55d37f9e0fb21e",
+  "events": 1704,
+  "cards": "c4df753278b8402f447d",
+  "prompt": "d98917aeb122afdafe40",
+  "label": "Dark Deep House",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "136 BPM 4/4 electronic/sub/pad/bell 9 sections 83.6s"
+ },
+ "edm:acidHouse": {
+  "plan": "51a7c2f062e3387e9a5f",
+  "song": "0c76e60117e90d58cffa",
+  "events": 1784,
+  "cards": "f58f9b6c18f44c30b040",
+  "prompt": "430104a6300542caeebd",
+  "label": "Dark Acid House",
+  "gear": "Roland TB-303 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "131 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 77.2s"
+ },
+ "edm:acidHouse:dark": {
+  "plan": "8d280a032cf00f3ec0a9",
+  "song": "de54dc788179bc9f1a0b",
+  "events": 1704,
+  "cards": "ee0d870a05a2c86660fa",
+  "prompt": "bdcc6b907a3bd813de97",
+  "label": "Dark Acid House",
+  "gear": "Roland TB-303 | Roland TR-909 | Roland Juno-106 | Yamaha DX7 bells | Lexicon 480L hall",
+  "summary": "136 BPM 4/4 electronic/acid/pad/bell 9 sections 83.6s"
+ },
+ "edm:breakbeat": {
+  "plan": "850e57b7c23dd9839960",
+  "song": "afcf2fd1289f755d689c",
+  "events": 1992,
+  "cards": "29966d019b8c9b790e9f",
+  "prompt": "3a4a6e4a13370dafdd3b",
+  "label": "Dark Breakbeat",
+  "gear": "E-mu SP-1200 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "138 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.7s"
+ },
+ "edm:breakbeat:dark": {
+  "plan": "59f1985e63aa318cd859",
+  "song": "9ef5829514bdc1b2e967",
+  "events": 1789,
+  "cards": "288149eeeb5924e9ea99",
+  "prompt": "e4195668358ffff8ce62",
+  "label": "Dark Breakbeat",
+  "gear": "E-mu SP-1200 | Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "144 BPM 4/4 electronic/reese/pad/bell 9 sections 82.3s"
+ },
+ "edm:darksynth": {
+  "plan": "c3e31e197359e085f9c8",
+  "song": "5f34ebe980ef37772ecb",
+  "events": 1638,
+  "cards": "5b85bda532153a0b708a",
+  "prompt": "153b52a701a794d82ce2",
+  "label": "Darksynth",
+  "gear": "Sequential Prophet-5 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "128 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 75.2s"
+ },
+ "edm:darksynth:dark": {
+  "plan": "a37d0ea7890d2e0a3f03",
+  "song": "31dd6eb358aac467655d",
+  "events": 1368,
+  "cards": "c8df6b75f0da5519e85b",
+  "prompt": "b31bf8958c32f5a1e144",
+  "label": "Darksynth",
+  "gear": "Sequential Prophet-5 | LinnDrum LM-2 | Moog Minimoog Model D | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "132 BPM 4/4 gated/saw/pad/bell 9 sections 82.5s"
+ },
+ "edm:halftime": {
+  "plan": "40c2ccd157e9d5a08b97",
+  "song": "1668d8c9f2f594f0f6f2",
+  "events": 1846,
+  "cards": "b6e6bb9fbd7cd09e8147",
+  "prompt": "495e2184e960f6423900",
+  "label": "Dark Halftime Bass",
+  "gear": "Elektron Analog Rytm | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "138 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.7s"
+ },
+ "edm:halftime:dark": {
+  "plan": "3b562e8d632abc48a85e",
+  "song": "2f023838205bd35326c9",
+  "events": 1756,
+  "cards": "c5d483f448bf7d29ba39",
+  "prompt": "923fac53fc9154f4eaaa",
+  "label": "Dark Halftime Bass",
+  "gear": "Elektron Analog Rytm | Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "144 BPM 4/4 electronic/reese/pad/bell 9 sections 82.3s"
+ },
+ "edm:ukg": {
+  "plan": "684ad357e57e49dda5bd",
+  "song": "ce8cc33096ef1e961ac0",
+  "events": 1824,
+  "cards": "2dc71c1bea7c860c0e02",
+  "prompt": "30214079d01826b4eeb8",
+  "label": "Dark UK Garage (2-step)",
+  "gear": "Akai MPC3000 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "131 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 77.2s"
+ },
+ "edm:ukg:dark": {
+  "plan": "0ddcced917520674726c",
+  "song": "fe97d2c478f5ad27c173",
+  "events": 1670,
+  "cards": "d1e1efcaadb0f33b3b67",
+  "prompt": "06431d753fca155c464c",
+  "label": "Dark UK Garage (2-step)",
+  "gear": "Akai MPC3000 | Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "136 BPM 4/4 electronic/sub/pad/bell 9 sections 83.6s"
+ },
+ "edm:psybient": {
+  "plan": "e5b9e7c7b6eb553e8e40",
+  "song": "50112cb2807030107da9",
+  "events": 1820,
+  "cards": "d4a25589d7340cdf7ced",
+  "prompt": "cda5e9def4decaed9e38",
+  "label": "Dark Psybient",
+  "gear": "Roland Space Echo RE-201 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "123 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 74.4s"
+ },
+ "edm:psybient:dark": {
+  "plan": "339c363880da39cc6c13",
+  "song": "14d11c841bdc6ce5b562",
+  "events": 1235,
+  "cards": "a14ccbc33fe4fc4dd498",
+  "prompt": "10ee1fca4d43aa1bc5f1",
+  "label": "Dark Psybient",
+  "gear": "Roland Space Echo RE-201 | Roland TR-909 | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "128 BPM 4/4 electronic/sub/pad/bell 9 sections 85.1s"
+ },
+ "edm:futureBass": {
+  "plan": "1528a0a4d07039021f34",
+  "song": "e5fb10f116507e182f38",
+  "events": 1792,
+  "cards": "ec2e718647ce7dee453d",
+  "prompt": "485fa893ebe3cae2d7e0",
+  "label": "Dark Future Bass",
+  "gear": "Roland JP-8000 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "134 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 75.4s"
+ },
+ "edm:futureBass:dark": {
+  "plan": "8182484ee5aba3c49d26",
+  "song": "74da59e7c74e4f9a8999",
+  "events": 2351,
+  "cards": "9208d0f2109fcac8d966",
+  "prompt": "9aac1e828cc285600fb7",
+  "label": "Dark Future Bass",
+  "gear": "Roland JP-8000 | Roland TR-808 | Roland TR-808 bass drum (as 808 bass) | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "138 BPM 4/4 808/808/supersaw/bell 9 sections 87.8s"
+ },
+ "edm:electro": {
+  "plan": "0bc3a685d1d4f2e9f4b5",
+  "song": "2d013780144f7d3d6951",
+  "events": 1792,
+  "cards": "b6e1ecde222c7a4d568c",
+  "prompt": "d2d211a621afbd1b248d",
+  "label": "Dark Electro",
+  "gear": "Roland TR-808 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "132 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.6s"
+ },
+ "edm:electro:dark": {
+  "plan": "78d0c3680350d0f5a3c3",
+  "song": "6fec96d852c539228158",
+  "events": 2386,
+  "cards": "a05b44a5b41939a37dcc",
+  "prompt": "a63e5e6f6dce2a62b0a4",
+  "label": "Dark Electro",
+  "gear": "Roland TR-808 | Sequential Pro-One | Roland Juno-106 | Yamaha DX7 bells | EMT 140 plate",
+  "summary": "137 BPM 4/4 808/square/pad/bell 9 sections 85.0s"
+ },
+ "edm:cyberTrance": {
+  "plan": "c9630d2d4ad080d1e185",
+  "song": "82da5a01c4b175d4f1ac",
+  "events": 1784,
+  "cards": "3bdc795fd3cb62d2e8ac",
+  "prompt": "9afea4da27388ad9a3f7",
+  "label": "Dark Cyber-Trance",
+  "gear": "Roland JP-8000 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "133 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.0s"
+ },
+ "edm:cyberTrance:dark": {
+  "plan": "e66c79b663a20d595b9d",
+  "song": "d10416355a3f9a5dc376",
+  "events": 1890,
+  "cards": "35e830c809f62bda2c49",
+  "prompt": "1f5776ded5520ae39eac",
+  "label": "Dark Cyber-Trance",
+  "gear": "Roland JP-8000 | Roland TR-909 | Moog Minimoog Model D | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "138 BPM 4/4 electronic/saw/pad/bell 9 sections 85.9s"
+ },
+ "edm:dubTechno": {
+  "plan": "2d264603ab3ee37c89ba",
+  "song": "b277cdad56ca0d0944b8",
+  "events": 1792,
+  "cards": "2479e304e1d110ca867e",
+  "prompt": "d2d211a621afbd1b248d",
+  "label": "Dark Dub Techno",
+  "gear": "Roland Space Echo RE-201 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "132 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.6s"
+ },
+ "edm:dubTechno:dark": {
+  "plan": "ebfbc84472a6067274b9",
+  "song": "9290af4b8d05057efe73",
+  "events": 2386,
+  "cards": "7e2e1e946d46d5aab1d3",
+  "prompt": "25b514ad0d760f80986f",
+  "label": "Dark Dub Techno",
+  "gear": "Roland Space Echo RE-201 | Roland TR-909 | Roland TB-303 | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "137 BPM 4/4 electronic/acid/pad/bell 9 sections 85.0s"
+ },
+ "edm:tripHop": {
+  "plan": "cd3b53fbfe11ee1cf029",
+  "song": "557be8ba3edec02b9181",
+  "events": 1658,
+  "cards": "24bb172b8fd8d8c3e99f",
+  "prompt": "7226e4b2805fc399383a",
+  "label": "Dark Trip Hop",
+  "gear": "Akai MPC60 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "126 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.4s"
+ },
+ "edm:tripHop:dark": {
+  "plan": "53bb3c7a061a289ff4e0",
+  "song": "99e02c1de5dd92e907cf",
+  "events": 1301,
+  "cards": "5167aa0ee21174f4b23e",
+  "prompt": "d30614323b46d3463799",
+  "label": "Dark Trip Hop",
+  "gear": "Akai MPC60 | Ludwig Supraphonic kit | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "131 BPM 4/4 acoustic/sub/pad/bell 9 sections 83.1s"
+ },
+ "edm:glitchHop": {
+  "plan": "accd4718e3e19d7094cb",
+  "song": "c3aa6197c36e5e8a9789",
+  "events": 1757,
+  "cards": "da96f1eaa49d4b568cf2",
+  "prompt": "8b912efd410b7588df15",
+  "label": "Dark Glitch Hop",
+  "gear": "Elektron Octatrack | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "126 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 76.4s"
+ },
+ "edm:glitchHop:dark": {
+  "plan": "5ba8a3e04133c028369f",
+  "song": "541c1b6c503cb1c6568e",
+  "events": 1679,
+  "cards": "7c39de6832f5e5626f2f",
+  "prompt": "8c5bef47383e3bc02041",
+  "label": "Dark Glitch Hop",
+  "gear": "Elektron Octatrack | Ludwig Supraphonic kit | Moog Sub 37 (sub) | Roland Juno-106 | Yamaha DX7 bells",
+  "summary": "131 BPM 4/4 acoustic/sub/pad/bell 9 sections 83.1s"
+ },
+ "wild:delta blues:1": {
+  "plan": "85dcd90d803754962c6c",
+  "song": "aaedc7809e58e6a8edaa",
+  "events": 1394,
+  "cards": "ac3b5ce5151fa53f2ae0",
+  "prompt": "80002d26ca4a1bfbc307",
+  "label": "Delta Blues × Psybient",
+  "gear": "Moog Matriarch | Gretsch kit with brushes | Moog Sub 37 (sub) | Sequential Prophet-5 (arp) | Gibson SG with fuzz",
+  "summary": "105 BPM 4/4 brush/sub/pluckArp/distGuitar 9 sections 82.6s"
+ },
+ "wild:delta blues:7": {
+  "plan": "69e93f780d57bd88f7dc",
+  "song": "ff29811423cd77c9300c",
+  "events": 1860,
+  "cards": "4f748a48d974fafc4a0c",
+  "prompt": "fa8efcd3c2b41d00252d",
+  "label": "Delta Blues × Future Garage",
+  "gear": "Roland Juno-106 | Roland TR-909 | Moog Sub 37 (sub) | Steinway Model D | Hohner Marine Band harmonica",
+  "summary": "134 BPM 4/4 electronic/sub/piano/harmonica 9 sections 79.0s"
+ },
+ "wild:delta blues:101": {
+  "plan": "412d41b817cb905d22e2",
+  "song": "ce7d0658ad26f4067551",
+  "events": 2044,
+  "cards": "89f982de802374e7a024",
+  "prompt": "6238b446a5506e0db35c",
+  "label": "Delta Blues × Psytrance",
+  "gear": "Clavia Nord Lead 2 | Roland TR-909 | Kay M-1 upright bass | Roland JP-8000 | Roland VP-330 vocoder",
+  "summary": "144 BPM 6/8 electronic/upright/supersaw/voice 9 sections 70.8s"
+ },
+ "wild:delta blues:202": {
+  "plan": "4b1bc66715193ec1679e",
+  "song": "208472106d2d5680c527",
+  "events": 1481,
+  "cards": "d47fe29d3173c2024990",
+  "prompt": "e549360e2b5ac63d4a74",
+  "label": "Delta Blues × Psytrance",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Roland Juno-106 | Roland VP-330 vocoder | Studer A800 tape",
+  "summary": "140 BPM 4/4 (3+3+2) electronic/upright/pad/voice 9 sections 67.5s"
+ },
+ "wild:delta blues:303": {
+  "plan": "2152dee99448a3e8fae7",
+  "song": "688b6188febd0ac368b7",
+  "events": 1108,
+  "cards": "0d8360a68b1fad40b61a",
+  "prompt": "06b4166c144f50a09d48",
+  "label": "Delta Blues × Trip Hop",
+  "gear": "Ludwig Supraphonic kit | Fender Precision Bass | Gibson ES-335 | Hohner Marine Band harmonica | Fender '65 Twin Reverb (spring)",
+  "summary": "85 BPM 7/8 (2+3+2) acoustic/pluck/cleanGuitar/harmonica 9 sections 84.7s"
+ },
+ "wild:delta blues:404": {
+  "plan": "60839c43b6558d38db38",
+  "song": "88f3d5e706cebc857f4e",
+  "events": 1228,
+  "cards": "76a0cccc8739ae65a0cb",
+  "prompt": "3c5ae078f55b09bf2fe8",
+  "label": "Delta Blues × Breakbeat",
+  "gear": "Akai MPC60 | Gretsch kit with brushes | Moog Sub 37 (sub) | Roland Juno-106 | Hohner Marine Band harmonica",
+  "summary": "130 BPM 4/4 brush/sub/pad/harmonica 9 sections 69.0s"
+ },
+ "wild:delta blues:999": {
+  "plan": "f3f958c14622aa7658c1",
+  "song": "2e352130242d9fab7e27",
+  "events": 1006,
+  "cards": "2a86633d36d1a1821237",
+  "prompt": "a9a2098c38af128d56d5",
+  "label": "Delta Blues × Glitch Hop",
+  "gear": "Akai MPC2000XL | Ludwig Supraphonic kit | Kay M-1 upright bass | Steinway Model D | Hohner Marine Band harmonica",
+  "summary": "105 BPM 4/4 acoustic/upright/piano/harmonica 9 sections 68.9s"
+ },
+ "wild:campfire banjo folk:1": {
+  "plan": "485585377ad47874d06f",
+  "song": "5beb56ab561b08ab6a77",
+  "events": 1171,
+  "cards": "a3fcdb050567bfb3d7b5",
+  "prompt": "79fa51b7c7209b6ef767",
+  "label": "Campfire Folk × Psybient",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Martin D-28 | Deering Goodtime banjo | Studer A800 tape",
+  "summary": "105 BPM 4/4 electronic/fm/strumGuitar/banjo 9 sections 74.3s"
+ },
+ "wild:campfire banjo folk:7": {
+  "plan": "8a23981c92ac5208e5f7",
+  "song": "0dc810c0a9e8c76107d1",
+  "events": 1645,
+  "cards": "81a99a23c2ac294c0164",
+  "prompt": "e7dbb13c061a5d603f5c",
+  "label": "Campfire Folk × Future Garage",
+  "gear": "Roland Juno-106 | Roland TR-909 | Kay M-1 upright bass | Deering Goodtime banjo | Lexicon 480L hall",
+  "summary": "134 BPM 4/4 ×3 + 7/8 electronic/upright/pad/banjo 9 sections 73.9s"
+ },
+ "wild:campfire banjo folk:101": {
+  "plan": "942ec853d50fe691dd8b",
+  "song": "167b9dd4eaed4f88da5c",
+  "events": 2052,
+  "cards": "54f6a9bf50404a8d6e3b",
+  "prompt": "848b30a7e1041b6dab82",
+  "label": "Campfire Folk × Psytrance",
+  "gear": "Access Virus TI | Roland TR-909 | Roland TB-303 | Roland JP-8000 | Deering Goodtime banjo",
+  "summary": "144 BPM 4/4 electronic/acid/supersaw/banjo 9 sections 82.3s"
+ },
+ "wild:campfire banjo folk:202": {
+  "plan": "0b46282c6aa8c572e0d7",
+  "song": "3936e53943ba86e9dd8a",
+  "events": 1622,
+  "cards": "ccbf23318653e33fc863",
+  "prompt": "24744a29659fa4712d94",
+  "label": "Campfire Folk × Psytrance",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Martin D-28 | Deering Goodtime banjo | EMT 140 plate",
+  "summary": "140 BPM 4/4 electronic/saw/strumGuitar/banjo 9 sections 69.4s"
+ },
+ "wild:campfire banjo folk:303": {
+  "plan": "2bc41f12016ae5847de5",
+  "song": "6e4d32b813be7da7982f",
+  "events": 1305,
+  "cards": "72b97ff66802fb61ad91",
+  "prompt": "1131d63b847cfd8563a9",
+  "label": "Campfire Folk × Trip Hop",
+  "gear": "Fender Rhodes Mark I | Ludwig Supraphonic kit | Kay M-1 upright bass | Martin D-28 | Deering Goodtime banjo",
+  "summary": "85 BPM 3/4 ×2 + 4/4 ×2 acoustic/upright/strumGuitar/banjo 9 sections 83.3s"
+ },
+ "wild:campfire banjo folk:404": {
+  "plan": "11437ed46b1f7186571e",
+  "song": "4cace001ba11c2bddd32",
+  "events": 1532,
+  "cards": "79b8d07bf6939b5714d6",
+  "prompt": "e1568f963c1b0fdb32bf",
+  "label": "Campfire Folk × Breakbeat",
+  "gear": "Roland TR-909 | Kay M-1 upright bass | Roland Juno-106 | Deering Goodtime banjo | Studer A800 tape",
+  "summary": "130 BPM 5/4 (3+3+2+2) electronic/upright/pad/banjo 9 sections 86.1s"
+ },
+ "wild:campfire banjo folk:999": {
+  "plan": "5b5b6a3148c3e98c5a0a",
+  "song": "7b4517c6d497aec46798",
+  "events": 1176,
+  "cards": "7556267fbd2760b813e1",
+  "prompt": "59577ee87e4ae5d9a6b4",
+  "label": "Campfire Folk × Glitch Hop",
+  "gear": "Ludwig Supraphonic kit | Kay M-1 upright bass | Steinway Model D | Deering Goodtime banjo | Studer A800 tape",
+  "summary": "105 BPM 5/4 (3+3+2+2) acoustic/upright/piano/banjo 9 sections 83.7s"
+ },
+ "wild:house:1": {
+  "plan": "1481a2e3ec50e32cbae7",
+  "song": "1da335f167470e9eda70",
+  "events": 2411,
+  "cards": "a1d7543300c67b83a083",
+  "prompt": "32fd065e1241eeb550bb",
+  "label": "French House × Electro",
+  "gear": "Korg MS-20 | Roland TR-808 | Sequential Pro-One | Roland JP-8000 | Yamaha DX7 bells",
+  "summary": "132 BPM 4/4 808/square/supersaw/bell 10 sections 84.5s"
+ },
+ "wild:house:7": {
+  "plan": "51a2195237777f7529a7",
+  "song": "8e8efe46a1997f47b3bc",
+  "events": 2496,
+  "cards": "a9d15d7d6d1048b89141",
+  "prompt": "fb58b6e81642cdcb426d",
+  "label": "Afro House × Melodic Techno",
+  "gear": "Roland TR-909 | Yamaha DX7 (FM bass) | Fender Rhodes Mark I | Roland VP-330 vocoder | Studer A800 tape",
+  "summary": "122 BPM 4/4 electronic/fm/epiano/voice 10 sections 78.9s"
+ },
+ "wild:house:101": {
+  "plan": "3d6bc1efb64f1938c7c4",
+  "song": "3584b91fb39dd0509d80",
+  "events": 2002,
+  "cards": "0c5676b567170007b350",
+  "prompt": "78a6025bfdb1be303561",
+  "label": "Deep House × Psytrance",
+  "gear": "Clavia Nord Lead 2 | Roland TR-909 | Roland TB-303 | Sequential Prophet-5 (arp) | Elektron Octatrack (glitch edits)",
+  "summary": "144 BPM 4/4 electronic/acid/pluckArp/pluck 10 sections 70.2s"
+ },
+ "wild:house:202": {
+  "plan": "a57c67b8357782b65e03",
+  "song": "ad6258a252c7a52d1678",
+  "events": 1903,
+  "cards": "965e8f8f336c4f0eca5d",
+  "prompt": "4de88a3de96212d48252",
+  "label": "Afro House × Psytrance",
+  "gear": "Access Virus TI | Roland TR-909 | Yamaha DX7 (FM bass) | Steinway Model D | Lexicon 480L hall",
+  "summary": "140 BPM 5/4 (3+3+2+2) electronic/fm/piano/pluck 10 sections 78.0s"
+ },
+ "wild:house:303": {
+  "plan": "fa135caed0c493d61298",
+  "song": "e7f4c3ea8c66e1ec4ca0",
+  "events": 1415,
+  "cards": "eff565608ed649db8389",
+  "prompt": "b6afb01a6d3021536ab9",
+  "label": "French House × Glitch Hop",
+  "gear": "Ludwig Supraphonic kit | Moog Sub 37 (sub) | Fender Rhodes Mark I | Roland VP-330 vocoder | Studer A800 tape",
+  "summary": "104 BPM 4/4 acoustic/sub/epiano/voice 10 sections 75.0s"
+ },
+ "wild:house:404": {
+  "plan": "e0f395664e075f8cf0f7",
+  "song": "6f906682791ad0abbd10",
+  "events": 1794,
+  "cards": "5de07a44db60cf8ec5bf",
+  "prompt": "0374f59fb93080146a2f",
+  "label": "Tech House × Darksynth",
+  "gear": "LinnDrum LM-2 | Moog Minimoog Model D | Roland JP-8000 | Roland VP-330 vocoder | Eventide H9 shimmer",
+  "summary": "111 BPM 6/8 gated/saw/supersaw/voice 10 sections 85.4s"
+ },
+ "wild:house:999": {
+  "plan": "77d32e1fc19156453c0a",
+  "song": "630ab29a8c51f4d7a0f4",
+  "events": 1638,
+  "cards": "bd2fa6d65d0b614458b2",
+  "prompt": "30168d944bd3ed35afe5",
+  "label": "Tech House × Glitch Hop",
+  "gear": "Ludwig Supraphonic kit | Moog Sub 37 (sub) | Fender Rhodes Mark I | Roland VP-330 vocoder | Eventide H9 shimmer",
+  "summary": "105 BPM 6/8 acoustic/sub/epiano/voice 10 sections 86.9s"
+ },
+ "wild:jazz:1": {
+  "plan": "dfaeb70c42d3e477121b",
+  "song": "84848d861f78daf9f551",
+  "events": 1105,
+  "cards": "7a65f897edb6f52486fd",
+  "prompt": "02b533114a6504e8b051",
+  "label": "Cool Jazz × Psybient",
+  "gear": "Moog Matriarch | Roland TR-909 | Moog Sub 37 (sub) | Sequential Prophet-5 (arp) | Studer A800 tape",
+  "summary": "105 BPM 4/4 electronic/sub/pluckArp/brass 9 sections 78.9s"
+ },
+ "wild:jazz:7": {
+  "plan": "5f506c301df8a244b0b6",
+  "song": "6825368c0192f2f06c82",
+  "events": 1711,
+  "cards": "0bffd09735146d7318b3",
+  "prompt": "79ccd106a2e20d650502",
+  "label": "Modal Jazz × Future Garage",
+  "gear": "Akai MPC2000XL | Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Fender Rhodes Mark I | Roland VP-330 vocoder",
+  "summary": "134 BPM 5/4 (2+2+2+2+2) electronic/reese/epiano/voice 9 sections 76.1s"
+ },
+ "wild:jazz:101": {
+  "plan": "80cbe8945f2b31e0168f",
+  "song": "8d7bbd287f03da49f3a7",
+  "events": 1958,
+  "cards": "b560d0654efb83082bb7",
+  "prompt": "d6f3dfecb29df3e91123",
+  "label": "Cool Jazz × Psytrance",
+  "gear": "Roland TR-909 | Moog Minimoog Model D | Sequential Prophet-5 (arp) | Lexicon 480L hall",
+  "summary": "144 BPM 7/8 (2+2+3) electronic/saw/pluckArp/brass 9 sections 73.3s"
+ },
+ "wild:jazz:202": {
+  "plan": "e35888a9c51a0ccb6a41",
+  "song": "67aa1ce32feaba55bacd",
+  "events": 2053,
+  "cards": "35a80b1bb43be8494130",
+  "prompt": "847fb925d9bb91cf218b",
+  "label": "Cool Jazz × Psytrance",
+  "gear": "Clavia Nord Lead 2 | Roland TR-909 | Moog Minimoog Model D | Fender Rhodes Mark I | Studer A800 tape",
+  "summary": "140 BPM 4/4 electronic/saw/epiano/brass 9 sections 86.6s"
+ },
+ "wild:jazz:303": {
+  "plan": "b47e76cee410da19a069",
+  "song": "12b6a97bd673d2fd2959",
+  "events": 1153,
+  "cards": "5c3e91e48a49552d2adf",
+  "prompt": "4d762b6a7a64d4983986",
+  "label": "Nu-Jazz × Trip Hop",
+  "gear": "Akai MPC60 | Ludwig Supraphonic kit | Kay M-1 upright bass | Mellotron M400 strings | Fender '65 Twin Reverb (spring)",
+  "summary": "85 BPM 5/4 (3+3+2+2) acoustic/upright/strings/brass 9 sections 87.9s"
+ },
+ "wild:jazz:404": {
+  "plan": "0bc6658f7eab312313ac",
+  "song": "cd96f4504fdaddeaec7b",
+  "events": 1626,
+  "cards": "6637d37d4989eb6df656",
+  "prompt": "a73525b77d77f296c095",
+  "label": "Modal Jazz × Breakbeat",
+  "gear": "Akai MPC60 | Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Fender Rhodes Mark I | Eventide H9 shimmer",
+  "summary": "130 BPM 4/4 electronic/reese/epiano/brass 9 sections 74.3s"
+ },
+ "wild:jazz:999": {
+  "plan": "3b720fa1d45af5cf6c41",
+  "song": "c04d96885ccb812b60f7",
+  "events": 1205,
+  "cards": "cfa85e7123b80760ef92",
+  "prompt": "5bdb5a89494ea99c5e00",
+  "label": "Cool Jazz × Glitch Hop",
+  "gear": "Akai MPC2000XL | Ludwig Supraphonic kit | Kay M-1 upright bass | Steinway Model D | Eventide H9 shimmer",
+  "summary": "105 BPM 4/4 acoustic/upright/piano/brass 9 sections 73.7s"
+ },
+ "wild:cinematic:1": {
+  "plan": "014898b861ce8235bb1d",
+  "song": "319d2a86b50f464d03d7",
+  "events": 1163,
+  "cards": "425177c61c10de35521a",
+  "prompt": "e079133652a89968d322",
+  "label": "Hybrid Orchestral × Psybient",
+  "gear": "Roland Space Echo RE-201 | Roland TR-909 | Yamaha DX7 (FM bass) | Sequential Prophet-5 (arp) | Roland VP-330 vocoder",
+  "summary": "105 BPM 4/4 electronic/fm/pluckArp/voice 9 sections 68.9s"
+ },
+ "wild:cinematic:7": {
+  "plan": "d5ee1160a43dd8b03f66",
+  "song": "80c4a900d0deac6c014f",
+  "events": 1712,
+  "cards": "f073d3414a926f6e219b",
+  "prompt": "0eeb89f0e394bd31d432",
+  "label": "Epic Trailer × Future Garage",
+  "gear": "Taiko ensemble | Reese-style detuned bass (Korg MS-20) | Oberheim OB-Xa brass | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "134 BPM 3/4 cinematic/reese/brass/voice 9 sections 70.7s"
+ },
+ "wild:cinematic:101": {
+  "plan": "e8bcb2b6f324c25a9d0a",
+  "song": "865b81b6f46f757b6f98",
+  "events": 1764,
+  "cards": "067092f1ef7b99760626",
+  "prompt": "6ebe3ade10fe5cdbd7e7",
+  "label": "Epic Trailer × Psytrance",
+  "gear": "Clavia Nord Lead 2 | Roland TR-909 | Moog Minimoog Model D | Roland JP-8000 | Roland VP-330 vocoder",
+  "summary": "144 BPM 7/8 (3+2+2) electronic/saw/supersaw/voice 9 sections 67.9s"
+ },
+ "wild:cinematic:202": {
+  "plan": "990355067efb041614d3",
+  "song": "3adcd64b75d041e4fecf",
+  "events": 1564,
+  "cards": "d960d9f9061fed1d33d6",
+  "prompt": "aba0375c4b177da2afdf",
+  "label": "Epic Trailer × Psytrance",
+  "gear": "Access Virus TI | Roland TR-909 | Moog Minimoog Model D | Steinway Model D | Studer A800 tape",
+  "summary": "140 BPM 3/4 electronic/saw/piano/brass 9 sections 67.7s"
+ },
+ "wild:cinematic:303": {
+  "plan": "3a426149954be00b96d7",
+  "song": "95e35e750e5aeda471bf",
+  "events": 990,
+  "cards": "83130bc0b72467124f89",
+  "prompt": "26dbd50ed7cd569541fd",
+  "label": "Hybrid Orchestral × Trip Hop",
+  "gear": "Taiko ensemble | Kay M-1 upright bass | Mellotron M400 strings | Mellotron M400 flute | Fender '65 Twin Reverb (spring)",
+  "summary": "85 BPM 4/4 cinematic/upright/strings/flute 9 sections 74.8s"
+ },
+ "wild:cinematic:404": {
+  "plan": "6a8326878435a0da9202",
+  "song": "467d6e4ed55856b089da",
+  "events": 1848,
+  "cards": "a552297e3443ed64d56a",
+  "prompt": "8f28639b700114e3fd65",
+  "label": "Western Score × Breakbeat",
+  "gear": "E-mu SP-1200 | Roland TR-909 | Kay M-1 upright bass | Mellotron M400 strings | Roland VP-330 vocoder",
+  "summary": "130 BPM 7/8 (2+2+3) electronic/upright/strings/voice 9 sections 78.2s"
+ },
+ "wild:cinematic:999": {
+  "plan": "1daafdbed4a674107675",
+  "song": "d29154c45efb17e14c53",
+  "events": 1625,
+  "cards": "97e28093c1bc2ba3ea37",
+  "prompt": "d903bf701d681ff13b5a",
+  "label": "Western Score × Glitch Hop",
+  "gear": "Elektron Octatrack | Ludwig Supraphonic kit | Kay M-1 upright bass | Fender Rhodes Mark I | Roland VP-330 vocoder",
+  "summary": "105 BPM 7/8 (2+2+3) acoustic/upright/epiano/voice 9 sections 81.1s"
+ },
+ "wild:locked": {
+  "plan": "2c388b9c9488c9416d8d",
+  "song": "186aeabbb9a33c2a47fd",
+  "events": 2206,
+  "cards": "b4885689dac54a9edf7c",
+  "prompt": "e1e50b87125f81e6a53c",
+  "label": "Delta Blues × Psytrance",
+  "gear": "Roland TR-808 | Moog Minimoog Model D | Roland JP-8000 | Hohner Marine Band harmonica | Eventide H9 shimmer",
+  "summary": "143 BPM 4/4 808/saw/supersaw/harmonica 9 sections 76.2s"
+ },
+ "edits:instruments": {
+  "plan": "a52076c5db9ca172aa31",
+  "song": "b2f93d7c103749d0f0bb",
+  "events": 1248,
+  "cards": "570c6d398f586cda1e3f",
+  "prompt": "e733220456955dcee0ed",
+  "label": "Heartland Rock",
+  "gear": "Gretsch kit with brushes | Kay M-1 upright bass | Hammond B-3 + Leslie 122 | Hohner Marine Band harmonica | EMT 140 plate",
+  "summary": "108 BPM 4/4 brush/upright/organ/harmonica 9 sections 80.3s"
+ },
+ "edits:tempo-key": {
+  "plan": "fc75b22c8a43032885fc",
+  "song": "83bfcabf44f2b1fee24d",
+  "events": 2549,
+  "cards": "c286b9f5d508672ba09f",
+  "prompt": "a28046cc74e4c058498e",
+  "label": "Afro House",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Steinway Model D | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "185 BPM 4/4 electronic/sub/piano/voice 10 sections 75.9s"
+ },
+ "edits:style": {
+  "plan": "99e53049e602c16764bc",
+  "song": "effeae5492332055cc85",
+  "events": 1030,
+  "cards": "bba44220564ebd311cc5",
+  "prompt": "4f6e5416a2392fb923b9",
+  "label": "Campfire Folk",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Martin D-28 | Fender '65 Twin Reverb (spring)",
+  "summary": "90 BPM 7/8 (2+3+2) brush/pluck/strumGuitar/whistle 9 sections 85.3s"
+ },
+ "parts:dark techno warehouse at 3am": {
+  "plan": "06b30b22151cb68dda43",
+  "song": "cbd7ff2d7c55f6fa7f97",
+  "events": 2468,
+  "cards": "a395ad4c57ff76487b13",
+  "prompt": "7b59125659d63a6d424d",
+  "label": "Dub Techno",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Roland TB-303 (acid lead) | Lexicon 480L hall",
+  "summary": "128 BPM 4/4 electronic/reese/pluckArp/acidLead 10 sections 83.4s"
+ },
+ "parts:lo-fi hip hop study beats with rain": {
+  "plan": "97b98f0ac961e86703f7",
+  "song": "c83cd49430e1f3d7c06c",
+  "events": 835,
+  "cards": "ceb8bf779b872cad46b3",
+  "prompt": "f38fe439034bab896da9",
+  "label": "Jazzhop × Hip hop (boom bap)",
+  "gear": "Akai MPC60 | Kay M-1 upright bass | Steinway Model D | Yamaha DX7 bells | Studer A800 tape",
+  "summary": "65 BPM 4/4 lofi/upright/piano/bell 9 sections 94.2s"
+ },
+ "parts:slow delta blues with harmonica": {
+  "plan": "31b87d14a96ab2e2f7fa",
+  "song": "7bb59f6cf892188580d0",
+  "events": 821,
+  "cards": "de678d5ba1279d4cd50f",
+  "prompt": "442df3662c7568cc7aca",
+  "label": "Delta Blues",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Gibson ES-335 | Hohner Marine Band harmonica | Fender '65 Twin Reverb (spring)",
+  "summary": "69 BPM 4/4 brush/pluck/cleanGuitar/harmonica 4 sections 105.2s"
+ },
+ "legacy:no-tracks": {
+  "plan": "61e1143829b734e3d86d",
+  "song": "a038001c1825af9c366d",
+  "events": 1942,
+  "cards": "ddd401f3c8b7708b5ad6",
+  "prompt": "5feebd8422262aa9f559",
+  "label": "Afro House",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Steinway Model D | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "125 BPM 4/4 electronic/sub/piano/voice 10 sections 81.6s"
+ },
+ "legacy:partial-dims": {
+  "plan": "9c4323311a6ddd3a5354",
+  "song": "e93c39bd00ce89153ede",
+  "events": 1910,
+  "cards": "844ee81f7b151811276e",
+  "prompt": "f30dfc65b7b12903d5e6",
+  "label": "Dub Techno",
+  "gear": "Roland TR-909 | Roland TB-303 | Roland Juno-106 | Lexicon 480L hall",
+  "summary": "134 BPM 4/4 electronic/acid/pad/fmLead 10 sections 66.9s"
+ },
+ "project:prompt:dark techno warehouse at 3am": {
+  "plan": "06b30b22151cb68dda43",
+  "song": "1104fa83140240c5a746",
+  "events": 2488,
+  "cards": "a395ad4c57ff76487b13",
+  "prompt": "7b59125659d63a6d424d",
+  "label": "Dub Techno",
+  "gear": "Roland TR-909 | Reese-style detuned bass (Korg MS-20) | Sequential Prophet-5 (arp) | Roland TB-303 (acid lead) | Lexicon 480L hall",
+  "summary": "128 BPM 4/4 electronic/reese/pluckArp/acidLead 10 sections 83.4s"
+ },
+ "project:wild:delta blues:101": {
+  "plan": "412d41b817cb905d22e2",
+  "song": "ce7d0658ad26f4067551",
+  "events": 2044,
+  "cards": "89f982de802374e7a024",
+  "prompt": "6238b446a5506e0db35c",
+  "label": "Delta Blues × Psytrance",
+  "gear": "Clavia Nord Lead 2 | Roland TR-909 | Kay M-1 upright bass | Roland JP-8000 | Roland VP-330 vocoder",
+  "summary": "144 BPM 6/8 electronic/upright/supersaw/voice 9 sections 70.8s"
+ },
+ "project:parts:slow delta blues with harmonica": {
+  "plan": "31b87d14a96ab2e2f7fa",
+  "song": "7bb59f6cf892188580d0",
+  "events": 821,
+  "cards": "de678d5ba1279d4cd50f",
+  "prompt": "442df3662c7568cc7aca",
+  "label": "Delta Blues",
+  "gear": "Gretsch kit with brushes | Fender Precision Bass | Gibson ES-335 | Hohner Marine Band harmonica | Fender '65 Twin Reverb (spring)",
+  "summary": "69 BPM 4/4 brush/pluck/cleanGuitar/harmonica 4 sections 105.2s"
+ },
+ "project:edm:ukg": {
+  "plan": "684ad357e57e49dda5bd",
+  "song": "ce8cc33096ef1e961ac0",
+  "events": 1824,
+  "cards": "2dc71c1bea7c860c0e02",
+  "prompt": "30214079d01826b4eeb8",
+  "label": "Dark UK Garage (2-step)",
+  "gear": "Akai MPC3000 | Taiko ensemble | Sequential Pro-One | Gibson Les Paul into a Marshall JCM800 | Moog Minimoog lead",
+  "summary": "131 BPM 4/4 cinematic/square/distGuitar/sawLead 9 sections 77.2s"
+ },
+ "project:legacy:no-tracks": {
+  "plan": "61e1143829b734e3d86d",
+  "song": "a038001c1825af9c366d",
+  "events": 1942,
+  "cards": "ddd401f3c8b7708b5ad6",
+  "prompt": "5feebd8422262aa9f559",
+  "label": "Afro House",
+  "gear": "Roland TR-909 | Moog Sub 37 (sub) | Steinway Model D | Roland VP-330 vocoder | Lexicon 480L hall",
+  "summary": "125 BPM 4/4 electronic/sub/piano/voice 10 sections 81.6s"
+ }
+}

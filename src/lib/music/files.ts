@@ -1,6 +1,6 @@
 /** WAV encoding + a tiny uncompressed ZIP writer (so phones get one download for all stems). */
 
-export function encodeWav(buffer: { numberOfChannels: number; sampleRate: number; length: number; getChannelData(c: number): Float32Array }): Uint8Array {
+export function encodeWav(buffer: { numberOfChannels: number; sampleRate: number; length: number; getChannelData(c: number): Float32Array }): Uint8Array<ArrayBuffer> {
   const numChan = buffer.numberOfChannels;
   const sr = buffer.sampleRate;
   const samples = buffer.length;
@@ -52,10 +52,11 @@ function crc32(data: Uint8Array): number {
   return (c ^ 0xffffffff) >>> 0;
 }
 
-export function makeZip(files: { name: string; data: Uint8Array }[]): Uint8Array {
+/** Returns the zip as ordered byte chunks (pass straight to `new Blob(...)`, no full-size copy). */
+export function makeZip(files: { name: string; data: Uint8Array<ArrayBuffer> }[]): Uint8Array<ArrayBuffer>[] {
   const enc = new TextEncoder();
-  const parts: Uint8Array[] = [];
-  const central: Uint8Array[] = [];
+  const parts: Uint8Array<ArrayBuffer>[] = [];
+  const central: Uint8Array<ArrayBuffer>[] = [];
   let offset = 0;
   for (const f of files) {
     const name = enc.encode(f.name);
@@ -88,13 +89,5 @@ export function makeZip(files: { name: string; data: Uint8Array }[]): Uint8Array
   end.setUint16(10, files.length, true);
   end.setUint32(12, cenSize, true);
   end.setUint32(16, offset, true);
-  const all = [...parts, ...central, new Uint8Array(end.buffer)];
-  const total = all.reduce((s, p) => s + p.length, 0);
-  const out = new Uint8Array(total);
-  let o = 0;
-  for (const p of all) {
-    out.set(p, o);
-    o += p.length;
-  }
-  return out;
+  return [...parts, ...central, new Uint8Array(end.buffer)];
 }

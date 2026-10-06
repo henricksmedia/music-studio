@@ -30,7 +30,7 @@ export function DimensionSlider({
         onChange={(e) => onChange(Number(e.target.value))}
         className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/15 accent-indigo-400 disabled:opacity-40"
       />
-      <span className="text-[11px] leading-snug text-white/45">{hint}</span>
+      <span className="text-[11px] leading-snug text-white/60">{hint}</span>
     </label>
   );
 }

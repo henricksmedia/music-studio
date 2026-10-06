@@ -1,16 +1,19 @@
 // Real-browser smoke test at phone size (390×844): prompts, Go wild + breakdown chips, identity card,
-// avoid chips, Groove/Harmony panels, section detail, Copy as prompt, export. Fails on console errors.
+// avoid chips, Groove/Harmony panels, section detail, Copy as prompt, export. Fails on console errors and on
+// layout checks: grouped/searchable option sheet, breakdown open in Go wild, one Copy as prompt, no overflow,
+// sticky player pinned to the bottom without covering content.
 import puppeteer from "puppeteer-core";
 import fs from "fs";
-const URL = process.argv[2] || "http://localhost:3020/";
-const dl = "/tmp/ms-dl";
-fs.rmSync(dl, { recursive: true, force: true });
-fs.mkdirSync(dl, { recursive: true });
-fs.mkdirSync("/tmp/ms-shots", { recursive: true });
-const browser = await puppeteer.launch({ executablePath: "/usr/bin/google-chrome", headless: "new", args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required", "--mute-audio"] });
+import path from "path";
+import { CHROME, URL, tmpDir } from "./_browser.mjs";
+const dl = tmpDir("ms-dl");
+const shots = tmpDir("ms-shots");
+const shot = (name) => path.join(shots, name);
+const browser = await puppeteer.launch({ executablePath: CHROME, headless: "new", args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required", "--mute-audio"] });
 const page = await browser.newPage();
 await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
 const errors = [];
+const fails = [];
 page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 page.on("pageerror", (e) => errors.push(String(e)));
 const cdp = await page.createCDPSession();
@@ -54,20 +57,28 @@ await sleep(2200);
 console.log("\nGO WILD:", await status());
 const bd = await rows("breakdown-rows");
 console.log(bd.map((r) => "  " + r).join("\n"));
-await page.screenshot({ path: "/tmp/ms-shots/wild-top.png" });
+await page.screenshot({ path: shot("wild-top.png") });
 // tap Ending line → pick "Hard cut"
 await page.evaluate(() => [...document.querySelectorAll("[data-testid=breakdown-rows] button")].find((b) => b.innerText.startsWith("ENDING") || b.innerText.toUpperCase().startsWith("ENDING")).click());
 await sleep(300);
-await page.screenshot({ path: "/tmp/ms-shots/sheet.png" });
+await page.screenshot({ path: shot("sheet.png") });
 await clickText("Hard cut", "[role=dialog]");
 await sleep(1500);
 console.log("after picking Hard cut:", (await rows("breakdown-rows")).find((r) => r.toUpperCase().startsWith("ENDING")));
-// keep fusion, reroll the rest
-await page.evaluate(() => [...document.querySelectorAll("[data-testid=breakdown-rows] button")][0].click());
+// keep fusion (the merged Genre/Fusion row of the Song card), reroll the rest
+const fusionRow = await page.evaluate(() => {
+  const b = [...document.querySelectorAll("[data-testid=identity-rows] button")][0];
+  b.click();
+  return b.innerText.replace(/\s+/g, " ");
+});
 await sleep(300);
+const sheetInfo = await page.evaluate(() => ({ groups: [...document.querySelectorAll("[role=dialog] h3")].map((h) => h.textContent), search: !!document.querySelector("[role=dialog] input[type=search]") }));
+console.log("fusion row:", fusionRow, "| sheet groups:", sheetInfo.groups.join(", "), "| search:", sheetInfo.search);
+if (sheetInfo.groups.length < 3 || !sheetInfo.search) fails.push("option sheet is not grouped/searchable");
 await clickText("🔒 Keep this", "[role=dialog]");
 await sleep(1500);
-console.log("after keep fusion:", (await rows("breakdown-rows")).slice(0, 3).join(" || "));
+console.log("after keep fusion:", (await rows("identity-rows"))[0], "||", (await rows("breakdown-rows")).slice(0, 2).join(" || "));
+if (!(await page.$eval("[data-testid=breakdown-card]", (d) => d.open))) fails.push("producer breakdown should be open in Go wild");
 
 // Groove panel: open and pick 7/8
 await page.$eval("[data-testid=groove-panel] summary", (s) => s.click());
@@ -85,21 +96,38 @@ await page.evaluate(() => document.querySelectorAll("[data-testid=section-strip]
 await sleep(300);
 console.log("section detail:", (await page.$eval("[data-testid=section-detail]", (d) => d.innerText.replace(/\s+/g, " "))).slice(0, 300));
 await page.$eval("[data-testid=section-strip]", (e) => e.scrollIntoView());
-await page.screenshot({ path: "/tmp/ms-shots/section.png" });
+await page.screenshot({ path: shot("section.png") });
 
 // copy as prompt
-await clickText("Copy as prompt", "[data-testid=breakdown-card]");
+const copyButtons = await page.$$eval("button", (bs) => bs.filter((b) => b.textContent.trim() === "Copy as prompt").length);
+if (copyButtons !== 1) fails.push(`expected one Copy as prompt button, found ${copyButtons}`);
+await clickText("Copy as prompt", "[data-testid=identity-card]");
 await sleep(300);
 const prompts = await page.$$eval("[role=dialog] textarea", (ts) => ts.map((t) => t.value));
 console.log("\nSTYLE PROMPT:\n" + prompts[0] + "\n\nTIMELINE PROMPT:\n" + prompts[1]);
-await page.screenshot({ path: "/tmp/ms-shots/prompt.png" });
+await page.screenshot({ path: shot("prompt.png") });
 await clickText("✕", "[role=dialog]");
 
 // layout: no horizontal overflow at 390px
 const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 console.log("\nhorizontal overflow px:", overflow);
+if (overflow > 0) fails.push(`horizontal overflow ${overflow}px`);
+// sticky player: visible at the bottom of the page and not covering the last content
+await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+await sleep(300);
+const player = await page.evaluate(() => {
+  const t = document.querySelector("[data-testid=transport]").getBoundingClientRect();
+  const play = document.querySelector("[data-testid=play-toggle]").getBoundingClientRect();
+  const main = document.querySelector("main");
+  const last = main.lastElementChild.getBoundingClientRect();
+  return { top: Math.round(t.top), bottom: Math.round(t.bottom), playSize: [Math.round(play.width), Math.round(play.height)], lastBottom: Math.round(last.bottom), vh: window.innerHeight };
+});
+console.log("sticky player:", JSON.stringify(player));
+if (player.bottom > player.vh + 1 || player.top < player.vh - 140) fails.push("player is not pinned to the bottom");
+if (player.lastBottom > player.top) fails.push("player covers the end of the page");
+if (player.playSize[0] < 44 || player.playSize[1] < 44) fails.push("play button under 44px");
 await page.evaluate(() => window.scrollTo(0, 0));
-await page.screenshot({ path: "/tmp/ms-shots/mobile-full.png", fullPage: true });
+await page.screenshot({ path: shot("mobile-full.png"), fullPage: true });
 
 // export mix
 await clickText("Mix (.wav)");
@@ -108,7 +136,8 @@ for (let i = 0; i < 120 && !file; i++) {
   await sleep(1000);
   file = fs.readdirSync(dl).find((f) => f.endsWith(".wav"));
 }
-console.log("export:", file, file ? fs.statSync(`${dl}/${file}`).size : 0, "|", await status());
+console.log("export:", file, file ? fs.statSync(path.join(dl, file)).size : 0, "|", await status());
 console.log("\nconsole errors:", errors.length ? errors : "none");
+console.log("layout checks:", fails.length ? fails : "all passed");
 await browser.close();
-process.exit(errors.length ? 1 : 0);
+process.exit(errors.length || fails.length ? 1 : 0);

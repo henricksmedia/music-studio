@@ -6,6 +6,7 @@
  */
 import type { GenreId, DrumKit, BassTimbre, HarmonyInst, LeadInst, BassStyle, HarmonyRhythm, MelodyStyle } from "./genres";
 import type { ChordColorId, ModeId } from "./theory";
+import { edmProfiles, variantNames } from "./styles";
 
 /* ------------------------------ rhythm ------------------------------ */
 
@@ -283,45 +284,12 @@ export type EdmProfile = {
   gear: string[];
 };
 
-export const EDM: Record<EdmId, EdmProfile> = {
-  futureGarage: { label: "Future Garage", genre: "house", bpm: [130, 138], feel: "swing", swing: 0.55, tricks: ["brokenTime", "glitch"], bass: ["reese", "sub"], harmony: ["pad", "epiano"], lead: ["voice", "bell"], reverb: "hall", gear: ["Akai MPC2000XL", "Roland Juno-106"] },
-  melodicTechno: { label: "Melodic Techno", genre: "techno", bpm: [120, 126], tricks: ["polymeter", "ostinato"], bass: ["sub", "fm"], harmony: ["pluckArp", "pad"], lead: ["fmLead", "bell"], modes: ["aeolian", "dorian"], gear: ["Moog Subsequent 37", "Roland TR-909"] },
-  psytrance: { label: "Psytrance", genre: "trance", bpm: [138, 146], bass: ["acid", "saw"], bassStyle: "rolling", lead: ["acidLead", "fmLead"], modes: ["phrygian", "harmonicMinor"], gear: ["Access Virus TI", "Clavia Nord Lead 2"] },
-  liquidDnb: { label: "Liquid Drum & Bass", genre: "dnb", bpm: [170, 176], harmony: ["epiano", "pad"], bass: ["sub", "reese"], gear: ["Fender Rhodes Mark I", "Akai S950"] },
-  deepHouse: { label: "Deep House", genre: "house", bpm: [118, 124], swing: 0.3, harmony: ["organ", "epiano"], bass: ["sub", "fm"], gear: ["Roland TR-909", "Korg M1"] },
-  acidHouse: { label: "Acid House", genre: "house", bpm: [120, 128], bass: ["acid"], lead: ["acidLead"], gear: ["Roland TB-303", "Roland TR-808"] },
-  breakbeat: { label: "Breakbeat", genre: "dnb", bpm: [125, 136], tricks: ["brokenTime", "syncopation"], gear: ["E-mu SP-1200", "Akai MPC60"] },
-  darksynth: { label: "Darksynth", genre: "synthwave", bpm: [100, 118], bass: ["saw", "reese"], modes: ["aeolian", "phrygian"], gear: ["Sequential Prophet-5", "LinnDrum LM-2"] },
-  halftime: { label: "Halftime Bass", genre: "dnb", bpm: [160, 174], tricks: ["halftime"], bass: ["reese"], gear: ["Elektron Analog Rytm", "Moog Sub 37"] },
-  ukg: { label: "UK Garage (2-step)", genre: "house", bpm: [130, 136], feel: "swing", swing: 0.6, tricks: ["brokenTime", "syncopation"], bass: ["sub", "fm"], harmony: ["organ", "epiano"], gear: ["Akai MPC3000", "Korg Triton"] },
-  psybient: { label: "Psybient", genre: "ambient", bpm: [90, 105], tricks: ["polyrhythm", "layering"], kit: "electronic", bass: ["sub", "fm"], harmony: ["pad", "pluckArp"], reverb: "shimmer", gear: ["Roland Space Echo RE-201", "Moog Matriarch"] },
-  futureBass: { label: "Future Bass", genre: "trap", bpm: [140, 160], harmony: ["supersaw"], pump: true, gear: ["Roland JP-8000", "Roland TR-808"] },
-  electro: { label: "Electro", genre: "techno", bpm: [125, 132], kit: "808", bass: ["square"], gear: ["Roland TR-808", "Korg MS-20"] },
-  cyberTrance: { label: "Cyber-Trance", genre: "trance", bpm: [136, 142], harmony: ["supersaw", "pluckArp"], pump: true, gear: ["Roland JP-8000", "Clavia Nord Lead 2"] },
-  dubTechno: { label: "Dub Techno", genre: "techno", bpm: [118, 124], harmony: ["pad"], delay: "dotted8", reverb: "hall", gear: ["Roland Space Echo RE-201", "Sequential Prophet-5"] },
-  tripHop: { label: "Trip Hop", genre: "boombap", bpm: [80, 95], tricks: ["humanize"], harmony: ["epiano", "strings"], reverb: "spring", gear: ["Akai MPC60", "Fender Rhodes Mark I"] },
-  glitchHop: { label: "Glitch Hop", genre: "boombap", bpm: [100, 110], tricks: ["glitch", "syncopation"], gear: ["Elektron Octatrack", "Akai MPC2000XL"] },
-};
+/** Substyle overlays, as a view over the style registry (data in styles/legacy.ts). */
+export const EDM: Record<EdmId, EdmProfile> = edmProfiles();
 export const EDM_IDS = Object.keys(EDM) as EdmId[];
 
-/** Specific substyle names per base genre, for the Identity card. */
-export const SUBSTYLES: Record<GenreId, string[]> = {
-  house: ["Deep House", "Tech House", "French House", "Afro House"],
-  techno: ["Melodic Techno", "Industrial Techno", "Minimal Techno", "Dub Techno"],
-  synthwave: ["Outrun", "Darksynth", "Dreamwave"],
-  ambient: ["Dark Ambient", "Psybient", "Drone Ambient", "Space Ambient"],
-  trance: ["Psytrance", "Uplifting Trance", "Cyber-Trance", "Progressive Trance"],
-  dnb: ["Liquid Drum & Bass", "Neurofunk", "Jungle"],
-  folk: ["Appalachian Folk", "Campfire Folk", "Indie Folk"],
-  countryRock: ["Desert Country Rock", "Heartland Rock", "Outlaw Country"],
-  rock: ["Garage Rock", "Stoner Rock", "Arena Rock", "Post-Punk"],
-  blues: ["Delta Blues", "Chicago Blues", "Texas Blues"],
-  lofi: ["Lo-fi Hip Hop", "Chillhop", "Jazzhop"],
-  boombap: ["Boom Bap", "Jazz Rap Instrumental", "Trip Hop"],
-  trap: ["Dark Trap", "Drill", "Phonk"],
-  cinematic: ["Epic Trailer", "Dark Score", "Hybrid Orchestral", "Western Score"],
-  jazz: ["Cool Jazz", "Modal Jazz", "Nu-Jazz"],
-};
+/** Variant names per base genre that the Identity card echoes when the prompt names them. */
+export const SUBSTYLES: Record<GenreId, string[]> = variantNames();
 
 /* ------------------------------ gear (flavor only) ------------------------------ */
 

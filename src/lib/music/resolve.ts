@@ -474,13 +474,14 @@ export function resolveSpec(plan: Plan, src: Sources, inst: Instruments, rng: Rn
     ov.form ?? (wild ? rng.weighted([["classic", 5], ["slowBurn", 2], ["hookFirst", 2]] as [FormVariant, number][]) : ["ambient", "cinematic"].includes(g) && rng.chance(0.3) ? "slowBurn" : "classic");
   const avoid = ov.avoid ?? [];
 
-  // substyle naming
-  let baseSub = SUBSTYLES[g][0];
+  // substyle naming: a variant name only when the prompt names it (or "Dark …" for a dark mood), otherwise the
+  // genre's own name. Engine 1 drew a random variant name here; the draw is kept so every later choice stays the same.
+  const variants = SUBSTYLES[g];
   const heard = plan.heard.join(" ").toLowerCase();
-  const named = SUBSTYLES[g].find((s) => heard.includes(s.split(" ")[0].toLowerCase()));
-  if (named) baseSub = named;
-  else if (plan.moods.includes("dark")) baseSub = SUBSTYLES[g].find((s) => /dark/i.test(s)) ?? rng.pick(SUBSTYLES[g]);
-  else baseSub = rng.pick(SUBSTYLES[g]);
+  const named = variants.find((s) => heard.includes(s.split(" ")[0].toLowerCase()));
+  const dark = plan.moods.includes("dark");
+  if (!named && !(dark && variants.some((s) => /dark/i.test(s)))) rng.pick(variants);
+  const baseSub = named ?? (dark ? variants.find((s) => /^Dark /.test(s)) : undefined) ?? GENRES[g].label;
   let substyle = ov.substyle ?? baseSub;
   if (!ov.substyle) {
     if (edm && !wild) substyle = `${plan.moods.includes("dark") && !/dark/i.test(edm.label) ? "Dark " : ""}${edm.label}`;

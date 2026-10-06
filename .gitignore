@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 out/
+
+# regenerable UX screenshots (scripts/ux-shots.mjs)
+/docs/ux/

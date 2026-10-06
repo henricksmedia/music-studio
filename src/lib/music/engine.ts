@@ -2,6 +2,7 @@
 import { buildGraph, scheduleEvent, renderSong, autoAt, type Graph, type MixParams } from "./render";
 import { STEM_IDS, type Song, type StemId } from "./compose";
 import { encodeWav, makeZip } from "./files";
+import { isAudible, trackMix, type TrackMix, type Tracks } from "./tracks";
 
 const LOOKAHEAD = 0.3;
 const TICK_MS = 50;
@@ -13,6 +14,7 @@ export class MusicEngine {
   private graph: Graph | null = null;
   private song: Song | null = null;
   private mix: MixParams | null = null;
+  private tracks: TrackMix | null = null;
   private playing = false;
   private startTime = 0;
   private cursor = { loop: 0, i: 0 };
@@ -29,12 +31,17 @@ export class MusicEngine {
       this.ctx = new AC({ latencyHint: "playback" });
       this.graph = buildGraph(this.ctx, true);
       if (this.mix) this.graph.setMix(this.mix);
+      if (this.tracks) this.graph.setTracks(this.tracks);
     }
     if (this.ctx.state !== "running") void this.ctx.resume();
   }
 
   getAnalyser() {
     return this.graph?.analyser ?? null;
+  }
+
+  getTaps() {
+    return this.graph?.taps ?? null;
   }
 
   isPlaying() {
@@ -44,6 +51,11 @@ export class MusicEngine {
   setMix(m: MixParams) {
     this.mix = m;
     this.graph?.setMix(m, this.playing);
+  }
+
+  setTracks(t: Tracks) {
+    this.tracks = trackMix(t);
+    this.graph?.setTracks(this.tracks, this.playing);
   }
 
   private newSession() {
@@ -217,21 +229,28 @@ export class MusicEngine {
   }
 
   /** Offline render → WAV (mix) or ZIP (mix + stems). Uses the exact same synth graph as playback. */
-  async exportAudio(song: Song, mix: MixParams, withStems: boolean, onProgress?: (msg: string) => void): Promise<{ blob: Blob; ext: "wav" | "zip" }> {
-    onProgress?.("Rendering mix…");
-    const mixBuf = await renderSong(song, mix);
-    const mixWav = encodeWav(mixBuf);
-    if (!withStems) return { blob: new Blob([mixWav.buffer as ArrayBuffer], { type: "audio/wav" }), ext: "wav" };
+  /** The mix is what you hear (track volume, pan, mute/solo). Stems are the audible tracks, named after them. */
+  async exportAudio(song: Song, mix: MixParams, tracks: Tracks, withStems: boolean, onProgress?: (msg: string) => void): Promise<{ blob: Blob; ext: "wav" | "zip" }> {
+    const audible = STEM_IDS.filter((id) => isAudible(tracks, id) && song.events.some((e) => e.stem === id));
+    if (!audible.length) throw new Error("every track is muted");
+    const tm = trackMix(tracks);
+    const stems = withStems ? audible : [];
+    const passes = 1 + stems.length;
+    const report = (pass: number, label: string) => (f: number) => onProgress?.(`${label}… ${Math.round(((pass + f) / passes) * 100)}%`);
+    const mixWav = encodeWav(await renderSong(song, mix, { stems: audible, tracks: tm, onProgress: report(0, "Rendering mix") }));
+    if (!withStems) return { blob: new Blob([mixWav], { type: "audio/wav" }), ext: "wav" };
     const files = [{ name: "mix.wav", data: mixWav }];
-    const stems = STEM_IDS.filter((id) => song.events.some((e) => e.stem === id));
+    const used = new Set<string>(["mix"]);
     for (let i = 0; i < stems.length; i++) {
-      onProgress?.(`Rendering stem ${i + 1}/${stems.length}: ${stems[i]}…`);
-      const buf = await renderSong(song, mix, { stems: [stems[i]] });
-      files.push({ name: `${stems[i]}.wav`, data: encodeWav(buf) });
+      const id = stems[i];
+      let base = tracks[id].name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || id;
+      if (used.has(base)) base = `${base}-${id}`;
+      used.add(base);
+      const buf = await renderSong(song, mix, { stems: [id], tracks: tm, onProgress: report(i + 1, `Rendering stem ${i + 1}/${stems.length} (${tracks[id].name})`) });
+      files.push({ name: `${base}.wav`, data: encodeWav(buf) });
     }
     onProgress?.("Packing zip…");
-    const zip = makeZip(files);
-    return { blob: new Blob([zip.buffer as ArrayBuffer], { type: "application/zip" }), ext: "zip" };
+    return { blob: new Blob(makeZip(files), { type: "application/zip" }), ext: "zip" };
   }
 }
 

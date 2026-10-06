@@ -1,0 +1,42 @@
+{
+ "GENRE_IDS": [
+  "house",
+  "techno",
+  "synthwave",
+  "ambient",
+  "trance",
+  "dnb",
+  "folk",
+  "countryRock",
+  "rock",
+  "blues",
+  "lofi",
+  "boombap",
+  "trap",
+  "cinematic",
+  "jazz"
+ ],
+ "GENRES": "2ab167e646d1c712bfd1",
+ "EDM_IDS": [
+  "futureGarage",
+  "melodicTechno",
+  "psytrance",
+  "liquidDnb",
+  "deepHouse",
+  "acidHouse",
+  "breakbeat",
+  "darksynth",
+  "halftime",
+  "ukg",
+  "psybient",
+  "futureBass",
+  "electro",
+  "cyberTrance",
+  "dubTechno",
+  "tripHop",
+  "glitchHop"
+ ],
+ "EDM": "6d07f7720b08957128bb",
+ "SUBSTYLES": "c6fe4033a6f43dec346b",
+ "labels": "edc913e5e006e651d5e4"
+}

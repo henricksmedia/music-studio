@@ -148,8 +148,22 @@ export const HARM_PLAIN: Record<string, string> = {
   reduced: "root + fifth only",
 };
 
-export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
+/** Compose with some parts regenerated. Each rerolled part comes from a composition whose part-level randomness
+ *  (patterns, figures, melody, humanize) is reseeded; form, chords, tempo and instruments come from other streams,
+ *  so the spliced part still fits the rest of the song. */
+export function composeWithParts(plan: Plan, dims: ComposeDims, variation: number, seeds: Partial<Record<StemId, number>>): Song {
+  const base = compose(plan, dims, variation);
+  const rerolled = STEM_IDS.filter((id) => seeds[id]);
+  if (!rerolled.length) return base;
+  const events = base.events.filter((e) => !seeds[e.stem]);
+  for (const id of rerolled) events.push(...compose(plan, dims, variation, seeds[id]).events.filter((e) => e.stem === id));
+  events.sort((x, y) => x.t - y.t);
+  return { ...base, events };
+}
+
+export function compose(plan: Plan, dims: ComposeDims, variation = 0, partSeed = 0): Song {
   const rng = makeRng(plan.seed ^ Math.imul(variation + 1, 0x9e3779b1));
+  const partRng = partSeed ? makeRng(plan.seed ^ Math.imul(variation + 1, 0x9e3779b1) ^ Math.imul(partSeed, 0x85ebca6b)) : rng;
   const src = pickSources(plan, rng.fork("sources"));
   let inst = pickInstruments(plan, src, dims, rng.fork("inst"));
   const spec = resolveSpec(plan, src, inst, rng.fork("spec"));
@@ -382,7 +396,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
 
   /* --- events + humanize --- */
   const events: NoteEvent[] = [];
-  const humRng = rng.fork("human");
+  const humRng = partRng.fork("human");
   const jitterSec = R.humanize * (has("jitter") ? 0.045 : 0.018);
   const push = (e: NoteEvent) => {
     if (e.vel <= 0.01 || e.dur <= 0) return;
@@ -394,7 +408,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   };
 
   /* --- drums setup --- */
-  const drumRng = rng.fork("drums");
+  const drumRng = partRng.fork("drums");
   const pats = src.drums.drums.patterns;
   const patA = pats[drumRng.int(0, pats.length - 1)];
   const patB = pats.length > 1 ? pats.find((p) => p !== patA) ?? patA : patA;
@@ -462,7 +476,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   const breakHits = drumRng.pick([[0, 3, 6], [0, 6, 10], [0, 3, 10], [0, 6, 12]]);
 
   /* --- figures (ostinato / hooks / iso) --- */
-  const figRng = rng.fork("figures");
+  const figRng = partRng.fork("figures");
   const F = (a: [number, number, number][]): Figure => a.map(([step, deg, len]) => ({ step, deg, len }));
   const bassHookFig: Figure = figRng.pick([
     F([[0, 0, 3], [3, 0, 2], [6, 12, 2], [8, 10, 2], [11, 7, 2], [14, 0, 2]]),
@@ -489,7 +503,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   const polyInstName: string = ["pluckArp", "epiano", "cleanGuitar", "organ"].includes(inst.harmonyInst) ? inst.harmonyInst : organicKit ? "cleanGuitar" : "pluckArp";
   const polyLabel = polyInstName === "cleanGuitar" ? "clean guitar" : polyInstName === "pluckArp" ? "pluck synth" : polyInstName === "epiano" ? "electric piano" : polyInstName;
   const hookInst: LeadInst = P.hook === "texture" ? (P.vocal === "synthVoice" ? "voice" : "bell") : inst.leadInst;
-  const arpDir = rng.fork("arp").int(0, 2);
+  const arpDir = partRng.fork("arp").int(0, 2);
 
   /* --- melody --- */
   const sigPc = MODE_INFO[mode].signature;
@@ -506,7 +520,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
         : modeSteps;
   const LEAD_CENTER: Record<LeadInst, number> = { sawLead: 72, squareLead: 72, acidLead: 52, pluck: 74, banjo: 74, guitar: 66, distGuitar: 66, bell: 81, flute: 77, whistle: 81, voice: 67, piano: 72, epiano: 70, strings: 72, brass: 65, harmonica: 69, fmLead: 72 };
   const leadCenter = LEAD_CENTER[inst.leadInst] - (inst.melodyStyle === "riff" && inst.leadInst !== "acidLead" ? 7 : 0);
-  const mel = makeMelodyKit(rng.fork("melody"), {
+  const mel = makeMelodyKit(partRng.fork("melody"), {
     scale,
     style: inst.melodyStyle,
     signature: modeIsColored && sigPc !== null && scale.includes(sigPc) ? sigPc : null,

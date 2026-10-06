@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import type { Section, Song } from "@/lib/music/compose";
 import type { PlanEdits } from "@/lib/music/parse";
 import { parseRoman, NOTE_NAMES } from "@/lib/music/theory";
@@ -55,60 +55,140 @@ function tweaksFor(s: Section, song: Song): Tweak[] {
   }
 }
 
-export function SectionStrip({ song, sectionIndex, progress, chord, playing, onSeek, onEdit }: Props) {
+/** Labels from longest to shortest; a segment shows the first one that fits, never a word cut in half. */
+function labelForms(s: Section): string[] {
+  const full = s.label;
+  const noParen = full.replace(/\s*\(.*\)$/, "");
+  const word = noParen.replace(/^Final /, "").replace(/ [AB]$/, "");
+  return Array.from(new Set([full, noParen, word, short(s)]));
+}
+// Geist 11px semibold: ~6.4 px per character, plus padding.
+const fits = (text: string, px: number) => text.length * 6.4 + 10 <= px;
+
+export function chordLabel(chord: string, song: Song) {
+  return chordName(chord, song.keyRoot);
+}
+
+export function SectionStrip({ song, sectionIndex, progress, chord, playing, onSeek, onEdit, lanes }: Props & { lanes?: (sel: number | null, select: (i: number) => void) => ReactNode }) {
   const total = song.totalBeats;
   const [sel, setSel] = useState<number | null>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
   useEffect(() => {
     if (sel !== null && sel >= song.sections.length) setSel(null);
   }, [song, sel]);
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setWidth(el.clientWidth));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const shown = sel ?? (playing ? sectionIndex : null);
   const s = shown !== null ? song.sections[shown] : null;
+  const select = (i: number) => setSel((cur) => (cur === i ? null : i));
+  const chipsRef = useRef<HTMLDivElement>(null);
+  const focusIdx = shown ?? sectionIndex;
+  useEffect(() => {
+    const row = chipsRef.current;
+    const chip = row?.children[focusIdx] as HTMLElement | undefined;
+    if (!row || !chip || !row.clientWidth) return;
+    const left = chip.offsetLeft - row.offsetLeft;
+    if (left < row.scrollLeft || left + chip.offsetWidth > row.scrollLeft + row.clientWidth) row.scrollTo({ left: left - 12, behavior: "smooth" });
+  }, [focusIdx]);
+  const onKey = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
+    const n = song.sections.length;
+    const to = e.key === "ArrowRight" ? Math.min(n - 1, i + 1) : e.key === "ArrowLeft" ? Math.max(0, i - 1) : e.key === "Home" ? 0 : e.key === "End" ? n - 1 : -1;
+    if (to >= 0) {
+      e.preventDefault();
+      setSel(to);
+      (barRef.current?.children[to] as HTMLElement | undefined)?.focus();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      setSel(i);
+      onSeek(song.sections[i].startBeat);
+    }
+  };
   return (
-    <div className="space-y-1.5" data-testid="section-strip">
-      <div className="relative flex h-11 w-full overflow-hidden rounded-xl border border-white/10 bg-black/30">
+    <div className="space-y-2" data-testid="section-strip">
+      <div className="flex gap-2">
+        {lanes && <div className="hidden w-16 shrink-0 self-center text-[11px] font-semibold uppercase tracking-wide text-white/60 sm:block">Sections</div>}
+        <div ref={barRef} className="relative flex h-3 min-w-0 flex-1 overflow-hidden rounded-full border border-white/10 bg-black/30 sm:h-12 sm:rounded-xl md:h-14" role="toolbar" aria-label="Sections">
+          {song.sections.map((x, i) => {
+            const px = (x.beats / total) * width;
+            const text = labelForms(x).find((t) => fits(t, px)) ?? "";
+            const showBars = fits(`${x.bars} bars`, px);
+            const isPlaying = i === sectionIndex && playing;
+            return (
+              <button
+                key={i}
+                type="button"
+                onClick={() => select(i)}
+                onKeyDown={(e) => onKey(e, i)}
+                tabIndex={i === (shown ?? 0) ? 0 : -1}
+                style={{ width: `${(x.beats / total) * 100}%` }}
+                className={`relative flex h-full flex-col items-center justify-center overflow-hidden max-sm:pointer-events-none whitespace-nowrap border-r border-white/10 leading-tight transition last:border-r-0 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-indigo-300 ${
+                  isPlaying ? "bg-indigo-500/35 text-white" : shown === i ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/5"
+                }`}
+                title={`${x.label} · ${x.bars} bars`}
+                aria-label={`${x.label}, ${x.bars} bars`}
+                aria-pressed={shown === i}
+              >
+                <span className="hidden px-1 text-[11px] font-semibold sm:inline">{text}</span>
+                {showBars && <span className="hidden px-1 text-[10px] text-white/55 md:block">{x.bars} bars</span>}
+                <span className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-indigo-400/50 to-pink-400/50" style={{ opacity: 0.2 + x.intensity * 0.8, transform: `scaleY(${0.5 + x.intensity})` }} />
+              </button>
+            );
+          })}
+          <div className="pointer-events-none absolute inset-y-0 w-0.5 bg-white/80" style={{ left: `${progress * 100}%` }} />
+        </div>
+      </div>
+      <div ref={chipsRef} className="-mx-3 flex gap-1.5 overflow-x-auto px-3 pb-1 [scrollbar-width:none] sm:hidden" data-testid="section-chips">
         {song.sections.map((x, i) => (
           <button
             key={i}
             type="button"
-            onClick={() => setSel(sel === i ? null : i)}
-            style={{ width: `${(x.beats / total) * 100}%` }}
-            className={`relative h-full border-r border-white/10 text-[10px] font-semibold leading-tight transition ${
-              i === sectionIndex && playing ? "bg-indigo-500/35 text-white" : shown === i ? "bg-white/10 text-white" : "text-white/55"
+            onClick={() => select(i)}
+            aria-pressed={shown === i}
+            className={`flex min-h-11 min-w-16 shrink-0 flex-col items-start justify-center rounded-xl border px-3 leading-tight ${
+              i === sectionIndex && playing ? "border-indigo-300/60 bg-indigo-500/30 text-white" : shown === i ? "border-white/30 bg-white/12 text-white" : "border-white/10 bg-white/[0.04] text-white/80"
             }`}
-            title={`${x.label} · ${x.bars} bars`}
-            aria-label={`${x.label}, ${x.bars} bars`}
           >
-            <span className="block truncate px-0.5">{short(x)}</span>
-            <span className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-indigo-400/50 to-pink-400/50" style={{ opacity: 0.2 + x.intensity * 0.8, transform: `scaleY(${0.5 + x.intensity})` }} />
+            <span className="whitespace-nowrap text-xs font-semibold">{x.label}</span>
+            <span className="text-[10px] text-white/60">{x.bars} bars</span>
           </button>
         ))}
-        <div className="pointer-events-none absolute inset-y-0 w-0.5 bg-white/80" style={{ left: `${progress * 100}%` }} />
       </div>
-      <div className="flex justify-between text-[11px] text-white/45">
-        <span>{song.sections[sectionIndex]?.label ?? ""} · tap a section for its breakdown</span>
+      {lanes?.(shown, select)}
+      <div className="flex justify-between gap-2 text-[11px] text-white/60">
+        <span>
+          {playing ? `Now: ${song.sections[sectionIndex]?.label ?? ""} · ` : ""}
+          <span className="hidden sm:inline">Select a section for its breakdown · ← → to move, Enter to play</span>
+          <span className="sm:hidden">Tap a section for its breakdown</span>
+        </span>
         <span className="tabular-nums">{chordName(chord, song.keyRoot)}</span>
       </div>
       {s && (
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3" data-testid="section-detail">
           <div className="mb-2 flex items-center justify-between gap-2">
             <p className="text-sm font-semibold text-white">
-              {s.label} <span className="font-normal text-white/45">· {s.bars} bars</span>
+              {s.label} <span className="font-normal text-white/60">· {s.bars} bars</span>
             </p>
-            <button type="button" onClick={() => onSeek(s.startBeat)} className="min-h-9 rounded-lg bg-indigo-500 px-3 text-xs font-semibold text-white">
+            <button type="button" onClick={() => onSeek(s.startBeat)} className="min-h-11 rounded-lg bg-indigo-500 px-3 text-xs font-semibold text-white md:min-h-9">
               ▶ Play from here
             </button>
           </div>
           <dl className="space-y-1.5 text-[12px] leading-snug">
             <div>
-              <dt className="text-[10px] uppercase tracking-wide text-white/40">Instruments</dt>
+              <dt className="text-[10px] uppercase tracking-wide text-white/60">Instruments</dt>
               <dd className="text-white/85">{s.desc.instruments.join(" · ") || "silence"}</dd>
             </div>
             <div>
-              <dt className="text-[10px] uppercase tracking-wide text-white/40">Rhythm</dt>
+              <dt className="text-[10px] uppercase tracking-wide text-white/60">Rhythm</dt>
               <dd className="text-white/85">{s.desc.rhythm}</dd>
             </div>
             <div>
-              <dt className="text-[10px] uppercase tracking-wide text-white/40">Production changes</dt>
+              <dt className="text-[10px] uppercase tracking-wide text-white/60">Production changes</dt>
               <dd className="text-white/85">
                 <ul className="list-disc pl-4">
                   {s.desc.changes.map((c, i) => (
@@ -118,7 +198,7 @@ export function SectionStrip({ song, sectionIndex, progress, chord, playing, onS
               </dd>
             </div>
             <div>
-              <dt className="text-[10px] uppercase tracking-wide text-white/40">Role</dt>
+              <dt className="text-[10px] uppercase tracking-wide text-white/60">Role</dt>
               <dd className="text-white/85">{s.desc.role}</dd>
             </div>
           </dl>

@@ -9,6 +9,7 @@ import { GENRES, KIT_LABELS, BASS_LABELS, HARMONY_LABELS, LEAD_LABELS, type Drum
 import { MOODS, MOOD_IDS, type Plan, type PlanEdits } from "./parse";
 import { MODE_IDS, MODE_INFO, NOTE_NAMES, keyLabel } from "./theory";
 import { BASS_STYLE_PLAIN, HARM_PLAIN, type Song } from "./compose";
+import { TEMPO_LIMITS } from "./styles";
 import {
   AVOIDS,
   AVOID_IDS,
@@ -303,7 +304,7 @@ export function breakdownCard(song: Song, plan: Plan, edits: PlanEdits = {}): Ca
       value: `${song.bpm} BPM · ${keyLabel(song.keyRoot, song.mode)}`,
       detail: MODE_INFO[song.mode].plain,
       options: [
-        ...[-12, -6, 6, 12].map((d) => ({ label: `${d > 0 ? "+" : ""}${d} BPM`, active: false, patch: { bpm: Math.max(55, Math.min(185, song.bpm + d)) } })),
+        ...[-12, -6, 6, 12].map((d) => ({ label: `${d > 0 ? "+" : ""}${d} BPM`, active: false, patch: { bpm: Math.max(TEMPO_LIMITS.min, Math.min(TEMPO_LIMITS.nudgeMax, song.bpm + d)) } })),
         ...MODE_IDS.map((m) => ({ label: MODE_INFO[m].name, plain: MODE_INFO[m].plain, active: song.mode === m, patch: { mode: m } })),
         ...NOTE_NAMES.map((n, i) => ({ label: `Key ${n}`, active: song.keyRoot === i, patch: { root: i } })),
       ],
