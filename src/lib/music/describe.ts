@@ -7,7 +7,7 @@
  */
 import { GENRES, KIT_LABELS, BASS_LABELS, HARMONY_LABELS, LEAD_LABELS, type DrumKit, type BassTimbre, type HarmonyInst, type LeadInst, type BassStyle } from "./genres";
 import { MOODS, MOOD_IDS, type Plan, type PlanEdits } from "./parse";
-import { MODES, MODE_IDS, MODE_INFO, NOTE_NAMES, keyLabel } from "./theory";
+import { MODE_IDS, MODE_INFO, NOTE_NAMES, keyLabel } from "./theory";
 import { BASS_STYLE_PLAIN, HARM_PLAIN, type Song } from "./compose";
 import {
   AVOIDS,

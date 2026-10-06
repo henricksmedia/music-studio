@@ -411,7 +411,7 @@ export function resolveSpec(plan: Plan, src: Sources, inst: Instruments, rng: Rn
   if (ov.glitch !== undefined) glitch = ov.glitch / 100;
   if (glitch > 0.2) tricksOn.add("glitch");
   else tricksOn.delete("glitch");
-  const polyRatio = ov.polyRatio ?? (meter === "7/8" ? ([5, 7] as [number, number]) : rng.pick(POLY_RATIOS.filter(([a, b]) => b === 4 || b === 2 || wild)));
+  const polyRatio = ov.polyRatio ?? (meter === "7/8" ? ([5, 7] as [number, number]) : rng.pick(POLY_RATIOS.filter(([, b]) => b === 4 || b === 2 || wild)));
   const polymeterCycle = ov.polymeterCycle ?? rng.pick(POLYMETER_CYCLES.filter((c) => c * 2 !== cycle[0]));
   const clave = ov.clave ?? (rng.chance(0.5) ? "3-2" : "2-3");
 
