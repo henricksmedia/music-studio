@@ -213,7 +213,7 @@ export function buildGraph(ctx: BaseAudioContext, withAnalyser = false): Graph {
     const dry = ctx.createGain();
     const shaper = ctx.createWaveShaper();
     shaper.curve = voice.shaperCurve;
-    shaper.oversample = "2x";
+    shaper.oversample = SHAPER_OVERSAMPLE;
     const gritPre = ctx.createGain();
     gritPre.gain.value = 2;
     const gritOut = ctx.createGain();
@@ -273,10 +273,10 @@ export function buildGraph(ctx: BaseAudioContext, withAnalyser = false): Graph {
   const autoTargets = (a: AutoValues) => {
     const list: [AudioParam, number, boolean][] = []; // param, value, exponential
     for (const id of AUTO_FILTERED) {
-      list.push([stems[id].auto.frequency, filterHz(a.filter), true]);
+      list.push([stems[id].auto.frequency, Math.min(filterHz(a.filter), ctx.sampleRate * 0.45), true]);
       list.push([stems[id].auto.Q, Math.max(0.3, a.res), false]);
     }
-    list.push([stems.drums.auto.frequency, filterHz(a.drumFilter), true]);
+    list.push([stems.drums.auto.frequency, Math.min(filterHz(a.drumFilter), ctx.sampleRate * 0.45), true]);
     for (const id of STEM_IDS) list.push([stems[id].side.gain, Math.max(0, a.width) * WIDTH_AMT[id], false]);
     list.push([satOut.gain, Math.max(0, a.sat) * 0.55, false]);
     list.push([satDry.gain, 1 - Math.max(0, a.sat) * 0.3, false]);
@@ -364,14 +364,23 @@ const PUMPED: StemId[] = ["bass", "harmony", "texture"];
 
 export function scheduleEvent(g: Graph, ev: NoteEvent, when: number, beatSec: number, dest?: AudioNode) {
   playEvent(g.voice, ev, when, beatSec, dest ?? g.stems[ev.stem].input);
-  if (g.pumpOn && ev.stem === "drums" && ev.inst === "kick" && ev.vel > 0.4) {
-    for (const id of PUMPED) {
-      const p = g.stems[id].pump.gain;
-      p.setTargetAtTime(0.38, when, 0.004);
-      p.setTargetAtTime(1, when + 0.03, beatSec * 0.14);
-    }
+  if (ev.stem === "drums" && ev.inst === "kick" && ev.vel > 0.4) pumpKick(g, when, beatSec);
+}
+
+/** Sidechain duck on a kick. Kicks closer than 60 ms to the previous duck are skipped so the
+ *  gain automation never gets overlapping/out-of-order target events. */
+export function pumpKick(g: Graph, when: number, beatSec: number) {
+  if (!g.pumpOn) return;
+  const last = pumpLast.get(g) ?? -Infinity;
+  if (when >= last && when < last + 0.06) return;
+  pumpLast.set(g, when);
+  for (const id of PUMPED) {
+    const p = g.stems[id].pump.gain;
+    p.setTargetAtTime(0.38, when, 0.004);
+    p.setTargetAtTime(1, when + 0.03, beatSec * 0.14);
   }
 }
+const pumpLast = new WeakMap<Graph, number>();
 
 /** Interpolated automation values at a beat. */
 export function autoAt(song: Song, beat: number): AutoValues {
@@ -400,6 +409,10 @@ export function scheduleAutomation(g: Graph, song: Song, fromBeat: number, when0
   }
 }
 
+/** Browsers oversample the grit shaper 2x. Under Node (offline test harness, node-web-audio-api 2.2.0) the
+ *  2x resampler can panic ("Imaginary part of first value was non-zero") and drop the node, so it is off there. */
+export const SHAPER_OVERSAMPLE: OverSampleType = typeof window === "undefined" ? "none" : "2x";
+
 export type OfflineCtor = new (channels: number, length: number, sampleRate: number) => OfflineAudioContext;
 
 /** Render a song (or a subset of stems) to an AudioBuffer. */
@@ -427,11 +440,7 @@ export async function renderSong(
     if (when > seconds) break;
     // kicks still drive the sidechain pump on stem-only renders
     if (want && !want.has(ev.stem)) {
-      if (g.pumpOn && ev.inst === "kick" && ev.stem === "drums") for (const id of PUMPED) {
-        const p = g.stems[id].pump.gain;
-        p.setTargetAtTime(0.38, when, 0.004);
-        p.setTargetAtTime(1, when + 0.03, beatSec * 0.14);
-      }
+      if (ev.inst === "kick" && ev.stem === "drums" && ev.vel > 0.4) pumpKick(g, when, beatSec);
       continue;
     }
     scheduleEvent(g, ev, when, beatSec);

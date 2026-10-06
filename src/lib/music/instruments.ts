@@ -616,7 +616,7 @@ function tonal(v: VoiceCtx, ev: NoteEvent, when: number, beatSec: number, out: A
       mid.gain.value = 3;
       const sh = c.createWaveShaper();
       sh.curve = v.hardCurve;
-      sh.oversample = "2x";
+      sh.oversample = typeof window === "undefined" ? "none" : "2x"; // see SHAPER_OVERSAMPLE in render.ts
       const pre = c.createGain();
       pre.gain.value = 2.5;
       pre.connect(sh).connect(mid).connect(cab).connect(g);
