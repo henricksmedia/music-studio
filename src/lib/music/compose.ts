@@ -594,7 +594,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
     const C = p.changes;
     switch (s.type) {
       case "intro": {
-        p.role = "Sets the scene without revealing the hook.";
+        p.role = "Establishes the texture; holds back the hook and most layers.";
         p.lead = "none";
         p.fills = false;
         p.clave = false;
@@ -658,7 +658,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
       }
       case "verse": {
         if (s.part === "B" || s.final) {
-          p.role = s.final ? "Last full verse: extra weight before the ending." : "Same song, new angle: groove, register and instrument shift.";
+          p.role = s.final ? "Last full verse with extra percussion before the ending." : "Restates the groove with a new kick pattern, bass rhythm, register, instrument and width.";
           p.pat = has("brokenTime") ? "broken" : "B";
           p.bass = groovesBass(altBass[inst.bassStyle] ?? "syncopated");
           p.extraPerc = true;
@@ -677,7 +677,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
           if (p.displace) C.push("chords and melody shifted an 8th late (metric displacement)");
           C.push(`stereo width opens to ${pct(w)}`);
         } else {
-          p.role = "Establishes the groove and the main idea.";
+          p.role = "Introduces the main groove and motif at reduced width.";
           p.bass = groovesBass(mainBass === "hook" ? inst.bassStyle : mainBass);
           p.pedal = H.pedal;
           p.harm = mainHarm;
@@ -692,7 +692,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
         break;
       }
       case "solo":
-        p.role = "Same song, new angle: an instrumental solo chorus.";
+        p.role = "Instrumental solo chorus over the same changes.";
         p.pat = "B";
         p.lead = "solo";
         p.bass = altBass[inst.bassStyle] ?? "rootFifth";
@@ -702,7 +702,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
         C.push("lead improvises across the whole chorus", "drums switch to pattern B, rim on the off-16ths", `bass changes to ${BASS_STYLE_PLAIN[p.bass] ?? p.bass}`);
         break;
       case "build": {
-        p.role = "Raises tension with concrete changes into the hook.";
+        p.role = "Transition into the hook: adds percussion, opens the filter, shortens the bass.";
         p.drums = "build";
         p.extraPerc = true;
         p.syncKick = true;
@@ -739,7 +739,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
         p.auto.filter = [1, 1];
         p.auto.sat = [0.25, 0.25];
         if (s.final) {
-          p.role = "The biggest version: doubled, wider, more saturated, not just louder.";
+          p.role = "Last hook: octave double, extra percussion, widest image, more saturation.";
           p.double = true;
           p.bigPerc = true;
           p.syncKick = true;
@@ -754,7 +754,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
           if (p.displace) C.push("hook shifted a 16th (altered rhythm)");
           C.push(`widest image (${pct(w)}), saturation up to ${pct(sat)}`);
         } else {
-          p.role = s.label.startsWith("Cold Open") ? "Opens straight on the hook." : "The strongest statement of the hook.";
+          p.role = s.label.startsWith("Cold Open") ? "Starts directly on the hook motif." : "Full statement of the hook motif with all layers.";
           C.push(`full band, filter fully open, wide image (${pct(widthBase)})`);
         }
         if (P.hook === "bassline") C.push("the hook bassline carries the section; lead plays a sparse counter-line");
@@ -766,7 +766,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
         break;
       }
       case "dropout":
-        p.role = "Contrast: pulls the floor out so the next part lands.";
+        p.role = "Contrast bar: removes kick and harmony before the next section.";
         p.drums = noDrums ? "none" : "thin";
         p.deconstruct = true;
         p.bass = "tail";
@@ -787,7 +787,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
         break;
       case "bridge":
       case "breakdown":
-        p.role = "Changes the rules: no kick, reduced harmony, drone, narrow.";
+        p.role = "Rule change: no kick, root + fifth harmony, drone, narrow image.";
         p.drums = noDrums ? "none" : "noKick";
         p.deconstruct = has("deconstruction") || s.type === "breakdown";
         p.bass = "sustain";
@@ -808,7 +808,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
         if (p.deconstruct) C.push("remaining percussion thins out bar by bar (deconstruction)");
         break;
       case "outro":
-        p.role = "Removes layers deliberately and lands.";
+        p.role = "Removes layers in order and returns to the intro texture.";
         p.drums = noDrums ? "none" : "outro";
         p.bass = "sustain";
         p.harm = "sustain";
