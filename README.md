@@ -59,6 +59,18 @@ Audio needs a user tap (Generate / Play) — browsers require a gesture to unloc
 | Full ML / sample-accurate composition | **Not yet** — next step is on-device or self-hosted models, still no cloud music APIs |
 | Cloud sync of projects | **Not yet** — local browser session for now |
 
+## Live site (GitHub Pages)
+
+The site is a static export (`output: 'export'`) served by GitHub Pages from the `gh-pages` branch.
+
+Deploy: `npm run deploy:pages` (builds with the `/music-studio` base path and force-pushes `out/` to `gh-pages`).
+
+Auto-deploy on every push: `deploy/github-pages-workflow.yml` is ready. Move it to `.github/workflows/pages.yml` once the pushing token has the `workflow` scope (`gh auth refresh -h github.com -s workflow`), then switch Pages to "GitHub Actions" as the source.
+
+- Live: https://henricksmedia.github.io/music-studio/
+- The workflow sets `PAGES_BASE_PATH=/music-studio`; local dev runs at `/` with no base path.
+- To preview the Pages build locally: `PAGES_BASE_PATH=/music-studio npm run build` and serve `out/`.
+
 ## Repo
 
-Intended GitHub home: `henricksmedia/music-studio` (or rename). Push only after `unset GH_TOKEN` and `gh` auth as needed on the shared machine.
+GitHub home: `henricksmedia/music-studio`. On the shared machine, `unset GH_TOKEN` before pushing (use the `gh` login).
