@@ -183,7 +183,8 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   const organicKit = !electronicKit && inst.kit !== "cinematic";
 
   /* --- timeline --- */
-  const form = primary.form;
+  // Go wild fusions use the full timeline even on a blues base (12-bar harmony is kept)
+  const form: Form = primary.form === "blues" && P.wild ? "song" : primary.form;
   const formRng = rng.fork("form");
   const target = formRng.range(64, 86);
   const secBeats = (bars: number) => {
@@ -300,7 +301,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   let chorusProg: string[];
   let bridgeProg: string[];
   let bpc: number;
-  const blues12 = form === "blues" && !named;
+  const blues12 = primary.form === "blues" && !named;
   if (named) {
     verseProg = named.roman;
     chorusProg = named.roman;
@@ -328,8 +329,10 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   };
   const progFor = (s: Section): string[] => {
     if (blues12) {
-      if (s.type === "intro") return verseProg.slice(8, 12);
-      if (s.type === "outro") return [verseProg[0]];
+      if (s.type === "intro" || s.type === "build") return verseProg.slice(8, 12);
+      if (s.type === "outro" || s.type === "dropout") return [verseProg[0]];
+      if (s.type === "chorus" || s.type === "drop") return [...verseProg.slice(4), ...verseProg.slice(0, 4)];
+      if (s.type === "bridge" || s.type === "breakdown") return [verseProg[4], verseProg[4], verseProg[6], verseProg[6]];
       return verseProg;
     }
     let p: string[];

@@ -202,7 +202,8 @@ export function identityCard(song: Song, plan: Plan, edits: PlanEdits = {}): Car
     {
       id: "opening",
       title: "Opening",
-      value: `${OPENINGS[P.opening].label}: ${intro?.desc.changes[0] ?? OPENINGS[P.opening].plain}`,
+      value: cap(intro?.desc.changes[0] ?? OPENINGS[P.opening].plain),
+      detail: OPENINGS[P.opening].label,
       options: (Object.keys(OPENINGS) as (keyof typeof OPENINGS)[]).map((o) => ({ label: OPENINGS[o].label, plain: OPENINGS[o].plain, active: P.opening === o, patch: S({ opening: o }) })),
       unlockKeys: ["opening"],
       locked: styleLocked(edits, ["opening"]),

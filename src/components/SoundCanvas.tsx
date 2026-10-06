@@ -11,6 +11,12 @@ import { DimensionSlider } from "./DimensionSlider";
 import { WavePulse } from "./WavePulse";
 import { UnderstoodPanel } from "./UnderstoodPanel";
 import { SectionStrip } from "./SectionStrip";
+import { GroovePanel, HarmonyPanel } from "./StylePanels";
+import { CardRows, OptionSheet, PromptModal, chipCls } from "./ui";
+import { identityCard, breakdownCard, stylePrompt, timelinePrompt, type CardItem, type ChipOption } from "@/lib/music/describe";
+import { goWild, mergeEdits, unlockEdits } from "@/lib/music/wild";
+import { parseStyle } from "@/lib/music/parseStyle";
+import { AVOIDS, AVOID_IDS } from "@/lib/music/spec";
 
 const DIMENSION_META: { key: keyof Dimensions; label: string; hint: string }[] = [
   { key: "space", label: "Space", hint: "Dry & close → huge room, echoes" },
@@ -59,6 +65,11 @@ export function SoundCanvas() {
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const [pos, setPos] = useState<Position | null>(null);
   const restartRef = useRef(false);
+  const [locks, setLocks] = useState<PlanEdits>({});
+  const [wild, setWild] = useState(false);
+  const [sheet, setSheet] = useState<{ item: CardItem; kind: "identity" | "breakdown" } | null>(null);
+  const [promptOpen, setPromptOpen] = useState(false);
+  const [avoidText, setAvoidText] = useState("");
 
   const plan = useMemo(() => (parse ? resolvePlan(parse, edits) : null), [parse, edits]);
   const { drumFeel, pulse, genrePull, vocalCharacter } = dimensions;
@@ -109,6 +120,8 @@ export function SoundCanvas() {
       const pl = resolvePlan(p);
       setParse(p);
       setEdits({});
+      setLocks({});
+      setWild(!!p.style.wild);
       setVariation(0);
       setDimensions(suggestDimensions(pl, p, DEFAULT_DIMENSIONS));
       setLastPrompt(prompt);
@@ -151,7 +164,7 @@ export function SoundCanvas() {
 
   const onEdit = (e: PlanEdits) =>
     setEdits((prev) => {
-      const next: PlanEdits = { ...prev, ...e, instruments: e.instruments ?? prev.instruments };
+      const next: PlanEdits = mergeEdits(prev, e);
       // Re-blending styles keeps the key you're in; mood changes may move the mode (dark → phrygian), not the root.
       if (plan && e.genres) {
         next.root = prev.root ?? plan.root;
@@ -160,6 +173,67 @@ export function SoundCanvas() {
       if (plan && e.moods) next.root = prev.root ?? plan.root;
       return next;
     });
+
+  /** Go wild: base = current genre (default delta blues) fused with a random EDM substyle; locks survive. */
+  const doGoWild = () => {
+    engine.unlock();
+    let p = parse;
+    const prompt = intent.trim();
+    if (!p || prompt !== lastPrompt) {
+      p = parsePrompt(prompt || "delta blues");
+      if (resolvePlan(p).fallback) p = parsePrompt(`delta blues ${prompt}`);
+      setParse(p);
+      setLastPrompt(prompt);
+    }
+    const base = resolvePlan(p);
+    const { edits: we, edm, base: baseId } = goWild(base, locks, (Date.now() ^ (variation * 7919)) >>> 0);
+    restartRef.current = true;
+    setEdits(we);
+    setWild(true);
+    setVariation((v) => v + 1);
+    setDimensions(suggestDimensions(resolvePlan(p, we), p, DEFAULT_DIMENSIONS));
+    setStatus(`Go wild: ${GENRES[baseId].label} × ${edm.replace(/([A-Z])/g, " $1").toLowerCase()} — tap any line to change or lock it.`);
+  };
+
+  const pickOption = (o: ChipOption, kind: "identity" | "breakdown") => {
+    onEdit(o.patch);
+    if (kind === "breakdown") {
+      // change = lock that element, reroll the rest
+      setLocks((l) => mergeEdits(l, o.patch));
+      restartRef.current = true;
+      setVariation((v) => v + 1);
+    }
+    setSheet(null);
+  };
+  const keepItem = (item: CardItem) => {
+    if (!item.lock) return;
+    setLocks((l) => mergeEdits(l, item.lock!));
+    onEdit(item.lock);
+    restartRef.current = true;
+    setVariation((v) => v + 1);
+    setSheet(null);
+    setStatus(`Kept ${item.title.toLowerCase()}, rerolled the rest.`);
+  };
+  const unlockItem = (item: CardItem) => {
+    setLocks((l) => unlockEdits(l, item.unlockKeys, item.unlockPlan));
+    setEdits((e) => unlockEdits(e, item.unlockKeys, item.unlockPlan));
+    setSheet(null);
+  };
+  const addTypedAvoid = () => {
+    if (!song || !avoidText.trim()) return;
+    const txt = /\b(no|avoid|without)\b/i.test(avoidText) ? avoidText : `no ${avoidText}`;
+    const found = parseStyle(txt, 0).style.avoid ?? [];
+    if (!found.length) {
+      setStatus(`Couldn't match “${avoidText}” to a sound I can exclude. Try: ${AVOID_IDS.slice(0, 4).map((a) => AVOIDS[a].label.toLowerCase()).join(", ")}…`);
+      return;
+    }
+    onEdit({ style: { avoid: Array.from(new Set([...song.spec.production.avoid, ...found])) } });
+    setAvoidText("");
+    setStatus(`Avoiding: ${found.map((a) => AVOIDS[a].label.toLowerCase()).join(", ")}.`);
+  };
+
+  const idCard = useMemo(() => (song && plan ? identityCard(song, plan, edits) : []), [song, plan, edits]);
+  const bdCard = useMemo(() => (song && plan && wild ? breakdownCard(song, plan, locks) : []), [song, plan, edits, locks, wild]);
 
   const exportAudio = async (withStems: boolean) => {
     if (!song) return;
@@ -199,15 +273,18 @@ export function SoundCanvas() {
           aria-label="Describe the music"
           className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none ring-indigo-400/40 placeholder:text-white/30 focus:ring-2"
         />
-        <div className="flex gap-2">
-          <button type="button" disabled={busy} onClick={() => generate()} className="min-h-11 flex-1 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 active:scale-[0.98] disabled:opacity-50">
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" disabled={busy} onClick={() => generate()} className="min-h-11 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 active:scale-[0.98] disabled:opacity-50">
             Generate
+          </button>
+          <button type="button" disabled={busy} onClick={togglePlay} className="min-h-11 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white active:scale-[0.98] disabled:opacity-50">
+            {playing ? "Pause" : "Play"}
           </button>
           <button type="button" disabled={busy} onClick={surprise} className="min-h-11 rounded-xl border border-pink-300/30 bg-pink-500/15 px-4 py-2.5 text-sm font-semibold text-white active:scale-[0.98] disabled:opacity-50" title="Same vibe, new take">
             🎲 Surprise
           </button>
-          <button type="button" disabled={busy} onClick={togglePlay} className="min-h-11 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white active:scale-[0.98] disabled:opacity-50">
-            {playing ? "Pause" : "Play"}
+          <button type="button" disabled={busy} onClick={doGoWild} className="min-h-11 rounded-xl border border-orange-300/40 bg-gradient-to-r from-orange-500/30 to-fuchsia-500/30 px-4 py-2.5 text-sm font-semibold text-white active:scale-[0.98] disabled:opacity-50" title="Fuse this style with a random EDM substyle">
+            🔥 Go wild
           </button>
         </div>
         {!song && (
@@ -222,10 +299,65 @@ export function SoundCanvas() {
       </section>
 
       <WavePulse analyser={analyser} active={playing} />
-      {song && <SectionStrip song={song} sectionIndex={pos?.sectionIndex ?? 0} progress={pos?.progress ?? 0} chord={pos?.chord ?? ""} playing={playing} onSeek={seek} />}
+      {song && <SectionStrip song={song} sectionIndex={pos?.sectionIndex ?? 0} progress={pos?.progress ?? 0} chord={pos?.chord ?? ""} playing={playing} onSeek={seek} onEdit={onEdit} />}
       <p className="min-h-[1.25rem] text-center text-xs text-indigo-100/70" aria-live="polite">
         {status}
       </p>
+
+      {song && plan && wild && bdCard.length > 0 && (
+        <section className="rounded-2xl border border-orange-300/25 bg-gradient-to-b from-orange-500/10 to-fuchsia-500/5 p-3" data-testid="breakdown-card">
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-orange-100/80">Producer breakdown</h2>
+            <button type="button" onClick={() => setPromptOpen(true)} className="min-h-9 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-semibold text-white">
+              Copy as prompt
+            </button>
+          </div>
+          <p className="mb-1 text-[11px] text-white/45">Tap any line to change it (that part stays, the rest rerolls) or lock it.</p>
+          <CardRows items={bdCard} onOpen={(item) => setSheet({ item, kind: "breakdown" })} testId="breakdown-rows" />
+        </section>
+      )}
+
+      {song && plan && (
+        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-3" data-testid="identity-card">
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-white/60">Song identity</h2>
+            <button type="button" onClick={() => setPromptOpen(true)} className="min-h-9 rounded-lg border border-white/15 bg-white/5 px-3 text-xs font-medium text-white">
+              Copy as prompt
+            </button>
+          </div>
+          <p className="mb-1 text-[11px] text-white/45">What stays true for the whole track. Tap a line to change it.</p>
+          <CardRows items={idCard} onOpen={(item) => setSheet({ item, kind: "identity" })} testId="identity-rows" />
+          <div className="mt-2 space-y-1.5" data-testid="avoid-chips">
+            <p className="text-[11px] font-medium uppercase tracking-wide text-white/45">Avoid (really left out)</p>
+            <div className="flex flex-wrap gap-1.5">
+              {AVOID_IDS.map((a) => {
+                const on = song.spec.production.avoid.includes(a);
+                return (
+                  <button key={a} type="button" title={AVOIDS[a].plain} aria-pressed={on} className={chipCls(on)} onClick={() => onEdit({ style: { avoid: on ? song.spec.production.avoid.filter((x) => x !== a) : [...song.spec.production.avoid, a] } })}>
+                    {on ? "✕ " : ""}
+                    {AVOIDS[a].label}
+                  </button>
+                );
+              })}
+            </div>
+            <form
+              className="flex gap-1.5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                addTypedAvoid();
+              }}
+            >
+              <input value={avoidText} onChange={(e) => setAvoidText(e.target.value)} placeholder="type e.g. no supersaws" aria-label="Type something to avoid" className="min-h-9 flex-1 rounded-full border border-white/15 bg-white/5 px-3 text-xs text-white outline-none placeholder:text-white/30" />
+              <button type="submit" className="min-h-9 rounded-full border border-white/15 px-3 text-xs text-white">
+                Add
+              </button>
+            </form>
+          </div>
+        </section>
+      )}
+
+      {song && <GroovePanel song={song} onEdit={onEdit} />}
+      {song && <HarmonyPanel song={song} onEdit={onEdit} />}
 
       {plan && song && <UnderstoodPanel plan={plan} song={song} onEdit={onEdit} />}
 
@@ -250,6 +382,16 @@ export function SoundCanvas() {
         </div>
         <p className="text-[11px] text-white/40">Full-length render on your device. The stems are drums, bass, chords, lead and texture, and they line up sample-for-sample.</p>
       </section>
+
+      <OptionSheet
+        item={sheet?.item ?? null}
+        onClose={() => setSheet(null)}
+        onPick={(o) => pickOption(o, sheet?.kind ?? "identity")}
+        onKeep={sheet?.kind === "breakdown" ? keepItem : undefined}
+        onUnlock={unlockItem}
+        pickHint={sheet?.kind === "breakdown" ? "Pick one: it gets locked and everything else rerolls." : "Pick one: it changes in place."}
+      />
+      {song && plan && <PromptModal open={promptOpen} style={stylePrompt(song, plan)} timeline={timelinePrompt(song, plan)} onClose={() => setPromptOpen(false)} />}
     </div>
   );
 }

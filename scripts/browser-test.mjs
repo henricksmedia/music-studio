@@ -1,15 +1,13 @@
-// Real-browser smoke test: drives Chrome through the canvas, edits chips, nudges, and exports.
+// Real-browser smoke test at phone size (390×844): prompts, Go wild + breakdown chips, identity card,
+// avoid chips, Groove/Harmony panels, section detail, Copy as prompt, export. Fails on console errors.
 import puppeteer from "puppeteer-core";
 import fs from "fs";
 const URL = process.argv[2] || "http://localhost:3020/";
 const dl = "/tmp/ms-dl";
 fs.rmSync(dl, { recursive: true, force: true });
 fs.mkdirSync(dl, { recursive: true });
-const browser = await puppeteer.launch({
-  executablePath: "/usr/bin/google-chrome",
-  headless: "new",
-  args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required", "--mute-audio"],
-});
+fs.mkdirSync("/tmp/ms-shots", { recursive: true });
+const browser = await puppeteer.launch({ executablePath: "/usr/bin/google-chrome", headless: "new", args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required", "--mute-audio"] });
 const page = await browser.newPage();
 await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
 const errors = [];
@@ -18,95 +16,99 @@ page.on("pageerror", (e) => errors.push(String(e)));
 const cdp = await page.createCDPSession();
 await cdp.send("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: dl });
 await page.goto(URL, { waitUntil: "networkidle0" });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const status = () => page.$eval('[aria-live="polite"]', (e) => e.textContent);
-const clickText = async (txt) => {
-  const ok = await page.evaluate((t) => {
-    const b = [...document.querySelectorAll("button")].find((x) => x.textContent.trim().startsWith(t));
+const clickText = async (txt, root = "body") => {
+  const ok = await page.evaluate((t, r) => {
+    const b = [...document.querySelector(r).querySelectorAll("button")].find((x) => x.textContent.trim().startsWith(t));
     if (b) b.click();
     return !!b;
-  }, txt);
+  }, txt, root);
   if (!ok) throw new Error("button not found: " + txt);
 };
-const info = () =>
-  page.evaluate(() => {
-    const panel = [...document.querySelectorAll("section")].find((s) => s.textContent.includes("What I heard"));
-    const strip = document.querySelector("[title*='bars']")?.parentElement;
-    return {
-      chips: panel ? [...panel.querySelectorAll("span.rounded-full, button.rounded-full")].map((x) => x.textContent.replace(/\s+/g, " ").trim()).slice(0, 8) : [],
-      selects: panel ? [...panel.querySelectorAll("select")].map((s) => s.selectedOptions[0]?.textContent).filter(Boolean) : [],
-      sections: strip ? [...strip.querySelectorAll("button")].map((b) => b.textContent) : [],
-      playBtn: [...document.querySelectorAll("button")].find((b) => ["Play", "Pause"].includes(b.textContent.trim()))?.textContent,
-    };
-  });
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-const prompts = ["campfire banjo folk at dusk", "dark techno warehouse at 3am", "lonely country rock with a trance pulse", "purple elephant spaceship"];
-for (const p of prompts) {
-  await page.$eval("textarea", (el, v) => {
-    const set = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value").set;
-    set.call(el, v);
+const type = (v) =>
+  page.$eval("textarea", (el, val) => {
+    Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value").set.call(el, val);
     el.dispatchEvent(new Event("input", { bubbles: true }));
-  }, p);
+  }, v);
+const rows = (id) => page.$$eval(`[data-testid=${id}] li`, (ls) => ls.map((l) => l.innerText.replace(/\s+/g, " ").trim()));
+const strip = () => page.$$eval("[data-testid=section-strip] button[aria-label]", (bs) => bs.map((b) => b.getAttribute("aria-label")));
+
+for (const p of ["slow delta blues with harmonica", "funky groove in 7/8 with clave", "lydian drone ambient with pedal tone"]) {
+  await type(p);
   await clickText("Generate");
-  await sleep(2500);
-  const i = await info();
-  console.log(`\n[${p}] status: ${await status()}`);
-  console.log("  chips:", i.chips.join(" | "));
-  console.log("  sounds:", i.selects.join(" | "));
-  console.log("  sections:", i.sections.join(" "), "| button:", i.playBtn);
+  await sleep(2000);
+  console.log(`\n[${p}] ${await status()}`);
+  console.log("  sections:", (await strip()).join(" / "));
+  console.log("  identity:", (await rows("identity-rows")).slice(0, 4).join(" || "));
 }
-// position advances?
-const posA = await page.$eval("[aria-live='polite']", () => document.querySelector(".pointer-events-none.absolute")?.style.left);
+// avoid chip
+await clickText("Supersaws", "[data-testid=avoid-chips]");
+await sleep(600);
+console.log("\navoid row:", (await rows("identity-rows")).find((r) => r.startsWith("AVOID")));
+
+// Go wild with delta blues base
+await type("delta blues");
+await clickText("🔥 Go wild");
+await sleep(2200);
+console.log("\nGO WILD:", await status());
+const bd = await rows("breakdown-rows");
+console.log(bd.map((r) => "  " + r).join("\n"));
+await page.screenshot({ path: "/tmp/ms-shots/wild-top.png" });
+// tap Ending line → pick "Hard cut"
+await page.evaluate(() => [...document.querySelectorAll("[data-testid=breakdown-rows] button")].find((b) => b.innerText.startsWith("ENDING") || b.innerText.toUpperCase().startsWith("ENDING")).click());
+await sleep(300);
+await page.screenshot({ path: "/tmp/ms-shots/sheet.png" });
+await clickText("Hard cut", "[role=dialog]");
 await sleep(1500);
-const posB = await page.$eval("[aria-live='polite']", () => document.querySelector(".pointer-events-none.absolute")?.style.left);
-console.log("\nplayhead moved:", posA, "→", posB);
+console.log("after picking Hard cut:", (await rows("breakdown-rows")).find((r) => r.toUpperCase().startsWith("ENDING")));
+// keep fusion, reroll the rest
+await page.evaluate(() => [...document.querySelectorAll("[data-testid=breakdown-rows] button")][0].click());
+await sleep(300);
+await clickText("🔒 Keep this", "[role=dialog]");
+await sleep(1500);
+console.log("after keep fusion:", (await rows("breakdown-rows")).slice(0, 3).join(" || "));
 
-// nudge a slider (drum feel) and genre pull
-const nudge = async (label, value) =>
-  page.evaluate(
-    (l, v) => {
-      const lab = [...document.querySelectorAll("label")].find((x) => x.textContent.startsWith(l));
-      const input = lab.querySelector("input[type=range]");
-      const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
-      set.call(input, String(v));
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      return lab.textContent;
-    },
-    label,
-    value
-  );
-await nudge("Genre pull", 5);
-await sleep(800);
-console.log("after Genre pull → 5:", (await info()).selects.join(" | "));
-await nudge("Vocal character", 90);
-await sleep(800);
-console.log("after Vocal character → 90:", (await info()).selects.join(" | "));
-
-// chip edit: blend in a style via select
-await page.evaluate(() => {
-  const s = [...document.querySelectorAll("select")].find((x) => x.querySelector("option")?.textContent === "+ blend style");
-  const set = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set;
-  set.call(s, "blues");
-  s.dispatchEvent(new Event("change", { bubbles: true }));
-});
-await sleep(800);
-console.log("after +blend blues:", (await info()).chips.slice(0, 4).join(" | "));
-await clickText("🎲");
+// Groove panel: open and pick 7/8
+await page.$eval("[data-testid=groove-panel] summary", (s) => s.click());
+await sleep(200);
+await clickText("7/8", "[data-testid=groove-panel]");
+await sleep(1500);
+console.log("groove after 7/8:", (await rows("identity-rows")).find((r) => r.startsWith("GROOVE")));
+await page.$eval("[data-testid=harmony-panel] summary", (s) => s.click());
+await clickText("Locrian", "[data-testid=harmony-panel]");
 await sleep(1200);
-console.log("after Surprise:", await status(), "|", (await info()).sections.join(" "));
+console.log("harmony summary:", await page.$eval("[data-testid=harmony-panel] summary", (s) => s.innerText.replace(/\s+/g, " ")));
 
-await page.screenshot({ path: "/tmp/ms-phone.png", fullPage: true });
+// section detail
+await page.evaluate(() => document.querySelectorAll("[data-testid=section-strip] button[aria-label]")[1].click());
+await sleep(300);
+console.log("section detail:", (await page.$eval("[data-testid=section-detail]", (d) => d.innerText.replace(/\s+/g, " "))).slice(0, 300));
+await page.$eval("[data-testid=section-strip]", (e) => e.scrollIntoView());
+await page.screenshot({ path: "/tmp/ms-shots/section.png" });
 
-// exports (timed)
-let t = Date.now();
+// copy as prompt
+await clickText("Copy as prompt", "[data-testid=breakdown-card]");
+await sleep(300);
+const prompts = await page.$$eval("[role=dialog] textarea", (ts) => ts.map((t) => t.value));
+console.log("\nSTYLE PROMPT:\n" + prompts[0] + "\n\nTIMELINE PROMPT:\n" + prompts[1]);
+await page.screenshot({ path: "/tmp/ms-shots/prompt.png" });
+await clickText("✕", "[role=dialog]");
+
+// layout: no horizontal overflow at 390px
+const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+console.log("\nhorizontal overflow px:", overflow);
+await page.evaluate(() => window.scrollTo(0, 0));
+await page.screenshot({ path: "/tmp/ms-shots/mobile-full.png", fullPage: true });
+
+// export mix
 await clickText("Mix (.wav)");
-await page.waitForFunction(() => document.querySelector("[aria-live='polite']").textContent.includes("downloaded") || document.querySelector("[aria-live='polite']").textContent.includes("failed"), { timeout: 180000 });
-console.log(`\nmix export: ${((Date.now() - t) / 1000).toFixed(1)}s →`, await status());
-t = Date.now();
-await clickText("Mix + stems");
-await page.waitForFunction(() => /zip|failed/.test(document.querySelector("[aria-live='polite']").textContent), { timeout: 400000 });
-console.log(`stems export: ${((Date.now() - t) / 1000).toFixed(1)}s →`, await status());
-await sleep(1500);
-for (const f of fs.readdirSync(dl)) console.log("  downloaded:", f, (fs.statSync(`${dl}/${f}`).size / 1e6).toFixed(1), "MB");
+let file = null;
+for (let i = 0; i < 120 && !file; i++) {
+  await sleep(1000);
+  file = fs.readdirSync(dl).find((f) => f.endsWith(".wav"));
+}
+console.log("export:", file, file ? fs.statSync(`${dl}/${file}`).size : 0, "|", await status());
 console.log("\nconsole errors:", errors.length ? errors : "none");
 await browser.close();
+process.exit(errors.length ? 1 : 0);
