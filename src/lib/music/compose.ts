@@ -110,7 +110,7 @@ const TEMPLATES: Record<Exclude<Form, "blues">, T[]> = {
 };
 
 const TEXTURE_LABELS: Record<TextureId, string> = { vinyl: "vinyl crackle", rain: "rain bed", wind: "wind noise", riser: "noise riser", impact: "impact hits", shimmer: "shimmer bells", drone: "tonic drone", tape: "tape hiss" };
-const BASS_STYLE_PLAIN: Record<string, string> = {
+export const BASS_STYLE_PLAIN: Record<string, string> = {
   root8: "driving 8th-note roots",
   rootFifth: "root–fifth bounce",
   offbeat: "off-beat bass",
@@ -129,7 +129,7 @@ const BASS_STYLE_PLAIN: Record<string, string> = {
   tail: "one long bass tail",
   stop: "stop-time bass hits",
 };
-const HARM_PLAIN: Record<string, string> = {
+export const HARM_PLAIN: Record<string, string> = {
   sustain: "held chords",
   swells: "swelling chords",
   stabs: "off-beat chord stabs",

@@ -8,7 +8,7 @@
 import { GENRES, KIT_LABELS, BASS_LABELS, HARMONY_LABELS, LEAD_LABELS, type DrumKit, type BassTimbre, type HarmonyInst, type LeadInst, type BassStyle } from "./genres";
 import { MOODS, MOOD_IDS, type Plan, type PlanEdits } from "./parse";
 import { MODES, MODE_IDS, MODE_INFO, NOTE_NAMES, keyLabel } from "./theory";
-import type { Song } from "./compose";
+import { BASS_STYLE_PLAIN, HARM_PLAIN, type Song } from "./compose";
 import {
   AVOIDS,
   AVOID_IDS,
@@ -349,11 +349,11 @@ export function breakdownCard(song: Song, plan: Plan, edits: PlanEdits = {}): Ca
     {
       id: "drumsBass",
       title: "Drum & bass design",
-      value: `${sec(a.kit)} (${GENRES[a.drumsFrom].label} groove) · ${BASS_LABELS[a.bassTimbre]}, ${a.bassStyle.replace(/([A-Z])/g, " $1").toLowerCase()}`,
+      value: `${sec(a.kit)} (${GENRES[a.drumsFrom].label} groove) · ${BASS_LABELS[a.bassTimbre]}, ${BASS_STYLE_PLAIN[a.bassStyle] ?? a.bassStyle}`,
       options: [
         ...(Object.keys(KIT_LABELS) as DrumKit[]).map((k) => ({ label: `Kit: ${KIT_LABELS[k]}`, active: a.kit === k, patch: { instruments: { ...plan.instruments, kit: k } } })),
         ...(Object.keys(BASS_LABELS) as BassTimbre[]).map((b) => ({ label: `Bass: ${BASS_LABELS[b]}`, active: a.bassTimbre === b, patch: { instruments: { ...plan.instruments, bass: b } } })),
-        ...(["root8", "offbeat", "rolling", "walking", "syncopated", "sustain"] as BassStyle[]).map((b) => ({ label: `Bass line: ${b.replace(/([A-Z0-9]+)/g, " $1").toLowerCase()}`, active: a.bassStyle === b, patch: S({ bassStyle: b }) })),
+        ...(["root8", "offbeat", "rolling", "walking", "syncopated", "sustain"] as BassStyle[]).map((b) => ({ label: `Bass line: ${BASS_STYLE_PLAIN[b] ?? b}`, active: a.bassStyle === b, patch: S({ bassStyle: b }) })),
       ],
       lock: { instruments: { ...plan.instruments, kit: a.kit, bass: a.bassTimbre }, style: { bassStyle: a.bassStyle } },
       unlockKeys: ["bassStyle"],
@@ -363,7 +363,7 @@ export function breakdownCard(song: Song, plan: Plan, edits: PlanEdits = {}): Ca
     {
       id: "leadChords",
       title: "Lead & chord approach",
-      value: `${LEAD_LABELS[a.leadInst]} ${a.melodyStyle} lead${a.responseInst !== a.leadInst ? `, ${LEAD_LABELS[a.responseInst]} answers` : ""} · ${HARMONY_LABELS[a.harmonyInst]} (${a.harmonyRhythm})`,
+      value: `${LEAD_LABELS[a.leadInst]} ${a.melodyStyle} lead${a.responseInst !== a.leadInst ? `, ${LEAD_LABELS[a.responseInst]} answers` : ""} · ${HARMONY_LABELS[a.harmonyInst]}, ${HARM_PLAIN[a.harmonyRhythm] ?? a.harmonyRhythm}`,
       options: [
         ...(Object.keys(LEAD_LABELS) as LeadInst[]).map((l) => ({ label: `Lead: ${LEAD_LABELS[l]}`, active: a.leadInst === l, patch: { instruments: { ...plan.instruments, lead: l } } })),
         ...(Object.keys(HARMONY_LABELS) as HarmonyInst[]).map((h) => ({ label: `Chords: ${HARMONY_LABELS[h]}`, active: a.harmonyInst === h, patch: { instruments: { ...plan.instruments, harmony: h } } })),
