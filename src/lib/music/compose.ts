@@ -95,7 +95,7 @@ const LAYERS: Record<SectionType, LayerLevels> = {
   drop: { drums: 1, bass: 1, harmony: 1, lead: 1, texture: 0.7 },
   dropout: { drums: 0.5, bass: 0.8, harmony: 0.6, lead: 0.7, texture: 1 },
   breakdown: { drums: 0.4, bass: 0.45, harmony: 1, lead: 0.6, texture: 1 },
-  bridge: { drums: 0.45, bass: 0.7, harmony: 0.75, lead: 0.65, texture: 0.8 },
+  bridge: { drums: 0.35, bass: 0.6, harmony: 0.6, lead: 0.5, texture: 0.8 },
   solo: { drums: 0.9, bass: 0.9, harmony: 0.75, lead: 1, texture: 0.5 },
   outro: { drums: 0.55, bass: 0.65, harmony: 0.75, lead: 0.5, texture: 1 },
 };
@@ -105,7 +105,7 @@ const sec = (type: SectionType, bars: number, min: number, pr: number, extra: Pa
 const TEMPLATES: Record<Exclude<Form, "blues">, T[]> = {
   song: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("build", 4, 2, 1), sec("chorus", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 8, 4, 3, { part: "B" }), sec("bridge", 4, 2, 2), sec("chorus", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
   edm: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("build", 4, 2, 1), sec("drop", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 8, 4, 3, { part: "B" }), sec("breakdown", 8, 2, 2), sec("build", 4, 2, 4), sec("drop", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
-  ambient: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("chorus", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 8, 4, 3, { part: "B" }), sec("bridge", 4, 2, 2), sec("chorus", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
+  ambient: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("build", 4, 2, 1), sec("chorus", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 8, 4, 3, { part: "B" }), sec("bridge", 4, 2, 2), sec("chorus", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
   cinematic: [sec("intro", 4, 2, 0), sec("verse", 8, 4, 0, { part: "A" }), sec("build", 4, 2, 1), sec("chorus", 8, 4, 0), sec("dropout", 2, 1, 3), sec("verse", 4, 4, 3, { part: "B" }), sec("bridge", 4, 2, 2), sec("chorus", 8, 4, 0, { final: true }), sec("outro", 4, 2, 0)],
 };
 
@@ -202,16 +202,14 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
   } else {
     tpl = TEMPLATES[form].map((x) => ({ ...x }));
     if (P.form === "slowBurn") {
-      const firstHook = tpl.findIndex((x) => (x.type === "chorus" || x.type === "drop") && !x.final);
-      if (firstHook >= 0) {
-        tpl.splice(firstHook, tpl[firstHook + 1]?.type === "dropout" ? 2 : 1);
-        const b = tpl.findIndex((x) => x.type === "build");
-        if (b >= 0 && b < firstHook) tpl.splice(b, 1);
+      // slow burn keeps the full timeline: a long intro and only a half-length first hook
+      const firstHook = tpl.find((x) => (x.type === "chorus" || x.type === "drop") && !x.final);
+      if (firstHook) {
+        firstHook.bars = 4;
+        firstHook.min = 2;
       }
       tpl[0].bars = 8;
       tpl[0].min = 4;
-      const fi = tpl.findIndex((x) => x.final);
-      if (fi > 0 && tpl[fi - 1].type !== "build") tpl.splice(fi, 0, sec("build", 4, 2, 0));
     } else if (P.form === "hookFirst") {
       tpl[0] = sec(form === "edm" ? "drop" : "chorus", 4, 2, 0, { cold: true });
     }
@@ -224,7 +222,8 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
       if (!c) break;
       c.bars -= c.type === "dropout" ? 1 : 2;
     }
-    while (dur() > target + 5) {
+    // whole sections are only dropped when the song would run far too long (keeps the 9-part timeline)
+    while (dur() > Math.max(target + 22, 106)) {
       const pr = Math.max(...tpl.map((x) => x.pr));
       if (pr <= 0) break;
       tpl = tpl.filter((x) => x.pr !== pr);
@@ -810,7 +809,7 @@ export function compose(plan: Plan, dims: ComposeDims, variation = 0): Song {
         p.clave = false;
         p.poly = false;
         p.auto.width = [0.15, 0.15];
-        p.auto.filter = [hasFilter ? 0.6 : 0.8, hasFilter ? 0.7 : 0.8];
+        p.auto.filter = [hasFilter ? 0.58 : 0.64, hasFilter ? 0.68 : 0.72];
         p.auto.sat = [0.05, 0.05];
         p.auto.delay = 1.5;
         C.push("kick and snare removed; light hats only", "harmony reduced to root + fifth", "tonic drone underneath", "image narrows to 15% width");
